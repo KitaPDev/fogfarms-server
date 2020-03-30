@@ -2,8 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d770124b-efb5-4882-b4d8-54ca8965e534" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/docker.workflow" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/heroku.workflow" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/database/database.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/module/repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/module/repository/postgres.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/module/services.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/modulegroup/repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/modulegroup/repository/postgres.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/modulegroup/services.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/permission/repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/permission/repository/postgres.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/permission/services.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/modulegroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/modulegroup.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/permission.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/permission.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/database.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/user/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/user/repository/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/repository/postgres.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,11 +78,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/database" />
       <recent name="$PROJECT_DIR$/models" />
       <recent name="$PROJECT_DIR$/src/user" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/auth/jwt" />
-      <recent name="$PROJECT_DIR$/src/user_management" />
     </key>
   </component>
   <component name="RunManager">
@@ -175,9 +189,9 @@
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
     <state x="1785" y="-136" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1585405236658" />
-    <state x="1645" y="-569" width="670" height="676" key="search.everywhere.popup" timestamp="1585407427038">
+    <state x="1645" y="-569" width="670" height="676" key="search.everywhere.popup" timestamp="1585575137459">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
-    <state x="1645" y="-569" width="670" height="676" key="search.everywhere.popup/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1585407427038" />
+    <state x="1645" y="-569" width="670" height="676" key="search.everywhere.popup/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1585575137459" />
   </component>
 </project>

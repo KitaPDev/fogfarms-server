@@ -1,5 +1,7 @@
 package user
 
+import "github.com/KitaPDev/fogfarms-server/models"
+
 type Repository interface {
-	getAllUsers() map[string]string
+	GetAllUsers() []models.User
 }

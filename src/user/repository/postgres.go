@@ -4,26 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/KitaPDev/fogfarms-server/models"
+	"github.com/KitaPDev/fogfarms-server/src/database"
 	"time"
 )
 
-const (
-	DbHost = "localhost"
-	DbPort = 5432
-	DbUser = "fogfarms"
-	DbPass = "fogfarms"
-	DbName = "fogfarms-01"
-)
-
-var connectionString string = fmt.Sprintf("port=%d host=%s user=%s "+
-	"password=%s dbname=%s sslmode=disable",
-	DbPort, DbHost, DbUser, DbPass, DbName)
-
 func GetAllUsers() []models.User {
-	db, err := sql.Open("postgres", connectionString)
-	if err != nil {
-		panic(err)
-	}
+	db = GetDB()
 
 	defer db.Close()
 	rows, err := db.Query("SELECT * FROM Users;")
