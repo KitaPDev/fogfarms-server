@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/KitaPDev/fogfarms-server/models"
+	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/KitaPDev/fogfarms-server/src/user"
 )
 
@@ -14,6 +16,14 @@ const (
 )
 
 func AssignUserToModuleGroup(username string, moduleGroupID string, level models.Level) {
-	user := user.GetUser(username)
+	db := database.GetDB()
+	u := user.GetUser(username)
 
+	defer db.Close()
+	sqlStatement := fmt.Sprintf("INSERT INTO Permission (Level, UserID, ModuleGroupID)" +
+		"VALUES (%s, %s, %s)", string(level), u.UserID, moduleGroupID)
+	_, err := db.Exec(sqlStatement)
+	if err != nil {
+		panic(err)
+	}
 }
