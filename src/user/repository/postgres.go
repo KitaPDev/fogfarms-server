@@ -1,15 +1,13 @@
 package repository
 
 import (
-	"database/sql"
-	"fmt"
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"time"
 )
 
 func GetAllUsers() []models.User {
-	db = GetDB()
+	db := database.GetDB()
 
 	defer db.Close()
 	rows, err := db.Query("SELECT * FROM Users;")
