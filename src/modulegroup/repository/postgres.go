@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
+	"github.com/KitaPDev/fogfarms-server/src/plant"
 )
 
 func GetAllModuleGroups() []models.ModuleGroup {
@@ -23,9 +24,10 @@ func GetAllModuleGroups() []models.ModuleGroup {
 		var tds float32
 		var ph float32
 		var humidity float32
-		var lightInterval []float32
+		var lightsOn float32
+		var lightsOff float32
 
-		err := rows.Scan(&id, &label, &plantID, &tds, &ph, &humidity, &lightInterval)
+		err := rows.Scan(&id, &label, &plantID, &tds, &ph, &humidity, &lightsOn, &lightsOff)
 		if err != nil {
 			panic(err)
 		}
@@ -37,7 +39,8 @@ func GetAllModuleGroups() []models.ModuleGroup {
 			TDS:              tds,
 			PH:               ph,
 			Humidity:         humidity,
-			LightInterval:    lightInterval,
+			LightsOn:         lightsOn,
+			LightsOff:        lightsOff,
 		}
 
 		moduleGroups = append(moduleGroups, mg)
@@ -79,22 +82,26 @@ func GetModuleGroup(moduleGroupID string) *models.ModuleGroup {
 			PH:               ph,
 			Humidity:         humidity,
 			LightsOn:         lightsOn,
-			LightsOff:        lightsOff
+			LightsOff:        lightsOff,
 		}
 	}
 	return moduleGroup
 }
 
-func NewModuleGroup(label string, plantID string, lightsOn float32, lightsOff float32) {
+func NewModuleGroup(label string, plantID string, humidity float32, lightsOn float32,
+	lightsOff float32) {
+
 	db := database.GetDB()
 
 	defer db.Close()
 
-	plant := 
+	plant := plant.GetPlant(plantID)
 
-	sqlStatement := fmt.Sprintf("INSERT INTO ModuleGroup (ModuleGrouplabel, PlantiD, " +
-		"TDS, PH, Humidity, LightsOn, LightsOff) VALUES (%s, %s, %g, %g, %g, %g)",
-		)
+	sqlStatement := fmt.Sprintf("INSERT INTO ModuleGroup (ModuleGrouplabel, PlantID, "+
+		"TDS, PH, Humidity, LightsOn, LightsOff) VALUES (%s, %s, %g, %g, %g, %g, %g)",
+		label, plantID, plant.TDS, plant.PH, humidity, lightsOn, lightsOff)
 	_, err := db.Exec(sqlStatement)
-
+	if err != nil {
+		panic(err)
+	}
 }
