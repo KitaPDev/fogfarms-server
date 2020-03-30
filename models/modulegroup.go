@@ -9,4 +9,5 @@ type ModuleGroup struct {
 	Humidity         float32 `json:"humidity"`
 	LightsOn         float32 `json:"lights_on"`
 	LightsOff        float32 `json:"lights_off"`
+	OnAuto           bool    `json:"on_auto"`
 }

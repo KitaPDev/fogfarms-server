@@ -90,7 +90,6 @@ func GetModuleGroup(moduleGroupID string) *models.ModuleGroup {
 
 func NewModuleGroup(label string, plantID string, humidity float32, lightsOn float32,
 	lightsOff float32) {
-
 	db := database.GetDB()
 
 	defer db.Close()
@@ -100,6 +99,32 @@ func NewModuleGroup(label string, plantID string, humidity float32, lightsOn flo
 	sqlStatement := fmt.Sprintf("INSERT INTO ModuleGroup (ModuleGrouplabel, PlantID, "+
 		"TDS, PH, Humidity, LightsOn, LightsOff) VALUES (%s, %s, %g, %g, %g, %g, %g)",
 		label, plantID, plant.TDS, plant.PH, humidity, lightsOn, lightsOff)
+	_, err := db.Exec(sqlStatement)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func SetManualOperation(moduleGroupID string, toManual bool) {
+	db := database.GetDB()
+
+	defer db.Close()
+	sqlStatement := fmt.Sprintf("UPDATE ModuleGroup SET OnAuto = %t " +
+		"WHERE ModuleGroupID = %s", toManual, moduleGroupID)
+	_, err := db.Exec(sqlStatement)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func SetEnvironmentParameters(moduleGroupID string, humidity float32, ph float32, tds float32,
+	lightsOn float32, lightsOff float32) {
+	db := database.GetDB()
+
+	defer db.Close()
+	sqlStatement := fmt.Sprintf("UPDATE ModuleGroup" +
+		"SET Humidity = %g, PH = %g, TDS = %g, LightsOn = %g, LightsOff = %g" +
+		"WHERE ModuleGroupID = %s", humidity, ph, tds, lightsOn, lightsOff, moduleGroupID)
 	_, err := db.Exec(sqlStatement)
 	if err != nil {
 		panic(err)
