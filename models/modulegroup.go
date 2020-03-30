@@ -7,5 +7,5 @@ type ModuleGroup struct {
 	TDS              float32 `json:"tds"`
 	PH               float32 `json:"ph"`
 	Humidity         float32 `json:"humidity"`
-	LightInterval    []int16 `json:"light_interval"`
+	LightInterval    []float32 `json:"light_interval"`
 }
