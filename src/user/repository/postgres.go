@@ -21,7 +21,7 @@ func GetAllUsers() []models.User {
 		var username string
 		var hash string
 		var salt string
-		var isAdmin string
+		var isAdmin bool
 		err := rows.Scan(&id, &username, &hash, &salt, &isAdmin)
 		if err != nil {
 			panic(err)
