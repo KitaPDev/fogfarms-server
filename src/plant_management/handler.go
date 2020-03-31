@@ -2,13 +2,15 @@ package plant_management
 
 import (
 	"fmt"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
 func MakeHTTPHandler() http.Handler {
-	router := httprouter.New()
-	router.HandlerFunc("GET", "/plant_management", getAllPlants)
+	router := mux.NewRouter()
+	router.HandleFunc("/plant_management", getAllPlants).
+		Methods("GET").
+		Schemes("http")
 
 	return router
 }

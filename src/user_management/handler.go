@@ -2,15 +2,21 @@ package user_management
 
 import (
 	"fmt"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
 func MakeHTTPHandler() http.Handler {
-	router := httprouter.New()
-	router.HandlerFunc("GET", "/user_management", getAllUsers)
+	router := mux.NewRouter()
+	router.HandleFunc("/user_management", getAllUsers).
+		Methods("GET").
+		Schemes("http")
 
 	return router
+}
+
+func populateUserManagementPage(w http.ResponseWriter, r *http.Request) {
+
 }
 
 func getAllUsers(w http.ResponseWriter, r *http.Request) {

@@ -2,13 +2,15 @@ package modulegroup_management
 
 import (
 	"fmt"
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
 func MakeHTTPHandler() http.Handler {
-	router := httprouter.New()
-	router.HandlerFunc("GET", "/modulegroup_management", getAllModuleGroup)
+	router := mux.NewRouter()
+	router.HandleFunc("/modulegroup_management", getAllModuleGroup).
+		Methods("GET").
+		Schemes("http")
 
 	return router
 }

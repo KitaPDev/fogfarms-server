@@ -1,15 +1,21 @@
 package jwt
 
 import (
-	"github.com/julienschmidt/httprouter"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
 func MakeHTTPHandler() http.Handler {
-	router := httprouter.New()
-	router.HandlerFunc("GET", "/auth/sign_in", SignIn)
-	router.HandlerFunc("GET", "/auth/refresh", Refresh)
-	router.HandlerFunc("GET", "/auth/sign_out", SignOut)
+	router := mux.NewRouter()
+	router.HandleFunc("/auth/sign_in", SignIn).
+		Methods("GET").
+		Schemes("http")
+	router.HandleFunc("/auth/refresh", Refresh).
+		Methods("GET").
+		Schemes("http")
+	router.HandleFunc("/auth/sign_out", SignOut).
+		Methods("GET").
+		Schemes("http")
 
 	return router
 }
