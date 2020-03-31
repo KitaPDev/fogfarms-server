@@ -5,9 +5,11 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/modulegroup_management"
 	"github.com/KitaPDev/fogfarms-server/src/plant_management"
 	"github.com/KitaPDev/fogfarms-server/src/user_management"
+	"github.com/gorilla/mux"
 	"github.com/labstack/gommon/log"
 	"net/http"
 	"os"
+	"time"
 )
 
 func main() {
@@ -18,23 +20,35 @@ func main() {
 }
 
 func run() error {
-	mux := http.NewServeMux()
+	router := mux.NewRouter()
+
+	//mux := http.NewServeMux()
 
 	jwtAuthHandler := jwt.MakeHTTPHandler()
-	mux.Handle("/auth", jwtAuthHandler)
+	router.PathPrefix("/auth").Handler(jwtAuthHandler)
+	//mux.Handle("/auth", jwtAuthHandler)
 
 	moduleGroupManagementHandler := modulegroup_management.MakeHTTPHandler()
-	mux.Handle("/modulegroup_management", moduleGroupManagementHandler)
-	mux.Handle("/modulegroup_management/", moduleGroupManagementHandler)
+	router.PathPrefix("/modulegroup_management").Handler(moduleGroupManagementHandler)
+	//mux.Handle("/modulegroup_management", moduleGroupManagementHandler)
+	//mux.Handle("/modulegroup_management/", moduleGroupManagementHandler)
 
 	userManagementHandler := user_management.MakeHTTPHandler()
-	mux.Handle("/user_management", userManagementHandler)
-	mux.Handle("/user_management/", userManagementHandler)
+	router.PathPrefix("/user_management").Handler(userManagementHandler)
+	//̧mux.Handle("/user_management", userManagementHandler)
+	//mux.Handle("/user_management/", userManagementHandler)
 
 	plantManagementHandler := plant_management.MakeHTTPHandler()
-	mux.Handle("/plant_management", plantManagementHandler)
-	mux.Handle("/plant_management/", plantManagementHandler)
+	router.PathPrefix("/plant_management").Handler(plantManagementHandler)
+	//mux.Handle("/plant_management", plantManagementHandler)
+	//mux.Handle("/plant_management/", plantManagementHandler)
 
-	return http.ListenAndServe(":9090", mux)
+	srv := &http.Server{
+		Handler:      router,
+		Addr:         "127.0.0.1:9090",
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	return srv.ListenAndServe()
 }
-
