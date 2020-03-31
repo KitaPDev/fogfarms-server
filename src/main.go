@@ -25,12 +25,15 @@ func run() error {
 
 	moduleGroupManagementHandler := modulegroup_management.MakeHTTPHandler()
 	mux.Handle("/modulegroup_management", moduleGroupManagementHandler)
+	mux.Handle("/modulegroup_management/", moduleGroupManagementHandler)
 
 	userManagementHandler := user_management.MakeHTTPHandler()
 	mux.Handle("/user_management", userManagementHandler)
+	mux.Handle("/user_management/", userManagementHandler)
 
 	plantManagementHandler := plant_management.MakeHTTPHandler()
 	mux.Handle("/plant_management", plantManagementHandler)
+	mux.Handle("/plant_management/", plantManagementHandler)
 
 	return http.ListenAndServe(":9090", mux)
 }
