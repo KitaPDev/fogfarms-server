@@ -4,6 +4,7 @@ import (
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/user/repository"
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
 )
 
 var registeredUsers []models.User
@@ -22,6 +23,12 @@ func GetUser(username string) *models.User {
 	}
 
 	return nil
+}
+
+func GetUserFromRequest(r *http.Request) *models.User {
+	username := r.Form.Get("username")
+
+	return GetUser(username)
 }
 
 func Exists(username string) (bool, *models.User) {
