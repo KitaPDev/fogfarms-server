@@ -8,7 +8,7 @@ import (
 
 func MakeHTTPHandler() http.Handler {
 	router := httprouter.New()
-	router.HandlerFunc("GET", "/modulegroup_management", GetDemoJson)
+	router.HandlerFunc("GET", "/modulegroup_management", GetAllModuleGroup)
 	router.HandlerFunc("GET", "/modulegroup_management/js", GetDemoJson)
 
 	return router
