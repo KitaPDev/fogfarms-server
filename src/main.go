@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/modulegroup_management"
 	"github.com/KitaPDev/fogfarms-server/src/plant_management"
@@ -9,7 +10,6 @@ import (
 	"github.com/labstack/gommon/log"
 	"net/http"
 	"os"
-	"time"
 )
 
 func main() {
@@ -22,33 +22,26 @@ func main() {
 func run() error {
 	router := mux.NewRouter()
 
-	//mux := http.NewServeMux()
-
 	jwtAuthHandler := jwt.MakeHTTPHandler()
 	router.PathPrefix("/auth").Handler(jwtAuthHandler)
-	//mux.Handle("/auth", jwtAuthHandler)
 
 	moduleGroupManagementHandler := modulegroup_management.MakeHTTPHandler()
 	router.PathPrefix("/modulegroup_management").Handler(moduleGroupManagementHandler)
-	//mux.Handle("/modulegroup_management", moduleGroupManagementHandler)
-	//mux.Handle("/modulegroup_management/", moduleGroupManagementHandler)
 
 	userManagementHandler := user_management.MakeHTTPHandler()
 	router.PathPrefix("/user_management").Handler(userManagementHandler)
-	//̧mux.Handle("/user_management", userManagementHandler)
-	//mux.Handle("/user_management/", userManagementHandler)
 
 	plantManagementHandler := plant_management.MakeHTTPHandler()
 	router.PathPrefix("/plant_management").Handler(plantManagementHandler)
-	//mux.Handle("/plant_management", plantManagementHandler)
-	//mux.Handle("/plant_management/", plantManagementHandler)
 
-	srv := &http.Server{
-		Handler:      router,
-		Addr:         "127.0.0.1:9090",
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
+	return http.ListenAndServe(getPort(), router)
+}
+
+func getPort() string {
+	var port = os.Getenv("PORT")
+	if port == "" {
+		port = "9090"
+		fmt.Println("No Port In Heroku" + port)
 	}
-
-	return srv.ListenAndServe()
+	return ":" + port
 }
