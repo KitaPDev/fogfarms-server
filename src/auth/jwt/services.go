@@ -57,6 +57,18 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) bool {
 		return false
 	}
 
+	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 0*time.Second {
+
+		if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
+			w.WriteHeader(http.StatusBadRequest)
+			return false
+
+		} else {
+			GenerateToken(claims.Username, w)
+		}
+
+	}
+
 	return true
 }
 
@@ -104,47 +116,47 @@ func GenerateToken(username string, w http.ResponseWriter) {
 	})
 }
 
-func RefreshToken(w http.ResponseWriter, r *http.Request) {
-	jwtKey := os.Getenv("SECRET_KEY_JWT")
-
-	cookie, err := r.Cookie("jwtToken")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	tokenString := cookie.Value
-	claims := &Claims{}
-
-	token, err := jwt.ParseWithClaims(tokenString, claims,
-		func(token *jwt.Token) (interface{}, error) {
-			return jwtKey, nil
-		})
-	if err != nil {
-		if err == jwt.ErrSignatureInvalid {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	if !token.Valid {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-
-	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	GenerateToken(claims.Username, w)
-}
+//func RefreshToken(w http.ResponseWriter, r *http.Request) {
+//	jwtKey := os.Getenv("SECRET_KEY_JWT")
+//
+//	cookie, err := r.Cookie("jwtToken")
+//	if err != nil {
+//		if err == http.ErrNoCookie {
+//			w.WriteHeader(http.StatusUnauthorized)
+//			return
+//		}
+//		w.WriteHeader(http.StatusBadRequest)
+//		return
+//	}
+//
+//	tokenString := cookie.Value
+//	claims := &Claims{}
+//
+//	token, err := jwt.ParseWithClaims(tokenString, claims,
+//		func(token *jwt.Token) (interface{}, error) {
+//			return jwtKey, nil
+//		})
+//	if err != nil {
+//		if err == jwt.ErrSignatureInvalid {
+//			w.WriteHeader(http.StatusUnauthorized)
+//			return
+//		}
+//		w.WriteHeader(http.StatusBadRequest)
+//		return
+//	}
+//
+//	if !token.Valid {
+//		w.WriteHeader(http.StatusUnauthorized)
+//		return
+//	}
+//
+//	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
+//		w.WriteHeader(http.StatusBadRequest)
+//		return
+//	}
+//
+//	GenerateToken(claims.Username, w)
+//}
 
 func InvalidateToken(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
