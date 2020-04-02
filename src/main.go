@@ -5,10 +5,12 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/mux"
+
 	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/plant_management"
 	"github.com/KitaPDev/fogfarms-server/src/user_management"
-	"github.com/ddfsdd/fogfarms-server/src/modulegroup_management"
+	"github.com/KitaPDev/fogfarms-server/src/modulegroup_management"
 	"github.com/labstack/gommon/log"
 )
 
@@ -27,19 +29,19 @@ func getPort() string {
 	return ":" + port
 }
 func run() error {
-	mux := http.NewServeMux()
+	router := mux.NewRouter()
 
 	jwtAuthHandler := jwt.MakeHTTPHandler()
-	mux.Handle("/auth", jwtAuthHandler)
+	router.PathPrefix("/auth").Handler(jwtAuthHandler)
 
 	moduleGroupManagementHandler := modulegroup_management.MakeHTTPHandler()
-	mux.Handle("/modulegroup_management", moduleGroupManagementHandler)
-	mux.Handle("/modulegroup_management/js", moduleGroupManagementHandler)
+	router.PathPrefix("/modulegroup_management").Handler(moduleGroupManagementHandler)
+
 	userManagementHandler := user_management.MakeHTTPHandler()
-	mux.Handle("/user_management", userManagementHandler)
+	router.PathPrefix("/user_management").Handler(userManagementHandler)
 
 	plantManagementHandler := plant_management.MakeHTTPHandler()
-	mux.Handle("/plant_management", plantManagementHandler)
+	router.PathPrefix("/plant_management").Handler(plantManagementHandler)
 
-	return http.ListenAndServe(getPort(), mux)
+	return http.ListenAndServe(getPort(), router)
 }
