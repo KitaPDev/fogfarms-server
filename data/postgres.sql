@@ -2,7 +2,7 @@
 
 -- Plant
 CREATE TABLE Plant (
-    PlantID VARCHAR(256) NOT NULL,
+    PlantID SERIAL NOT NULL,
     Name VARCHAR(256) NOT NULL,
     TDS FLOAT NOT NULL,
     PH FLOAT NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE Plant (
 
 -- Location
 CREATE TABLE Location (
-    LocationID VARCHAR(256) NOT NULL,
+    LocationID SERIAL NOT NULL,
     City VARCHAR(256) NOT NULL,
     Province VARCHAR(256) NOT NULL,
     PRIMARY KEY (LocationID)
@@ -20,7 +20,7 @@ CREATE TABLE Location (
 
 -- Users
 CREATE TABLE Users (
-    UserID VARCHAR(256) NOT NULL,
+    UserID SERIAL NOT NULL,
     Username VARCHAR(256) NOT NULL,
     IsAdministrator BOOLEAN NOT NULL DEFAULT FALSE,
     Hash VARCHAR(256) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE Users (
 
 -- Nutrient
 CREATE TABLE Nutrient (
-    NutrientID VARCHAR(256) NOT NULL PRIMARY KEY,
+    NutrientID SERIAL NOT NULL PRIMARY KEY,
     Part INT NOT NULL,
     Nitrogen INT NOT NULL,
     Phosphorus INT NOT NULL,
@@ -40,18 +40,18 @@ CREATE TABLE Nutrient (
 
 -- PHUpUnit
 CREATE TABLE PHUpUnit (
-    PHUpUnitID VARCHAR(256) NOT NULL PRIMARY KEY
+    PHUpUnitID SERIAL NOT NULL PRIMARY KEY
 );
 
 CREATE TABLE PHDownUnit (
-    PHDownUnitID VARCHAR(256) NOT NULL PRIMARY KEY
+    PHDownUnitID SERIAL NOT NULL PRIMARY KEY
 );
 
 -- ModuleGroup
 CREATE TABLE ModuleGroup (
-    ModuleGroupID VARCHAR(256) NOT NULL,
-    PlantID VARCHAR(256) NOT NULL,
-    LocationID VARCHAR(256) NOT NULL,
+    ModuleGroupID SERIAL NOT NULL,
+    PlantID INT NOT NULL,
+    LocationID INT NOT NULL,
     Param_TDS FLOAT NOT NULL,
     Param_PH FLOAT NOT NULL,
     Param_Humidity FLOAT NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE ModuleGroup (
 
 -- SensorData
 CREATE TABLE SensorData (
-    ModuleID VARCHAR(256) NOT NULL,
+    ModuleID SERIAL NOT NULL,
     Timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
     TDS FLOAT NOT NULL,
     PH FLOAT NOT NULL,
@@ -79,8 +79,8 @@ CREATE TABLE SensorData (
 
 -- Module
 CREATE TABLE Module (
-    ModuleID VARCHAR(256) NOT NULL,
-    ModuleGroupID VARCHAR(256) NOT NULL,
+    ModuleID SERIAL NOT NULL,
+    ModuleGroupID INT NOT NULL,
     Token VARCHAR(256) NOT NULL,
     PRIMARY KEY (ModuleID),
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
@@ -88,12 +88,12 @@ CREATE TABLE Module (
 
 -- NutrientUnit
 CREATE TABLE NutrientUnit (
-    NutrientUnitID VARCHAR(256) NOT NULL,
-    ModuleID VARCHAR(256) NOT NULL,
-    ModuleGroupID VARCHAR(256) NOT NULL,
-    PHUpUnitID VARCHAR(256) NOT NULL,
-    PHDownUnitID VARCHAR(256) NOT NULL,
-    NutrientID VARCHAR(256) NOT NULL,
+    NutrientUnitID SERIAL NOT NULL,
+    ModuleID INT NOT NULL,
+    ModuleGroupID INT NOT NULL,
+    PHUpUnitID INT NOT NULL,
+    PHDownUnitID INT NOT NULL,
+    NutrientID INT NOT NULL,
     PRIMARY KEY (NutrientUnitID),
     FOREIGN KEY (PHUpUnitID) REFERENCES PHUpUnit (PHUpUnitID),
     FOREIGN KEY (PHDownUnitID) REFERENCES PHDownUnit (PHDownUnitID),
@@ -104,42 +104,44 @@ CREATE TABLE NutrientUnit (
 
 -- GrowUnit
 CREATE TABLE GrowUnit (
-    GrowUnitID VARCHAR(256) NOT NULL,
-    ModuleID VARCHAR(256) NOT NULL,
-    capacity INT,
+    GrowUnitID SERIAL NOT NULL,
+    ModuleID INT NOT NULL,
+    ModuleGroupID INT NOT NULL,
+    Capacity INT,
     PRIMARY KEY (GrowUnitID),
-    FOREIGN KEY (ModuleID) REFERENCES Modules(ModuleID)
+    FOREIGN KEY (ModuleID) REFERENCES Modules (ModuleID),
+    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );
 
 -- Device
 CREATE TABLE Device (
-    DeviceID VARCHAR(256) NOT NULL,
-    StatusID VARCHAR(256) NOT NULL,
-    ModuleID VARCHAR(256) NOT NULL,
-    name VARCHAR(256) NOT NULL,
+    DeviceID SERIAL NOT NULL,
+    IsOn BOOLEAN NOT NULL DEFAULT FALSE,
+    ModuleID INT) NOT NULL,
+    Label VARCHAR(256) NOT NULL,
     PRIMARY KEY (DeviceID),
-    FOREIGN KEY (ModuleID) REFERENCES Modules(ModuleID)
+    FOREIGN KEY (ModuleID) REFERENCES Modules (ModuleID)
 );
 
 -- SensorData_ModuleGroup
 CREATE TABLE SensorData_ModuleGroup (
-    ModuleGroupID VARCHAR(256) NOT NULL,
-    Timestamp timestamp NOT NULL,
+    ModuleGroupID SERIAL NOT NULL,
+    Timestamp timestamp NOT NULL DEFAULT NOW(),
     Humidity FLOAT NOT NULL,
     Temperature FLOAT NOT NULL,
     PRIMARY KEY (ModuleGroupID, Timestamp),
-    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup(ModuleGroupID)
+    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );
 
 -- Permission
 CREATE TABLE Permission (
-    UserID VARCHAR(256) NOT NULL,
-    ModuleGroupID VARCHAR(256) NOT NULL,
+    UserID INT NOT NULL,
+    ModuleGroupID INT NOT NULL,
     Supervisor BOOLEAN NOT NULL,
-    Monitor BOOLEAN NOT NULL,
     Control BOOLEAN NOT NULL,
+    Monitor BOOLEAN NOT NULL,
     PRIMARY KEY (UserID, ModuleGroupID),
-    FOREIGN KEY (UserID) REFERENCES Users(UserID),
-    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup(ModuleGroupID)
+    FOREIGN KEY (UserID) REFERENCES Users (UserID),
+    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );
 
