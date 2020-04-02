@@ -5,16 +5,17 @@ import (
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/KitaPDev/fogfarms-server/src/plant"
+	"github.com/labstack/gommon/log"
 )
 
 func GetAllModuleGroups() []models.ModuleGroup {
 	db := database.GetDB()
 
-	defer db.Close()
 	rows, err := db.Query("SELECT * FROM ModuleGroup;")
 	if err != nil {
 		panic(err)
 	}
+	defer log.Fatal(rows.Close())
 
 	var moduleGroups []models.ModuleGroup
 	for rows.Next() {
@@ -52,11 +53,11 @@ func GetAllModuleGroups() []models.ModuleGroup {
 func GetModuleGroup(moduleGroupID string) *models.ModuleGroup {
 	db := database.GetDB()
 
-	defer db.Close()
 	rows, err := db.Query("SELECT * FROM ModuleGroup WHERE ModuleGroupID = ?;", moduleGroupID)
 	if err != nil {
 		panic(err)
 	}
+	defer log.Fatal(rows.Close())
 
 	var moduleGroup *models.ModuleGroup
 	for rows.Next() {
@@ -92,8 +93,6 @@ func NewModuleGroup(label string, plantID string, humidity float32, lightsOn flo
 	lightsOff float32) {
 	db := database.GetDB()
 
-	defer db.Close()
-
 	plant := plant.GetPlant(plantID)
 
 	sqlStatement := fmt.Sprintf("INSERT INTO ModuleGroup (ModuleGrouplabel, PlantID, "+
@@ -108,7 +107,6 @@ func NewModuleGroup(label string, plantID string, humidity float32, lightsOn flo
 func SetManualOperation(moduleGroupID string, toManual bool) {
 	db := database.GetDB()
 
-	defer db.Close()
 	sqlStatement := fmt.Sprintf("UPDATE ModuleGroup SET OnAuto = %t " +
 		"WHERE ModuleGroupID = %s", toManual, moduleGroupID)
 	_, err := db.Exec(sqlStatement)
@@ -121,7 +119,6 @@ func SetEnvironmentParameters(moduleGroupID string, humidity float32, ph float32
 	lightsOn float32, lightsOff float32) {
 	db := database.GetDB()
 
-	defer db.Close()
 	sqlStatement := fmt.Sprintf("UPDATE ModuleGroup" +
 		"SET Humidity = %g, PH = %g, TDS = %g, LightsOn = %g, LightsOff = %g" +
 		"WHERE ModuleGroupID = %s", humidity, ph, tds, lightsOn, lightsOff, moduleGroupID)

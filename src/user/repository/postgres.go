@@ -3,17 +3,18 @@ package repository
 import (
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
+	"log"
 	"time"
 )
 
 func GetAllUsers() []models.User {
 	db := database.GetDB()
 
-	defer db.Close()
 	rows, err := db.Query("SELECT * FROM Users;")
 	if err != nil {
 		panic(err)
 	}
+	defer log.Fatal(rows.Close())
 
 	var users []models.User
 	for rows.Next() {

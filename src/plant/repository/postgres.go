@@ -4,16 +4,17 @@ import (
 	"fmt"
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
+	"log"
 )
 
 func GetPlant(plantID string) *models.Plant {
 	db := database.GetDB()
 
-	defer db.Close()
 	rows, err := db.Query("SELECT * FROM Plant WHERE PlantID = ?", plantID)
 	if err != nil {
 		panic(err)
 	}
+	defer log.Fatal(rows.Close())
 
 	var plant *models.Plant
 	for rows.Next() {
@@ -42,11 +43,11 @@ func GetPlant(plantID string) *models.Plant {
 func GetAllPlants() []models.Plant {
 	db := database.GetDB()
 
-	defer db.Close()
 	rows, err := db.Query("SELECT * FROM Plant")
 	if err != nil {
 		panic(err)
 	}
+	defer log.Fatal(rows.Close())
 
 	var plants []models.Plant
 	for rows.Next() {
@@ -77,7 +78,6 @@ func GetAllPlants() []models.Plant {
 func NewPlant(name string, tds float32, ph float32, lux float32) {
 	db := database.GetDB()
 
-	defer db.Close()
 	sqlStatement := fmt.Sprintf("INSERT INTO Plant (Name, TDS, PH, Lux)" +
 		"VALUES (%s, %g, %g, %g)", name, tds, ph, lux)
 	_, err := db.Exec(sqlStatement)

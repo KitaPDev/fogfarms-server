@@ -13,3 +13,7 @@ func AssignUserToModuleGroup(username string, moduleGroupID string, level string
 
 	repository.AssignUserToModuleGroup(username, moduleGroupID, l)
 }
+
+func GetSupervisorModuleGroup(user *models.User) []models.ModuleGroup {
+
+}
