@@ -2,13 +2,16 @@ package user_management
 
 import (
 	"fmt"
-	"github.com/julienschmidt/httprouter"
 	"net/http"
+
+	"github.com/KitaPDev/fogfarms-server/src/user"
+	"github.com/julienschmidt/httprouter"
 )
 
 func MakeHTTPHandler() http.Handler {
 	router := httprouter.New()
 	router.HandlerFunc("GET", "/user_management", getAllUsers)
+	router.HandlerFunc("POST", "/user_management/register", user.CreateUser)
 
 	return router
 }

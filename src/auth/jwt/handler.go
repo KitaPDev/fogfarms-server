@@ -1,21 +1,18 @@
 package jwt
 
 import (
-	"github.com/julienschmidt/httprouter"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 func MakeHTTPHandler() http.Handler {
 	router := httprouter.New()
-	router.HandlerFunc("GET", "/auth/sign_in", SignIn)
+	router.HandlerFunc("POST", "/auth/sign_in", AuthenticateSignIn)
 	router.HandlerFunc("GET", "/auth/refresh", Refresh)
 	router.HandlerFunc("GET", "/auth/sign_out", SignOut)
 
 	return router
-}
-
-func SignIn(w http.ResponseWriter, r *http.Request) {
-	AuthenticateSignIn(w, r)
 }
 
 func Refresh(w http.ResponseWriter, r *http.Request) {
