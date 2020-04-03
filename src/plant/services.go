@@ -6,5 +6,5 @@ import (
 )
 
 func GetPlant(plantID string) *models.Plant {
-	repository.GetPlant(plantID)
+	return repository.GetPlant(plantID)
 }
