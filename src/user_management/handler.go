@@ -1,16 +1,16 @@
 package user_management
 
 import (
-	"fmt"
-	"github.com/gorilla/mux"
 	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
+	"github.com/KitaPDev/fogfarms-server/src/modulegroup"
 	"github.com/KitaPDev/fogfarms-server/src/user"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
 func MakeHTTPHandler() http.Handler {
 	router := mux.NewRouter()
-	router.HandleFunc("/user_management", getAllUsers).
+	router.HandleFunc("/user_management", populateUserManagementPage).
 		Methods("GET").
 		Schemes("http")
 
@@ -24,9 +24,12 @@ func populateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 
 	u := user.GetUserFromRequest(r)
 
+	if u.IsAdministrator {
+		users := user.GetAllUsers()
+		moduleGroups := modulegroup.GetAllModuleGroups()
 
-}
+	} else {
 
-func getAllUsers(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Hello World!")
+	}
+
 }

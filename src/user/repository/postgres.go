@@ -18,23 +18,24 @@ func GetAllUsers() []models.User {
 
 	var users []models.User
 	for rows.Next() {
-		var id string
+		var userID string
 		var username string
 		var hash string
 		var salt string
 		var isAdmin bool
-		err := rows.Scan(&id, &username, &hash, &salt, &isAdmin)
+		var createdAt time.Time
+		err := rows.Scan(&userID, &username, &hash, &salt, &isAdmin, &createdAt)
 		if err != nil {
 			panic(err)
 		}
 
 		user := models.User{
-			UserID:          id,
+			UserID:          userID,
 			Username:        username,
 			Salt:            salt,
 			Hash:            hash,
 			IsAdministrator: isAdmin,
-			CreatedAt:       time.Time{},
+			CreatedAt:       createdAt,
 		}
 
 		users = append(users, user)
