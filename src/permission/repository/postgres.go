@@ -24,6 +24,10 @@ func GetSupervisorModuleGroup(userID string) []models.ModuleGroup {
 	db := database.GetDB()
 
 	rows, err := db.Query("SELECT * FROM Permission")
+	if err != nil {
+		panic(err)
+	}
 	defer log.Fatal(rows.Close())
 
+	return nil
 } 
