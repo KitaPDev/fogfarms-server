@@ -30,5 +30,6 @@ func GetDB() *sql.DB {
 			panic(err)
 		}
 	}
+
 	return db
 }

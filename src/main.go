@@ -4,14 +4,13 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-
 	"github.com/gorilla/mux"
-
 	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/modulegroup_management"
 	"github.com/KitaPDev/fogfarms-server/src/plant_management"
 	"github.com/KitaPDev/fogfarms-server/src/test"
 	"github.com/KitaPDev/fogfarms-server/src/user_management"
+	"github.com/gorilla/mux"
 	"github.com/labstack/gommon/log"
 )
 
@@ -44,8 +43,14 @@ func run() error {
 	plantManagementHandler := plant_management.MakeHTTPHandler()
 	router.PathPrefix("/plant_management").Handler(plantManagementHandler)
 
-	testHandler := test.MakeHTTPHandler()
-	router.PathPrefix("/test").Handler(testHandler)
-
 	return http.ListenAndServe(getPort(), router)
+}
+
+func getPort() string {
+	var port = os.Getenv("PORT")
+	if port == "" {
+		port = "9090"
+		fmt.Println("No Port In Heroku" + port)
+	}
+	return ":" + port
 }

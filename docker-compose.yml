@@ -1,12 +1,12 @@
 version: "3.7"
 
 services:
-  backend:
-    image: ./Dockerfile
+  server:
+    image: golang:1.8-alpine
     container_name: fogfarms-server
     volumes:
-      - .:/server
-    command: sh -c 'cd /server && yarn && yarn start:dev'
+      - .:go/src/fogfarms-server
+    working_dir: /go/src/fogfarms
     ports:
       - 9090:9090
 
@@ -18,5 +18,6 @@ services:
     environment:
       POSTGRES_USER: fogfarms
       POSTGRES_PASSWORD: fogfarms
+      POSTGRES_DB: fogfarms-01
     ports:
       - 5432:5432

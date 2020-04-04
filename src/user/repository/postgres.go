@@ -1,13 +1,12 @@
 package repository
 
 import (
-	"database/sql"
 	"fmt"
 	"time"
-
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 )
 
 func GetAllUsers() []models.User {
@@ -17,31 +16,21 @@ func GetAllUsers() []models.User {
 	if err != nil {
 		panic(err)
 	}
-	defer rows.Close()
+	defer log.Fatal(rows.Close())
+
 	var users []models.User
 	for rows.Next() {
-		var id string
-		var username string
-		var hash string
-		var salt string
-		var r string
-		err := rows.Scan(&id, &username, &hash, &salt, &r)
+		user := models.User{}
+		err := rows.Scan(
+			&user.UserID,
+			&user.Username,
+			&user.Hash,
+			&user.Salt,
+			&user.IsAdministrator,
+			&user.CreatedAt,
+		)
 		if err != nil {
 			panic(err)
-		}
-
-		role := models.AuthorizedUser
-		if r == "Administrator" {
-			role = models.Administrator
-		}
-
-		user := models.User{
-			UserID:    id,
-			Username:  username,
-			Salt:      salt,
-			Hash:      hash,
-			Role:      role,
-			CreatedAt: time.Time{},
 		}
 
 		users = append(users, user)
@@ -49,6 +38,7 @@ func GetAllUsers() []models.User {
 
 	return users
 }
+
 func hash(password string, salt string) string {
 	s := password + salt
 	h, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.DefaultCost)
@@ -61,14 +51,13 @@ func hash(password string, salt string) string {
 
 func CreateUser(username string, password string) {
 	db := database.GetDB()
-	sqlStatement := `
-	INSERT INTO Users (Username, IsAdministrator, Hash,Salt,CreatedAt) 
-	VALUES ($1, False , $2, 's', Now())
-	RETURNING Username,Hash;`
+	sqlStatement := fmt.Sprintf("INSERT INTO Users (Username, IsAdministrator, Hash, Salt, CreatedAt)" +
+		"VALUES ($1, False , $2, 's', Now())\n" +
+		"RETURNING Username, Hash;")
 	Username := ""
 	Hash := ""
-	var hashinset string = hash(password, "s")
-	err := db.QueryRow(sqlStatement, username, hashinset).Scan(&Username, &Hash)
+	hashInset := hash(password, "s")
+	err := db.QueryRow(sqlStatement, username, hashInset).Scan(&Username, &Hash)
 	if err != nil {
 		panic(err)
 	}
@@ -103,4 +92,14 @@ func ValidateUserA(usernameIn string, password string) bool {
 	}
 
 	return false
+}
+
+func hash(password string, salt string) string {
+	s := password + salt
+	h, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.DefaultCost)
+	if err != nil {
+		panic(err)
+	}
+
+	return string(h)
 }
