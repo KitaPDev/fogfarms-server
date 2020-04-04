@@ -20,14 +20,21 @@ func AssignUserToModuleGroup(username string, moduleGroupID string, level models
 	}
 }
 
-func GetSupervisorModuleGroup(userID string) []models.ModuleGroup {
+func GetSupervisorModuleGroups(userID string) []models.ModuleGroup {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM Permission")
+	rows, err := db.Query("SELECT * FROM Permission WHERE UserID = ?", userID)
 	if err != nil {
 		panic(err)
 	}
 	defer log.Fatal(rows.Close())
 
-	return nil
+	var moduleGroups []models.ModuleGroup
+	for rows.Next() {
+
+		err := rows.Scan()
+
+	}
+
+	return moduleGroups
 } 
