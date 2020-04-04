@@ -1,12 +1,8 @@
 package modulegroup_management
 
 import (
-
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
-
-	"github.com/julienschmidt/httprouter"
 )
 
 func MakeHTTPHandler() http.Handler {

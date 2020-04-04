@@ -44,7 +44,7 @@ func GetAllPlants() []models.Plant {
 
 	var plants []models.Plant
 	for rows.Next() {
-		plant := &models.Plant{}
+		plant := models.Plant{}
 
 		err := rows.Scan(
 			&plant.PlantID,

@@ -1,9 +1,9 @@
 package user_management
 
 import (
-	"fmt"
 	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/user"
+	"github.com/KitaPDev/fogfarms-server/src/user/repository"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -14,7 +14,7 @@ func MakeHTTPHandler() http.Handler {
 		Methods("GET").
 		Schemes("http")
 
-	router.HandleFunc("/user_management_register", user.CreateUser).
+	router.HandleFunc("/user_management_register", createUser).
 		Methods("POST").
 		Schemes("http")
 
@@ -22,8 +22,12 @@ func MakeHTTPHandler() http.Handler {
 }
 
 func getAllUsers(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Hello World!")
+	repository.GetAllUsers()
 }
+
+func createUser(w http.ResponseWriter, r *http.Request) {
+}
+
 
 func populateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUser(w, r) {
