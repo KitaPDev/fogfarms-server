@@ -8,12 +8,12 @@ import (
 	"log"
 )
 
-func AssignUserToModuleGroup(username string, moduleGroupID string, level models.Level) {
+func AssignUserToModuleGroup(username string, moduleGroupID string, level int) {
 	db := database.GetDB()
 	u := user.GetUser(username)
 
-	sqlStatement := fmt.Sprintf("INSERT INTO Permission (Level, UserID, ModuleGroupID)" +
-		"VALUES (%s, %s, %s)", string(level), u.UserID, moduleGroupID)
+	sqlStatement := fmt.Sprintf("INSERT INTO Permission (PermissionLevel, UserID, ModuleGroupID)" +
+		"VALUES (%d, %s, %s)", level, u.UserID, moduleGroupID)
 	_, err := db.Exec(sqlStatement)
 	if err != nil {
 		panic(err)
@@ -32,7 +32,7 @@ func GetSupervisorModuleGroups(userID string) []models.ModuleGroup {
 	var moduleGroups []models.ModuleGroup
 	for rows.Next() {
 
-		err := rows.Scan()
+		//err := rows.Scan()
 
 	}
 
