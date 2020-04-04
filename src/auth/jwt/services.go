@@ -3,19 +3,13 @@ package jwt
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"github.com/KitaPDev/fogfarms-server/src/user"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/golang/gddo/httputil/header"
 	"net/http"
 	"os"
 	"strings"
 	"time"
-
 	"github.com/KitaPDev/fogfarms-server/src/user"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/golang/gddo/httputil/header"
-	"github.com/labstack/gommon/log"
 )
 
 const (
@@ -96,6 +90,7 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, msg, http.StatusUnsupportedMediaType)
 			return
 		}
+	}
 
 	var credentials Input
 
@@ -116,7 +111,7 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	username := credentials.Username
-	password := credentials.Password
+	//password := credentials.Password
 
 	exists, _ := user.Exists(username)
 	if !exists {
@@ -124,14 +119,6 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
-	err := json.NewDecoder(r.Body).Decode(&testdata)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-	}
-	fmt.Printf("%+v", testdata)
-	username := testdata.Username
-	password := testdata.Password
 
 	// exists, _ := user.Exists(username)
 	// if !exists {
@@ -139,13 +126,6 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 	// 	log.Fatal(io.WriteString(w, `{"error":"user_not_found"}"`))
 	// 	return
 	// }
-
-	valid := user.ValidateUserA(username, password)
-	if !valid {
-		msg := "Invalid Credentials"
-		http.Error(w, msg, http.StatusUnauthorized)
-		return
-	}
 
 	GenerateToken(username, w)
 }

@@ -3,12 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="d770124b-efb5-4882-b4d8-54ca8965e534" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modulegroup_management/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/modulegroup_management/handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/plant/repository/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/plant/repository/postgres.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/user/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/services.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/user_management/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user_management/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/jwt/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/jwt/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth/jwt/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/jwt/services.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -245,6 +241,10 @@
     </state>
     <state x="1716" y="-370" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1585577557194" />
     <state x="1716" y="-370" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog/1440.-1020.1080.1920/0.23.1440.877@1440.-1020.1080.1920" timestamp="1585577687076" />
+    <state x="1540" y="-920" width="880" height="1720" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1586009946903">
+      <screen x="1440" y="-1020" width="1080" height="1920" />
+    </state>
+    <state x="1540" y="-920" width="880" height="1720" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog/1440.-1020.1080.1920/0.23.1440.812@1440.-1020.1080.1920" timestamp="1586009946903" />
     <state x="1785" y="-136" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1585580861409">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
