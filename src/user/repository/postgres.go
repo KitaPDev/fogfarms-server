@@ -6,7 +6,6 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"golang.org/x/crypto/bcrypt"
 	"log"
-	"time"
 )
 
 func GetAllUsers() []models.User {
@@ -20,24 +19,17 @@ func GetAllUsers() []models.User {
 
 	var users []models.User
 	for rows.Next() {
-		var userID string
-		var username string
-		var hash string
-		var salt string
-		var isAdmin bool
-		var createdAt time.Time
-		err := rows.Scan(&userID, &username, &hash, &salt, &isAdmin, &createdAt)
+		user := models.User{}
+		err := rows.Scan(
+			&user.UserID,
+			&user.Username,
+			&user.Hash,
+			&user.Salt,
+			&user.IsAdministrator,
+			&user.CreatedAt,
+		)
 		if err != nil {
 			panic(err)
-		}
-
-		user := models.User{
-			UserID:          userID,
-			Username:        username,
-			Salt:            salt,
-			Hash:            hash,
-			IsAdministrator: isAdmin,
-			CreatedAt:       createdAt,
 		}
 
 		users = append(users, user)

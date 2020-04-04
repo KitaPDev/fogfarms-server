@@ -16,25 +16,18 @@ func GetPlant(plantID string) *models.Plant {
 	}
 	defer log.Fatal(rows.Close())
 
-	var plant *models.Plant
+	plant := &models.Plant{}
 	for rows.Next() {
-		var id string
-		var name string
-		var tds float32
-		var ph float32
-		var lux float32
 
-		err := rows.Scan(&id, &name, &tds, &ph, &lux)
+		err := rows.Scan(
+			&plant.PlantID,
+			&plant.Name,
+			&plant.TDS,
+			&plant.PH,
+			&plant.Lux,
+		)
 		if err != nil {
 			panic(err)
-		}
-
-		plant = &models.Plant{
-			PlantID: id,
-			Name:    name,
-			TDS:     tds,
-			PH:      ph,
-			Lux:     lux,
 		}
 	}
 	return plant
@@ -51,23 +44,17 @@ func GetAllPlants() []models.Plant {
 
 	var plants []models.Plant
 	for rows.Next() {
-		var id string
-		var name string
-		var tds float32
-		var ph float32
-		var lux float32
+		plant := &models.Plant{}
 
-		err := rows.Scan(&id, &name, &tds, &ph, &lux)
+		err := rows.Scan(
+			&plant.PlantID,
+			&plant.Name,
+			&plant.TDS,
+			&plant.PH,
+			&plant.Lux,
+		)
 		if err != nil {
 			panic(err)
-		}
-
-		plant := models.Plant{
-			PlantID: id,
-			Name:    name,
-			TDS:     tds,
-			PH:      ph,
-			Lux:     lux,
 		}
 
 		plants = append(plants, plant)

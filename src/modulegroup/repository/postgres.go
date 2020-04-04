@@ -19,32 +19,23 @@ func GetAllModuleGroups() []models.ModuleGroup {
 
 	var moduleGroups []models.ModuleGroup
 	for rows.Next() {
-		var id string
-		var label string
-		var plantID string
-		var tds float32
-		var ph float32
-		var humidity float32
-		var lightsOn float32
-		var lightsOff float32
+		moduleGroup := models.ModuleGroup{}
 
-		err := rows.Scan(&id, &label, &plantID, &tds, &ph, &humidity, &lightsOn, &lightsOff)
+		err := rows.Scan(
+			&moduleGroup.ModuleGroupID,
+			&moduleGroup.ModuleGroupLabel,
+			&moduleGroup.PlantID,
+			&moduleGroup.TDS,
+			&moduleGroup.PH,
+			&moduleGroup.Humidity,
+			&moduleGroup.LightsOn,
+			&moduleGroup.LightsOff,
+		)
 		if err != nil {
 			panic(err)
 		}
 
-		mg := models.ModuleGroup{
-			ModuleGroupID:    id,
-			ModuleGroupLabel: label,
-			PlantID:          plantID,
-			TDS:              tds,
-			PH:               ph,
-			Humidity:         humidity,
-			LightsOn:         lightsOn,
-			LightsOff:        lightsOff,
-		}
-
-		moduleGroups = append(moduleGroups, mg)
+		moduleGroups = append(moduleGroups, moduleGroup)
 	}
 
 	return moduleGroups
@@ -59,33 +50,24 @@ func GetModuleGroup(moduleGroupID string) *models.ModuleGroup {
 	}
 	defer log.Fatal(rows.Close())
 
-	var moduleGroup *models.ModuleGroup
+	moduleGroup := &models.ModuleGroup{}
 	for rows.Next() {
-		var id string
-		var label string
-		var plantID string
-		var tds float32
-		var ph float32
-		var humidity float32
-		var lightsOn float32
-		var lightsOff float32
 
-		err := rows.Scan(&id, &label, &plantID, &tds, &ph, &humidity, &lightsOn, &lightsOff)
+		err := rows.Scan(
+			&moduleGroup.ModuleGroupID,
+			&moduleGroup.ModuleGroupLabel,
+			&moduleGroup.PlantID,
+			&moduleGroup.TDS,
+			&moduleGroup.PH,
+			&moduleGroup.Humidity,
+			&moduleGroup.LightsOn,
+			&moduleGroup.LightsOff,
+		)
 		if err != nil {
 			panic(err)
 		}
-
-		moduleGroup = &models.ModuleGroup{
-			ModuleGroupID:    id,
-			ModuleGroupLabel: label,
-			PlantID:          plantID,
-			TDS:              tds,
-			PH:               ph,
-			Humidity:         humidity,
-			LightsOn:         lightsOn,
-			LightsOff:        lightsOff,
-		}
 	}
+
 	return moduleGroup
 }
 
