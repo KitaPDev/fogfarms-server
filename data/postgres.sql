@@ -98,7 +98,7 @@ CREATE TABLE NutrientUnit (
     FOREIGN KEY (PHUpUnitID) REFERENCES PHUpUnit (PHUpUnitID),
     FOREIGN KEY (PHDownUnitID) REFERENCES PHDownUnit (PHDownUnitID),
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID),
-    FOREIGN KEY (ModuleID) REFERENCES Modules (ModuleID),
+    FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID),
     FOREIGN KEY (NutrientID) REFERENCES Nutrient (NutrientID)
 );
 
@@ -109,7 +109,7 @@ CREATE TABLE GrowUnit (
     ModuleGroupID INT NOT NULL,
     Capacity INT,
     PRIMARY KEY (GrowUnitID),
-    FOREIGN KEY (ModuleID) REFERENCES Modules (ModuleID),
+    FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID),
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );
 
@@ -117,10 +117,10 @@ CREATE TABLE GrowUnit (
 CREATE TABLE Device (
     DeviceID SERIAL NOT NULL,
     IsOn BOOLEAN NOT NULL DEFAULT FALSE,
-    ModuleID INT) NOT NULL,
+    ModuleID INT NOT NULL,
     Label VARCHAR(256) NOT NULL,
     PRIMARY KEY (DeviceID),
-    FOREIGN KEY (ModuleID) REFERENCES Modules (ModuleID)
+    FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID)
 );
 
 -- SensorData_ModuleGroup
@@ -133,15 +133,21 @@ CREATE TABLE SensorData_ModuleGroup (
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );
 
+-- PermissionLevel
+CREATE TABLE PermissionLevel (
+    PermissionLevelID SERIAL NOT NULL,
+    PermissionLevel VARCHAR(64) NOT NULL,
+    PRIMARY KEY (PermissionLevelID)
+);
+
 -- Permission
 CREATE TABLE Permission (
     UserID INT NOT NULL,
     ModuleGroupID INT NOT NULL,
-    Supervisor BOOLEAN NOT NULL,
-    Control BOOLEAN NOT NULL,
-    Monitor BOOLEAN NOT NULL,
+    PermissionLevelID INT NOT NULL,
     PRIMARY KEY (UserID, ModuleGroupID),
     FOREIGN KEY (UserID) REFERENCES Users (UserID),
+    FOREIGN KEY (PermissionLevelID) REFERENCES PermissionLevel (PermissionLevelID),
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );
 
