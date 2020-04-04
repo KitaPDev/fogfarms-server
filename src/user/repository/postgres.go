@@ -1,8 +1,8 @@
 package repository
 
 import (
+	"database/sql"
 	"fmt"
-	"time"
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"golang.org/x/crypto/bcrypt"
@@ -37,16 +37,6 @@ func GetAllUsers() []models.User {
 	}
 
 	return users
-}
-
-func hash(password string, salt string) string {
-	s := password + salt
-	h, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.DefaultCost)
-	if err != nil {
-		panic(err)
-	}
-
-	return string(h)
 }
 
 func CreateUser(username string, password string) {
