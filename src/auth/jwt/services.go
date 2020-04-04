@@ -25,18 +25,18 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func AuthenticateUser(w http.ResponseWriter, r *http.Request) bool {
-	jwtKey := os.Getenv("SECRET_KEY_JWT")
-
+func AuthenticateUser(w http.ResponseWriter, r *http.Request) {
+	//jwtKey := os.Getenv("SECRET_KEY_JWT")
+	jwtKey := "s"
 	cookie, err := r.Cookie("jwtToken")
 	if err != nil {
 		if err == http.ErrNoCookie {
 			w.WriteHeader(http.StatusUnauthorized)
-			return false
+			return
 		}
 
 		w.WriteHeader(http.StatusBadRequest)
-		return false
+		return
 	}
 
 	tokenString := cookie.Value
@@ -44,23 +44,24 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) bool {
 
 	token, err := jwt.ParseWithClaims(tokenString, claims,
 		func(token *jwt.Token) (interface{}, error) {
-			return jwtKey, nil
+			return []byte(jwtKey), nil
 		})
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
 			w.WriteHeader(http.StatusUnauthorized)
-			return false
+			return
 		}
+		fmt.Printf("%+v", err)
 		w.WriteHeader(http.StatusBadRequest)
-		return false
+		return
 	}
 
 	if !token.Valid {
 		w.WriteHeader(http.StatusUnauthorized)
-		return false
+		return
 	}
-
-	return true
+	fmt.Print("True")
+	return
 }
 
 func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
@@ -103,14 +104,20 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func GenerateToken(username string, w http.ResponseWriter) {
-	jwtKey := os.Getenv("SECRET_KEY_JWT")
-
+	//jwtKey := os.Getenv("SECRET_KEY_JWT")
+	jwtKey := "s"
+	fmt.Printf("%+v", jwtKey)
 	expirationTime := time.Now().Add(10 * time.Minute)
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user": username,
-		"exp":  expirationTime,
-		"iat":  time.Now().Unix(),
-	})
+	claims := Claims{
+		Username: username,
+		StandardClaims: jwt.StandardClaims{
+			// In JWT, the expiry time is expressed as unix milliseconds
+			ExpiresAt: expirationTime.Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	tokenString, err := token.SignedString([]byte(jwtKey))
 	if err != nil {
@@ -118,7 +125,6 @@ func GenerateToken(username string, w http.ResponseWriter) {
 		log.Fatal(io.WriteString(w, `{"error":"token_generation_failed"`))
 		return
 	}
-
 	http.SetCookie(w, &http.Cookie{
 		Name:    "jwtToken",
 		Value:   tokenString,

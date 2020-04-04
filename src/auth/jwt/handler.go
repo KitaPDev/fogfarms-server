@@ -9,6 +9,7 @@ import (
 func MakeHTTPHandler() http.Handler {
 	router := httprouter.New()
 	router.HandlerFunc("POST", "/auth/sign_in", AuthenticateSignIn)
+	router.HandlerFunc("GET", "/auth/testAuthen", AuthenticateUser)
 	router.HandlerFunc("GET", "/auth/refresh", Refresh)
 	router.HandlerFunc("GET", "/auth/sign_out", SignOut)
 
