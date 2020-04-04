@@ -7,6 +7,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
+var db *sql.DB
+
 const (
 	DbHost = "localhost"
 	DbPort = 5432
@@ -15,13 +17,11 @@ const (
 	DbName = "fogfarms-01"
 )
 
-var db *sql.DB
-
 func GetDB() *sql.DB {
 	var err error
 
 	if db == nil {
-		connectionString := fmt.Sprintf("port=%d host=%s user=%s " +
+		connectionString := fmt.Sprintf("port=%d host=%s user=%s "+
 			"password=%s dbname=%s sslmode=disable",
 			DbPort, DbHost, DbUser, DbPass, DbName)
 
