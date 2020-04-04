@@ -31,8 +31,12 @@ func GetSupervisorModuleGroups(userID string) []models.ModuleGroup {
 
 	var moduleGroups []models.ModuleGroup
 	for rows.Next() {
-
-		//err := rows.Scan()
+		permission := models.Permission{}
+		err := rows.Scan(
+			permission.UserID,
+			permission.ModuleGroupID,
+			permission.PermissionLevel,
+		)
 
 	}
 

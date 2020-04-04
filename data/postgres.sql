@@ -133,21 +133,14 @@ CREATE TABLE SensorData_ModuleGroup (
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );
 
--- PermissionLevel
-CREATE TABLE PermissionLevel (
-    PermissionLevelID SERIAL NOT NULL,
-    PermissionLevel VARCHAR(64) NOT NULL,
-    PRIMARY KEY (PermissionLevelID)
-);
-
 -- Permission
 CREATE TABLE Permission (
+    PermissionID SERIAL NOT NULL,
     UserID INT NOT NULL,
     ModuleGroupID INT NOT NULL,
     PermissionLevelID INT NOT NULL,
-    PRIMARY KEY (UserID, ModuleGroupID),
+    PRIMARY KEY (PermissionID),
     FOREIGN KEY (UserID) REFERENCES Users (UserID),
-    FOREIGN KEY (PermissionLevelID) REFERENCES PermissionLevel (PermissionLevelID),
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );
 
