@@ -3,6 +3,7 @@ package jwt
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"github.com/KitaPDev/fogfarms-server/src/user"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/golang/gddo/httputil/header"
@@ -10,6 +11,11 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/KitaPDev/fogfarms-server/src/user"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/golang/gddo/httputil/header"
+	"github.com/labstack/gommon/log"
 )
 
 const (
@@ -43,7 +49,7 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) bool {
 	token, err := jwt.ParseWithClaims(tokenString, claims,
 		func(token *jwt.Token) (interface{}, error) {
 			return jwtKey, nil
-	})
+		})
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
 			msg := "Error: Invalid Signature"
@@ -83,6 +89,13 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 		Username string
 		Password string
 	}
+	if r.Header.Get("Content-Type") != "" {
+		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
+		if value != "application/json" {
+			msg := "Content-Type header is not application/json"
+			http.Error(w, msg, http.StatusUnsupportedMediaType)
+			return
+		}
 
 	var credentials Input
 
@@ -111,8 +124,23 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
+	err := json.NewDecoder(r.Body).Decode(&testdata)
 
-	valid := user.ValidateUser(username, password)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+	fmt.Printf("%+v", testdata)
+	username := testdata.Username
+	password := testdata.Password
+
+	// exists, _ := user.Exists(username)
+	// if !exists {
+	// 	w.WriteHeader(http.StatusUnauthorized)
+	// 	log.Fatal(io.WriteString(w, `{"error":"user_not_found"}"`))
+	// 	return
+	// }
+
+	valid := user.ValidateUserA(username, password)
 	if !valid {
 		msg := "Invalid Credentials"
 		http.Error(w, msg, http.StatusUnauthorized)
@@ -128,8 +156,8 @@ func GenerateToken(username string, w http.ResponseWriter) {
 	expirationTime := time.Now().Add(10 * time.Minute)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user": username,
-		"exp": expirationTime,
-		"iat": time.Now().Unix(),
+		"exp":  expirationTime,
+		"iat":  time.Now().Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte(jwtKey))
@@ -139,9 +167,9 @@ func GenerateToken(username string, w http.ResponseWriter) {
 		return
 	}
 
-	http.SetCookie(w, &http.Cookie {
-		Name: "jwtToken",
-		Value: tokenString,
+	http.SetCookie(w, &http.Cookie{
+		Name:    "jwtToken",
+		Value:   tokenString,
 		Expires: expirationTime,
 	})
 }
@@ -190,9 +218,9 @@ func GenerateToken(username string, w http.ResponseWriter) {
 
 func InvalidateToken(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
-		Name: "jwtToken",
-		Value: "",
-		Expires: time.Unix(0,0),
+		Name:    "jwtToken",
+		Value:   "",
+		Expires: time.Unix(0, 0),
 	})
 }
 

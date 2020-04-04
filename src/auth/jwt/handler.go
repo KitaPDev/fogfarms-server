@@ -6,6 +6,7 @@ import (
 )
 
 func MakeHTTPHandler() http.Handler {
+	router := httprouter.New()
 	router := mux.NewRouter()
 	router.HandleFunc("/auth/sign_in", SignIn).
 		Methods("GET").

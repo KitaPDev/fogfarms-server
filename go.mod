@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/golang/gddo v0.0.0-20200324184333-3c2cc9a6329d
 	github.com/gorilla/mux v1.7.4
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/kr/text v0.2.0 // indirect

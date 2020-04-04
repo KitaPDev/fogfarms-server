@@ -3,6 +3,7 @@ package user
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/user/repository"
 	"github.com/golang/gddo/httputil/header"
@@ -43,15 +44,8 @@ func Exists(username string) (bool, *models.User) {
 	return false, nil
 }
 
-func ValidateUser(username string, password string) bool {
-	if exists, user := Exists(username); exists {
-		if user.Username == username {
-			if user.Hash == hash(password, user.Salt) {
-				return true
-			}
-		}
-	}
-	return false
+func ValidateUserA(username string, password string) bool {
+	return repository.ValidateUserA(username, password)
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -86,4 +80,28 @@ func hash(password string, salt string) string {
 	}
 
 	return string(h)
+}
+
+func CreateUser(w http.ResponseWriter, r *http.Request) {
+	type Input struct {
+		Username string
+		Password string
+	}
+	var testdata Input
+	if r.Header.Get("Content-Type") != "" {
+		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
+		if value != "application/json" {
+			msg := "Content-Type header is not application/json"
+			http.Error(w, msg, http.StatusUnsupportedMediaType)
+			return
+		}
+	}
+	err := json.NewDecoder(r.Body).Decode(&testdata)
+
+	fmt.Printf("%+v", testdata)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	repository.CreateUser(testdata.Username, testdata.Password)
 }
