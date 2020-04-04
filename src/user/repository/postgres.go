@@ -39,49 +39,66 @@ func GetAllUsers() []models.User {
 	return users
 }
 
-func CreateUser(username string, password string) {
+func CreateUser(username string, password string, isAdministrator bool) {
 	db := database.GetDB()
+
+	salt := generateSalt()
+	hash := hash(password, salt)
+
 	sqlStatement := fmt.Sprintf("INSERT INTO Users (Username, IsAdministrator, Hash, Salt, CreatedAt)" +
-		"VALUES ($1, False , $2, 's', Now())\n" +
-		"RETURNING Username, Hash;")
-	Username := ""
-	Hash := ""
-	hashInset := hash(password, "s")
-	err := db.QueryRow(sqlStatement, username, hashInset).Scan(&Username, &Hash)
+		"VALUES (%s, %v, %s, %s, Now())",
+		username, isAdministrator, hash, salt)
+
+	_, err := db.Exec(sqlStatement)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(Username, "\n hash:", Hash)
 }
 
-func ValidateUserA(usernameIn string, password string) bool {
+func ValidateUser(username string, inputPassword string) bool {
 	db := database.GetDB()
-	sqlStatement := `SELECT username , hash,salt FROM users WHERE username=$1;`
-	//sqlStatement := `SELECT username , hash,salt FROM users;`
-	var username string
-	var salt string
-	var hash string
-	// Replace 3 with an ID from your database or another random
-	// value to test the no rows use case.
 
-	row := db.QueryRow(sqlStatement, usernameIn)
-	switch err := row.Scan(&username, &hash, &salt); err {
-	case sql.ErrNoRows:
-		fmt.Println("No rows were returned!")
-	case nil:
-		actualpassword := password + salt
-		fmt.Println(username, salt)
-		fmt.Printf("this works \n")
-		fmt.Printf("%+v , %+v \n", username, actualpassword)
-		if usernameIn == username && bcrypt.CompareHashAndPassword([]byte(hash), []byte(actualpassword)) == nil {
-			return true
-		}
-		return false
-	default:
+	sqlStatement := fmt.Sprintf("SELECT UserID, Username, Hash, Salt FROM Users WHERE Username = %s;",
+		username)
+
+	user := models.User{}
+
+	row, err := db.Query(sqlStatement)
+	if err != nil {
 		panic(err)
 	}
 
+	switch err := row.Scan(
+		&user.UserID,
+		&user.Username,
+		&user.Hash,
+		&user.Salt,
+		); err {
+
+		case sql.ErrNoRows:
+			fmt.Println("No Rows Returned!")
+
+		case nil:
+			password := inputPassword + user.Salt
+			fmt.Println(username, user.Salt)
+			fmt.Printf("this works \n")
+			fmt.Printf("%+v , %+v \n", username, password)
+
+			if username == username &&
+				bcrypt.CompareHashAndPassword([]byte(user.Hash), []byte(password)) == nil {
+				return true
+			}
+			return false
+
+		default:
+			panic(err)
+	}
+
 	return false
+}
+
+func generateSalt() string {
+	return string(make([]byte, 32))
 }
 
 func hash(password string, salt string) string {

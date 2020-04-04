@@ -47,8 +47,10 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	type Input struct {
 		Username string
 		Password string
+		IsAdministrator bool
 	}
-	var testdata Input
+
+	var input Input
 	if r.Header.Get("Content-Type") != "" {
 		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
 		if value != "application/json" {
@@ -57,14 +59,14 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	err := json.NewDecoder(r.Body).Decode(&testdata)
+	err := json.NewDecoder(r.Body).Decode(&input)
 
-	fmt.Printf("%+v", testdata)
+	fmt.Printf("%+v", input)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	//repository.CreateUser(testdata.Username, testdata.Password)
+	repository.CreateUser(input.Username, input.Password, input.IsAdministrator)
 }
 
 func hash(password string, salt string) string {
