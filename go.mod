@@ -3,7 +3,6 @@ module github.com/KitaPDev/fogfarms-server
 go 1.14
 
 require (
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/golang/gddo v0.0.0-20200324184333-3c2cc9a6329d

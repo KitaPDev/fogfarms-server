@@ -7,6 +7,8 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"golang.org/x/crypto/bcrypt"
 	"log"
+	"math/rand"
+	"time"
 )
 
 func GetAllUsers() []models.User {
@@ -45,14 +47,10 @@ func CreateUser(username string, password string, isAdministrator bool) {
 	salt := generateSalt()
 	hash := hash(password, salt)
 
-	sqlStatement := fmt.Sprintf("INSERT INTO Users (Username, IsAdministrator, Hash, Salt, CreatedAt)" +
-		"VALUES (%s, %v, %s, %s, Now())",
-		username, isAdministrator, hash, salt)
+	sqlStatement := `INSERT INTO Users (Username, IsAdministrator, Hash, Salt, CreatedAt) 
+		VALUES ($1, $2, $3, $4, Now());`
 
-	_, err := db.Exec(sqlStatement)
-	if err != nil {
-		panic(err)
-	}
+	db.QueryRow(sqlStatement, username, isAdministrator, hash, salt)
 }
 
 func ValidateUser(username string, inputPassword string) bool {
@@ -98,7 +96,18 @@ func ValidateUser(username string, inputPassword string) bool {
 }
 
 func generateSalt() string {
-	return string(make([]byte, 32))
+	charset := "abcdefghijklmnopqrstuvwxyz" +
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+	seededRand := rand.New(
+		rand.NewSource(time.Now().UnixNano()))
+
+	salt := make([]byte, 32)
+	for i := range salt {
+		salt[i] = charset[seededRand.Intn(len(charset))]
+	}
+
+	return string(salt)
 }
 
 func hash(password string, salt string) string {
