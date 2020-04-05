@@ -138,7 +138,7 @@ CREATE TABLE Permission (
     PermissionID SERIAL NOT NULL,
     UserID INT NOT NULL,
     ModuleGroupID INT NOT NULL,
-    PermissionLevel INT NOT NULL,
+    PermissionLevel INT NOT NULL DEFAULT 0,
     PRIMARY KEY (PermissionID),
     FOREIGN KEY (UserID) REFERENCES Users (UserID),
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
