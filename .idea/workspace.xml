@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d770124b-efb5-4882-b4d8-54ca8965e534" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/fogfarms-server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/fogfarms-server.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/src" beforeDir="false" afterPath="$PROJECT_DIR$/src/src" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/user/repository/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/repository/postgres.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/user/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/repository.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/user_management/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user_management/handler.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,6 +87,13 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GoLibraries">
+    <option name="urls">
+      <list>
+        <option value="file://$PROJECT_DIR$/src" />
+      </list>
+    </option>
+  </component>
   <component name="ProjectId" id="1Z7cCLERCjmVaMGSEz1wwqHc2kI" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -114,6 +120,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="go.vgo" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -169,6 +176,9 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
   </component>
   <component name="WindowStateProjectService">
     <state x="320" y="94" key="#GOPATH" timestamp="1584193476564">
@@ -238,6 +248,11 @@
     <state width="1398" height="303" key="GridCell.Tab.0.right/1440.-1020.1080.1920/0.0.1440.900@0.0.1440.900" timestamp="1585235444546" />
     <state width="706" height="582" key="GridCell.Tab.0.right/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586019005359" />
     <state width="1398" height="303" key="GridCell.Tab.0.right/1440.-997.1080.1897/0.0.1440.900@0.0.1440.900" timestamp="1585239286491" />
+    <state x="1489" y="-547" key="SettingsEditor" timestamp="1586078750307">
+      <screen x="1440" y="-1020" width="1080" height="1920" />
+    </state>
+    <state x="1489" y="-547" key="SettingsEditor/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586078428919" />
+    <state x="1489" y="-547" key="SettingsEditor/1440.-1020.1080.1920/0.23.1440.877@1440.-1020.1080.1920" timestamp="1586078750307" />
     <state width="607" height="445" key="SwitcherDM" timestamp="1586010678572">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
@@ -251,10 +266,10 @@
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
     <state x="1540" y="-920" width="880" height="1720" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog/1440.-1020.1080.1920/0.23.1440.812@1440.-1020.1080.1920" timestamp="1586009946903" />
-    <state x="1785" y="-136" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586016550791">
+    <state x="1785" y="-136" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586080559365">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
-    <state x="1785" y="-136" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586016550791" />
+    <state x="1785" y="-136" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586080559365" />
     <state x="1660" y="-425" width="639" height="729" key="find.popup" timestamp="1585843651972">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
