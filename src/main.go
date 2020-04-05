@@ -41,7 +41,8 @@ func getPort() string {
 	var port = os.Getenv("PORT")
 	if port == "" {
 		port = "9090"
-		fmt.Println("No Port In Heroku" + port)
 	}
+
+	fmt.Println("Server is running on port: " + port)
 	return ":" + port
 }
