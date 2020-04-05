@@ -5,7 +5,7 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/permission/repository"
 )
 
-func AssignUserToModuleGroup(username string, moduleGroupID string, permissionLevel int) {
+func AssignUserToModuleGroup(username string, moduleGroupID int, permissionLevel int) {
 	repository.AssignUserToModuleGroup(username, moduleGroupID, permissionLevel)
 }
 

@@ -28,8 +28,8 @@ func GetAllModuleGroups() []models.ModuleGroup {
 			&moduleGroup.TDS,
 			&moduleGroup.PH,
 			&moduleGroup.Humidity,
-			&moduleGroup.LightsOn,
-			&moduleGroup.LightsOff,
+			&moduleGroup.LightsOnTime,
+			&moduleGroup.LightsOffTime,
 		)
 		if err != nil {
 			panic(err)
@@ -60,8 +60,8 @@ func GetModuleGroup(moduleGroupID string) *models.ModuleGroup {
 			&moduleGroup.TDS,
 			&moduleGroup.PH,
 			&moduleGroup.Humidity,
-			&moduleGroup.LightsOn,
-			&moduleGroup.LightsOff,
+			&moduleGroup.LightsOnTime,
+			&moduleGroup.LightsOffTime,
 		)
 		if err != nil {
 			panic(err)
