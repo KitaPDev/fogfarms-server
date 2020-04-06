@@ -22,17 +22,28 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u := user.GetUserByUsernameFromRequest(w, r)
+	u, err := user.GetUserByUsernameFromRequest(w, r)
+	if err != nil {
+		msg := "Failed to GetUserByUsernameFromRequest"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Fatal(err)
+		return
+	}
 
-	var users []models.User
+	users, err := user.GetAllUsers()
+	if err != nil {
+		msg := "Failed to GetAllUsers"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Fatal(err)
+		return
+	}
+
 	var moduleGroups []models.ModuleGroup
 
 	if u.IsAdministrator {
-		users = user.GetAllUsers()
 		moduleGroups = modulegroup.GetAllModuleGroups()
 
 	} else {
-		users = user.GetAllUsers()
 		moduleGroups = permission.GetSupervisorModuleGroups(u)
 	}
 
@@ -46,7 +57,13 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		moduleGroupIDs = append(moduleGroupIDs, mg.ModuleGroupID)
 	}
 
-	userModuleGroupPermission := permission.GetUserModuleGroupPermissions(userIDs, moduleGroupIDs)
+	userModuleGroupPermission, err := permission.GetUserModuleGroupPermissions(userIDs, moduleGroupIDs)
+	if err != nil {
+		msg := "Failed to GetUserModuleGroupPermission from Permission"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Fatal(err)
+		return
+	}
 
 	dataJson, err := json.Marshal(userModuleGroupPermission)
 	if err != nil {

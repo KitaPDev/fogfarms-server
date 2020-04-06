@@ -22,12 +22,12 @@ func MakeHTTPHandler() http.Handler {
 	return router
 }
 
-func getAllPlants(w http.ResponseWriter, r *http.Request) {
-	GetAllPlants()
+func getAllPlants(w http.ResponseWriter) {
+	GetAllPlants(w)
 }
 
 func newPlant(w http.ResponseWriter, r *http.Request) {
-
+	NewPlant(w, r)
 }
 
 func deletePlant(w http.ResponseWriter, r *http.Request) {

@@ -11,12 +11,12 @@ import (
 	"time"
 )
 
-func GetAllUsers() []models.User {
+func GetAllUsers() ([]models.User, error) {
 	db := database.GetDB()
 
 	rows, err := db.Query("SELECT * FROM Users;")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer log.Fatal(rows.Close())
 
@@ -32,13 +32,69 @@ func GetAllUsers() []models.User {
 			&user.CreatedAt,
 		)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		users = append(users, user)
 	}
 
-	return users
+	return users, nil
+}
+
+func GetUserByUsername(username string) (*models.User, error) {
+	db := database.GetDB()
+
+	rows, err := db.Query("SELECT * FROM Users WHERE Username = ?;", username)
+	if err != nil {
+		return nil, err
+	}
+	defer log.Fatal(rows.Close())
+
+	var user models.User
+	for rows.Next() {
+		err := rows.Scan(
+			&user.UserID,
+			&user.Username,
+			&user.Hash,
+			&user.Salt,
+			&user.IsAdministrator,
+			&user.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+	}
+
+	return &user, nil
+}
+
+func GetUserByID(userID int) (*models.User, error) {
+	db := database.GetDB()
+
+	rows, err := db.Query("SELECT * FROM Users WHERE UserID = ?;", userID)
+	if err != nil {
+		return nil, err
+	}
+	defer log.Fatal(rows.Close())
+
+	var user models.User
+	for rows.Next() {
+		err := rows.Scan(
+			&user.UserID,
+			&user.Username,
+			&user.Hash,
+			&user.Salt,
+			&user.IsAdministrator,
+			&user.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+	}
+
+	return &user, nil
 }
 
 func CreateUser(username string, password string, isAdministrator bool) {

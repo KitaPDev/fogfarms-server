@@ -7,15 +7,19 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/user"
 )
 
-func GetUserModuleGroupPermissions(userIDs []int, moduleGroupIDs []int) map[string]map[string]int {
+func GetUserModuleGroupPermissions(userIDs []int, moduleGroupIDs []int) (map[string]map[string]int, error) {
 	if len(userIDs) == 0 || len(moduleGroupIDs) == 0 {
-		return make(map[string]map[string]int)
+		return make(map[string]map[string]int), nil
 	}
 
 	userModuleGroupPermissions := make(map[string]map[string]int)
 
 	permissions := repository.GetAllPermissions()
-	users := user.GetUsersByID(userIDs)
+	users, err := user.GetUsersByID(userIDs)
+	if err != nil {
+		return make(map[string]map[string]int), err
+	}
+
 	moduleGroups := modulegroup.GetModuleGroupsByID(moduleGroupIDs)
 
 	fGetUsername := func(userID int) string {
@@ -55,7 +59,7 @@ func GetUserModuleGroupPermissions(userIDs []int, moduleGroupIDs []int) map[stri
 
 	}
 
-	return userModuleGroupPermissions
+	return userModuleGroupPermissions, nil
 }
 
 func AssignUserModuleGroupPermission(userID int, moduleGroupID int, permissionLevel int) error {

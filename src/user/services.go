@@ -10,44 +10,53 @@ import (
 	"net/http"
 )
 
-var registeredUsers []models.User
 
-func GetAllUsers() []models.User {
-	if len(registeredUsers) == 0 {
-		registeredUsers = repository.GetAllUsers()
+func GetAllUsers() ([]models.User, error) {
+	users, err := repository.GetAllUsers()
+	if err != nil {
+		return users, err
 	}
 
-	return registeredUsers
+	return users, nil
 }
 
-func GetUserByUsername(username string) *models.User {
-	if exists, user := ExistsByUsername(username); exists {
-		return user
+func GetUserByUsername(username string) (*models.User, error) {
+	user, err := repository.GetUserByUsername(username)
+	if err != nil {
+		return nil, err
 	}
 
-	return nil
+	return user, nil
 }
-func GetUserByID(userID int) *models.User {
-	if exists, user := ExistsByID(userID); exists {
-		return user
+
+func GetUserByID(userID int) (*models.User, error) {
+	user, err := repository.GetUserByID(userID)
+	if err != nil {
+		return nil, err
 	}
 
-	return nil
+	return user, nil
 }
 
-func GetUsersByID(userIDs []int) []models.User {
+func GetUsersByID(userIDs []int) ([]models.User, error) {
 	var users []models.User
 
 	for _, userID := range userIDs {
-		if exists, user := ExistsByID(userID); exists {
+
+		exists, user, err := ExistsByID(userID)
+		if err != nil {
+			return nil, err
+		}
+
+		if exists {
 			users = append(users, *user)
 		}
 	}
 
-	return users
+	return users, nil
 }
 
-func GetUserByUsernameFromRequest(w http.ResponseWriter, r *http.Request) *models.User {
+func GetUserByUsernameFromRequest(w http.ResponseWriter, r *http.Request) (*models.User, error) {
 	username := ""
 
 	if r.Header.Get("Content-Type") != "" {
@@ -55,7 +64,6 @@ func GetUserByUsernameFromRequest(w http.ResponseWriter, r *http.Request) *model
 		if value != "application/json" {
 			msg := "Content-Type header is not application/json"
 			http.Error(w, msg, http.StatusUnsupportedMediaType)
-			return nil
 		}
 	}
 	err := json.NewDecoder(r.Body).Decode(&username)
@@ -68,23 +76,20 @@ func GetUserByUsernameFromRequest(w http.ResponseWriter, r *http.Request) *model
 	return GetUserByUsername(username)
 }
 
-func ExistsByUsername(username string) (bool, *models.User) {
-	for _, user := range registeredUsers {
-		if user.Username == username {
-			return true, &user
-		}
+func ExistsByUsername(username string) (bool, *models.User, error) {
+	if user, err := GetUserByUsername(username); user != nil && err == nil {
+		return true, user, nil
+	} else {
+		return false, nil, err
 	}
-	return false, nil
 }
 
-func ExistsByID(userID int) (bool, *models.User) {
-	for _, user := range registeredUsers {
-		if user.UserID == userID {
-			return true, &user
-		}
+func ExistsByID(userID int) (bool, *models.User, error) {
+	if user, err := GetUserByID(userID); user != nil && err == nil {
+		return true, user, nil
+	} else {
+		return false, nil, err
 	}
-
-	return false, nil
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
