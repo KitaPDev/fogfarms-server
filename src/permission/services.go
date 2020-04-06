@@ -58,8 +58,8 @@ func GetUserModuleGroupPermissions(userIDs []int, moduleGroupIDs []int) map[stri
 	return userModuleGroupPermissions
 }
 
-func AssignUserToModuleGroup(username string, moduleGroupID int, permissionLevel int) {
-	repository.AssignUserToModuleGroup(username, moduleGroupID, permissionLevel)
+func AssignUserModuleGroupPermission(userID int, moduleGroupID int, permissionLevel int) error {
+	return repository.AssignUserModuleGroupPermission(userID, moduleGroupID, permissionLevel)
 }
 
 func GetSupervisorModuleGroups(user *models.User) []models.ModuleGroup {

@@ -3,7 +3,6 @@ package repository
 import (
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
-	"github.com/KitaPDev/fogfarms-server/src/user"
 	"github.com/jmoiron/sqlx"
 	"log"
 )
@@ -38,17 +37,29 @@ func GetAllPermissions() []models.Permission {
 	return permissions
 }
 
-func AssignUserToModuleGroup(username string, moduleGroupID int, level int) {
+func AssignUserModuleGroupPermission(userID int, moduleGroupID int, level int) error {
 	db := database.GetDB()
-	u := user.GetUserByUsername(username)
 
-	sqlStatement := `INSERT INTO Permission (PermissionLevel, UserID, ModuleGroupID)
-		VALUES ($1, $2, $3)`
+	sqlStatement :=
+		`DO $$
+			BEGIN
+				IF (SELECT COUNT(*) FROM Permission WHERE UserID = $2 AND ModuleGroupID = $3) > 0 THEN
+					UPDATE Permission
+				    SET PermissionLevel = $1
+				    WHERE
+				    	UserID = $2 AND ModuleGroupID = $3;
+				ELSE
+					INSERT INTO Permission (PermissionLevel, UserID, ModuleGroupID)
+					VALUES ($1, $2, $3);
+			END IF;
+		END $$;`
 
-	_, err := db.Query(sqlStatement, level, u.UserID, moduleGroupID)
+	_, err := db.Query(sqlStatement, level, userID, moduleGroupID)
 	if err != nil {
-		panic(err)
+		return err
 	}
+
+	return nil
 }
 
 func GetSupervisorModuleGroups(userID int) []models.ModuleGroup {

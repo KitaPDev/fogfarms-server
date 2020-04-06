@@ -7,22 +7,10 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/modulegroup"
 	"github.com/KitaPDev/fogfarms-server/src/permission"
 	"github.com/KitaPDev/fogfarms-server/src/user"
-	"github.com/KitaPDev/fogfarms-server/src/user/repository"
+	"github.com/golang/gddo/httputil/header"
 	"log"
 	"net/http"
 )
-
-func GetAllUsers(w http.ResponseWriter, r *http.Request) {
-	users := repository.GetAllUsers()
-
-	userJson, err := json.Marshal(users)
-	if err != nil {
-		panic(err)
-	}
-
-	w.WriteHeader(http.StatusOK)
-	log.Fatal(w.Write(userJson))
-}
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	user.CreateUser(w, r)
@@ -35,11 +23,6 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	u := user.GetUserByUsernameFromRequest(w, r)
-
-	type moduleGroupPermission struct {
-		moduleGroupLabel string
-		permissionLevel int
-	}
 
 	var users []models.User
 	var moduleGroups []models.ModuleGroup
@@ -80,5 +63,16 @@ func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	
+	if r.Header.Get("Content-Type") != "" {
+		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
+		if value != "application/json" {
+			msg := "Content-Type header is not application/json"
+			http.Error(w, msg, http.StatusUnsupportedMediaType)
+			return
+		}
+	}
+	err := json.NewDecoder(r.Body).Decode(&username)
+	if err != nil {
+		panic(err)
+	}
 }

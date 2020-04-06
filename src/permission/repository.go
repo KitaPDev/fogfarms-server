@@ -4,6 +4,6 @@ import "github.com/KitaPDev/fogfarms-server/models"
 
 type Repository interface {
 	GetAllPermissions () []models.Permission
-	AssignUserToModuleGroup(username string, moduleGroupID string, permissionLevel int)
+	AssignUserToModuleGroup(userID int, moduleGroupID int, permissionLevel int)
 	GetSupervisorModuleGroups(userID int) []models.ModuleGroup
 }
