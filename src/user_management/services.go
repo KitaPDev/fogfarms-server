@@ -50,7 +50,10 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 
 	dataJson, err := json.Marshal(userModuleGroupPermission)
 	if err != nil {
-		panic(err)
+		msg := "Failed to Marshal userModuleGroupPermission to JSON"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Fatal(err)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -81,12 +84,17 @@ func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 	}
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		panic(err)
+		msg := "Failed to Decode JSON"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Fatal(err)
+		return
 	}
 
 	err = permission.AssignUserModuleGroupPermission(input.UserID, input.ModuleGroupID, input.PermissionLevel)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		msg := "Failed to Assign ModuleGroup Permission to User"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Fatal(err)
 		return
 	}
 

@@ -6,6 +6,7 @@ import (
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/user/repository"
 	"github.com/golang/gddo/httputil/header"
+	"log"
 	"net/http"
 )
 
@@ -59,7 +60,9 @@ func GetUserByUsernameFromRequest(w http.ResponseWriter, r *http.Request) *model
 	}
 	err := json.NewDecoder(r.Body).Decode(&username)
 	if err != nil {
-		panic(err)
+		msg := "Failed to Decode JSON"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Fatal(err)
 	}
 
 	return GetUserByUsername(username)
@@ -105,6 +108,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("%+v", input)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Fatal(err)
 	}
 
 	repository.CreateUser(input.Username, input.Password, input.IsAdministrator)

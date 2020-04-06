@@ -7,12 +7,12 @@ import (
 	"log"
 )
 
-func GetPlant(plantID int) *models.Plant {
+func GetPlant(plantID int) (*models.Plant, error) {
 	db := database.GetDB()
 
 	rows, err := db.Query("SELECT * FROM Plant WHERE PlantID = ?", plantID)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer log.Fatal(rows.Close())
 
@@ -27,18 +27,18 @@ func GetPlant(plantID int) *models.Plant {
 			&plant.Lux,
 		)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 	}
-	return plant
+	return plant, nil
 }
 
-func GetAllPlants() []models.Plant {
+func GetAllPlants() ([]models.Plant, error) {
 	db := database.GetDB()
 
 	rows, err := db.Query("SELECT * FROM Plant")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer log.Fatal(rows.Close())
 
@@ -54,12 +54,12 @@ func GetAllPlants() []models.Plant {
 			&plant.Lux,
 		)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		plants = append(plants, plant)
 	}
-	return plants
+	return plants, nil
 }
 
 func NewPlant(name string, tds float32, ph float32, lux float32) {
