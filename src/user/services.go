@@ -86,9 +86,9 @@ func ExistsByID(userID int) (bool, *models.User) {
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	type Input struct {
-		Username string
-		Password string
-		IsAdministrator bool
+		Username        string `json:"username"`
+		Password        string `json:"password"`
+		IsAdministrator bool   `json:"is_administrator"`
 	}
 
 	var input Input

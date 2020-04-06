@@ -3,13 +3,13 @@ package jwt
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/KitaPDev/fogfarms-server/src/user"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/golang/gddo/httputil/header"
 	"net/http"
 	"os"
 	"strings"
 	"time"
-	"github.com/KitaPDev/fogfarms-server/src/user"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/golang/gddo/httputil/header"
 )
 
 const (
@@ -80,8 +80,8 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) bool {
 
 func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 	type Input struct {
-		Username string
-		Password string
+		Username string `json:"username"`
+		Password string `json:"password"`
 	}
 	if r.Header.Get("Content-Type") != "" {
 		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")

@@ -43,7 +43,7 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 
 	var moduleGroupIDs []int
 	for _, mg := range moduleGroups {
-		moduleGroupIDs = append (moduleGroupIDs, mg.ModuleGroupID)
+		moduleGroupIDs = append(moduleGroupIDs, mg.ModuleGroupID)
 	}
 
 	userModuleGroupPermission := permission.GetUserModuleGroupPermissions(userIDs, moduleGroupIDs)
@@ -53,7 +53,7 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	w.Header().Set("Content-Type","application/json")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	log.Fatal(w.Write(dataJson))
 }
@@ -63,6 +63,14 @@ func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	type Input struct {
+		UserID          int `json:"user_id"`
+		ModuleGroupID   int `json:"module_group_id"`
+		PermissionLevel int `json:"permission_level"`
+	}
+
+	var input *Input
+
 	if r.Header.Get("Content-Type") != "" {
 		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
 		if value != "application/json" {
@@ -71,8 +79,17 @@ func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	err := json.NewDecoder(r.Body).Decode(&username)
+	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		panic(err)
 	}
+
+	err = permission.AssignUserModuleGroupPermission(input.UserID, input.ModuleGroupID, input.PermissionLevel)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	return
 }
