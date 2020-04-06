@@ -114,8 +114,8 @@ func GetSupervisorModuleGroups(userID int) []models.ModuleGroup {
 			moduleGroup.TDS,
 			moduleGroup.PH,
 			moduleGroup.Humidity,
-			moduleGroup.LightsOnTime,
-			moduleGroup.LightsOffTime,
+			moduleGroup.LightsOnHour,
+			moduleGroup.LightsOffHour,
 		)
 		if err != nil {
 			panic(err)

@@ -7,6 +7,8 @@ CREATE TABLE Plant (
     TDS FLOAT NOT NULL,
     PH FLOAT NOT NULL,
     Lux FLOAT NOT NULL,
+    LightsOnHour FLOAT NOT NULL,
+    LightsOffHour FLOAT NOT NULL,
     PRIMARY KEY (PlantID)
 );
 
@@ -57,8 +59,8 @@ CREATE TABLE ModuleGroup (
     Param_PH FLOAT NOT NULL,
     Param_Humidity FLOAT NOT NULL,
     OnAuto BOOLEAN NOT NULL,
-    LightsOnTime time NOT NULL,
-    LightsOffTime time NOT NULL,
+    LightsOnHour FLOAT NOT NULL,
+    LightsOffHour FLOAT NOT NULL,
     PRIMARY KEY (ModuleGroupID),
     FOREIGN KEY (PlantID) REFERENCES Plant (PlantID),
     FOREIGN KEY (LocationID) REFERENCES Location (LocationID)

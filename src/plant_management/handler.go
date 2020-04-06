@@ -22,14 +22,17 @@ func MakeHTTPHandler() http.Handler {
 	return router
 }
 
+// todo ddfsd test
 func getAllPlants(w http.ResponseWriter) {
 	GetAllPlants(w)
 }
 
+// todo ddfsd test
 func newPlant(w http.ResponseWriter, r *http.Request) {
 	NewPlant(w, r)
 }
 
+// todo ddfsd test
 func deletePlant(w http.ResponseWriter, r *http.Request) {
-
+	DeletePlant(w, r)
 }

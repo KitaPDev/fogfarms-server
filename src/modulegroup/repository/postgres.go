@@ -28,8 +28,8 @@ func GetAllModuleGroups() []models.ModuleGroup {
 			&moduleGroup.TDS,
 			&moduleGroup.PH,
 			&moduleGroup.Humidity,
-			&moduleGroup.LightsOnTime,
-			&moduleGroup.LightsOffTime,
+			&moduleGroup.LightsOnHour,
+			&moduleGroup.LightsOffHour,
 		)
 		if err != nil {
 			panic(err)
@@ -60,8 +60,8 @@ func GetModuleGroupByID(moduleGroupID int) *models.ModuleGroup {
 			&moduleGroup.TDS,
 			&moduleGroup.PH,
 			&moduleGroup.Humidity,
-			&moduleGroup.LightsOnTime,
-			&moduleGroup.LightsOffTime,
+			&moduleGroup.LightsOnHour,
+			&moduleGroup.LightsOffHour,
 		)
 		if err != nil {
 			panic(err)
@@ -91,8 +91,8 @@ func GetModuleGroupsByID(moduleGroupIDs []int) []models.ModuleGroup {
 			&moduleGroup.TDS,
 			&moduleGroup.PH,
 			&moduleGroup.Humidity,
-			&moduleGroup.LightsOnTime,
-			&moduleGroup.LightsOffTime,
+			&moduleGroup.LightsOnHour,
+			&moduleGroup.LightsOffHour,
 		)
 		if err != nil {
 			panic(err)
@@ -111,7 +111,7 @@ func NewModuleGroup(label string, plantID int, locationID int, humidity float32,
 	p := plant.GetPlant(plantID)
 
 	sqlStatement := `INSERT INTO ModuleGroup (ModuleGroupLabel, PlantID, LocationID,
-                         Param_TDS, Param_Ph, Param_Humidity, LightsOnTime, LightsOffTime)
+                         Param_TDS, Param_Ph, Param_Humidity, LightsOnHour, LightsOffHour)
                          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
 	_, err := db.Query(sqlStatement, label, plantID, locationID, p.TDS, p.PH, humidity, lightsOn, lightsOff)
 	if err != nil {

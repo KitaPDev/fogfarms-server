@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"log"
@@ -62,13 +61,24 @@ func GetAllPlants() ([]models.Plant, error) {
 	return plants, nil
 }
 
-func NewPlant(name string, tds float32, ph float32, lux float32) {
+func NewPlant(name string, tds float32, ph float32, lux float32, lightsOnHour float32,
+	lightsOffHour float32) error {
 	db := database.GetDB()
 
-	sqlStatement := fmt.Sprintf("INSERT INTO Plant (Name, TDS, PH, Lux)" +
-		"VALUES (%s, %g, %g, %g)", name, tds, ph, lux)
-	_, err := db.Exec(sqlStatement)
+	sqlStatement := `INSERT INTO Plant (Name, TDS, PH, Lux, LightsOnHour, LightsOffHour)
+		VALUES ($1, $2, $3, $4, $5, $6)`
+	_, err := db.Query(sqlStatement, name, tds, ph, lux, lightsOnHour, lightsOffHour)
 	if err != nil {
-		panic(err)
+		return err
+	}
+}
+
+func DeletePlant(plantID int) error {
+	db := database.GetDB()
+
+	sqlStatement := `DELETE FROM Plant WHERE PlantID = $1`
+	_, err := db.Query(sqlStatement, plantID)
+	if err != nil {
+		return err
 	}
 }
