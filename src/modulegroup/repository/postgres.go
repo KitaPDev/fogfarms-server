@@ -6,6 +6,7 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/KitaPDev/fogfarms-server/src/plant"
 	"github.com/labstack/gommon/log"
+	"time"
 )
 
 func GetAllModuleGroups() []models.ModuleGroup {
@@ -41,7 +42,7 @@ func GetAllModuleGroups() []models.ModuleGroup {
 	return moduleGroups
 }
 
-func GetModuleGroup(moduleGroupID string) *models.ModuleGroup {
+func GetModuleGroup(moduleGroupID int) *models.ModuleGroup {
 	db := database.GetDB()
 
 	rows, err := db.Query("SELECT * FROM ModuleGroup WHERE ModuleGroupID = ?;", moduleGroupID)
@@ -71,40 +72,45 @@ func GetModuleGroup(moduleGroupID string) *models.ModuleGroup {
 	return moduleGroup
 }
 
-func NewModuleGroup(label string, plantID string, humidity float32, lightsOn float32,
+func GetModuleGroupsByID(moduleGroupIDs []int) []models.ModuleGroup {
+
+}
+
+func NewModuleGroup(label string, plantID int, locationID int, humidity float32, lightsOn float32,
 	lightsOff float32) {
 	db := database.GetDB()
 
 	plant := plant.GetPlant(plantID)
 
-	sqlStatement := fmt.Sprintf("INSERT INTO ModuleGroup (ModuleGrouplabel, PlantID, "+
-		"TDS, PH, Humidity, LightsOn, LightsOff) VALUES (%s, %s, %g, %g, %g, %g, %g)",
-		label, plantID, plant.TDS, plant.PH, humidity, lightsOn, lightsOff)
-	_, err := db.Exec(sqlStatement)
+	sqlStatement := `INSERT INTO ModuleGroup (ModuleGroupLabel, PlantID, LocationID,
+                         Param_TDS, Param_Ph, Param_Humidity, LightsOnTime, LightsOffTime)
+                         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+	_, err := db.Query(sqlStatement, label, plantID, locationID, plant.TDS, plant.PH, humidity, lightsOn, lightsOff)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func SetManualOperation(moduleGroupID string, toManual bool) {
+func SetManualOperation(moduleGroupID int, toManual bool) {
 	db := database.GetDB()
 
-	sqlStatement := fmt.Sprintf("UPDATE ModuleGroup SET OnAuto = %t " +
-		"WHERE ModuleGroupID = %s", toManual, moduleGroupID)
-	_, err := db.Exec(sqlStatement)
+	sqlStatement := `UPDATE ModuleGroup SET OnAuto = $1
+		WHERE ModuleGroupID = $2`
+	_, err := db.Query(sqlStatement, toManual, moduleGroupID)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func SetEnvironmentParameters(moduleGroupID string, humidity float32, ph float32, tds float32,
-	lightsOn float32, lightsOff float32) {
+func SetEnvironmentParameters(moduleGroupID int, humidity float32, ph float32, tds float32,
+	lightsOn time.Time, lightsOff time.Time) {
 	db := database.GetDB()
 
-	sqlStatement := fmt.Sprintf("UPDATE ModuleGroup" +
-		"SET Humidity = %g, PH = %g, TDS = %g, LightsOn = %g, LightsOff = %g" +
-		"WHERE ModuleGroupID = %s", humidity, ph, tds, lightsOn, lightsOff, moduleGroupID)
-	_, err := db.Exec(sqlStatement)
+	sqlStatement := `UPDATE ModuleGroup	
+						SET param_humidity = $1, param_ph = $2, param_tds = $3, lightsofftime = $4, 
+						    lightsontime = $5
+						WHERE ModuleGroupID = $6`
+	_, err := db.Query(sqlStatement, humidity, ph, tds, lightsOff, lightsOn, moduleGroupID)
 	if err != nil {
 		panic(err)
 	}

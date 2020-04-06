@@ -7,7 +7,7 @@ import (
 type Role string
 
 type User struct {
-	UserID          string    `json:"user_id"`
+	UserID          int    `json:"user_id"`
 	Username        string    `json:"username"`
 	Salt            string    `json:"salt"`
 	Hash            string    `json:"hash"`

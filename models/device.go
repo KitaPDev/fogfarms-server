@@ -1,7 +1,7 @@
 package models
 
 type Device struct {
-	DeviceID string `json:"device_id"`
+	DeviceID int `json:"device_id"`
 	Name     string `json:"name"`
 	Status   bool   `json:"status"`
 }

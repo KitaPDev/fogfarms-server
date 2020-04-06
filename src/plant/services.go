@@ -5,6 +5,6 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/plant/repository"
 )
 
-func GetPlant(plantID string) *models.Plant {
+func GetPlant(plantID int) *models.Plant {
 	return repository.GetPlant(plantID)
 }

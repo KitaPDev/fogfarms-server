@@ -9,7 +9,7 @@ const (
 )
 
 type Nutrient struct {
-	NutrientID string `json:"nutrient_id"`
+	NutrientID int `json:"nutrient_id"`
 	Part       Part   `json:"part"`
 	N          int    `json:"n"`
 	P          int    `json:"p"`

@@ -113,14 +113,14 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 	username := credentials.Username
 	//password := credentials.Password
 
-	exists, _ := user.Exists(username)
+	exists, _ := user.ExistsByUsername(username)
 	if !exists {
 		msg := "Error: User Not Found"
 		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
-	// exists, _ := user.Exists(username)
+	// exists, _ := user.ExistsByUsername(username)
 	// if !exists {
 	// 	w.WriteHeader(http.StatusUnauthorized)
 	// 	log.Fatal(io.WriteString(w, `{"error":"user_not_found"}"`))

@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/KitaPDev/fogfarms-server/src/user"
@@ -9,13 +8,44 @@ import (
 	"log"
 )
 
+func GetAllPermissions() []models.Permission {
+	db := database.GetDB()
+
+	sqlStatement := `SELECT * FROM Permission`
+	rows, err := db.Query(sqlStatement)
+	if err != nil {
+		panic(err)
+	}
+	defer log.Fatal(rows.Close())
+
+	var permissions []models.Permission
+	for rows.Next() {
+		permission := models.Permission{}
+
+		err := rows.Scan(
+			&permission.PermissionID,
+			&permission.UserID,
+			&permission.ModuleGroupID,
+			&permission.PermissionLevel,
+		)
+		if err != nil {
+			panic(err)
+		}
+
+		permissions = append(permissions, permission)
+	}
+
+	return permissions
+}
+
 func AssignUserToModuleGroup(username string, moduleGroupID int, level int) {
 	db := database.GetDB()
-	u := user.GetUser(username)
+	u := user.GetUserByUsername(username)
 
-	sqlStatement := fmt.Sprintf("INSERT INTO Permission (PermissionLevel, UserID, ModuleGroupID)" +
-		"VALUES (%d, %d, %d)", level, u.UserID, moduleGroupID)
-	_, err := db.Exec(sqlStatement)
+	sqlStatement := `INSERT INTO Permission (PermissionLevel, UserID, ModuleGroupID)
+		VALUES ($1, $2, $3)`
+
+	_, err := db.Query(sqlStatement, level, u.UserID, moduleGroupID)
 	if err != nil {
 		panic(err)
 	}
@@ -36,8 +66,8 @@ func GetSupervisorModuleGroups(userID int) []models.ModuleGroup {
 		var permissionLevel int
 
 		err := rows.Scan(
-			moduleGroupID,
-			permissionLevel,
+			&moduleGroupID,
+			&permissionLevel,
 		)
 		if err != nil {
 			panic(err)
@@ -84,4 +114,4 @@ func GetSupervisorModuleGroups(userID int) []models.ModuleGroup {
 	}
 
 	return moduleGroups
-} 
+}

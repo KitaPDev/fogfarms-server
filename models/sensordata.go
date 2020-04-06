@@ -4,7 +4,7 @@ import "time"
 
 type SensorData struct {
 	TimeStamp           time.Time `json:"timestamp"`
-	ModuleID            string    `json:"module_id"`
+	ModuleID            int    `json:"module_id"`
 	TDS                 float32   `json:"tds"`
 	PH                  float32   `json:"ph"`
 	SolutionTemperature float32   `json:"soln_temp"`

@@ -1,6 +1,6 @@
 package models
 
 type Module struct {
-	ModuleID string `json:"module_id"`
+	ModuleID int `json:"module_id"`
 	Token    string `json:"token"`
 }

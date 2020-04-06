@@ -50,14 +50,15 @@ CREATE TABLE PHDownUnit (
 -- ModuleGroup
 CREATE TABLE ModuleGroup (
     ModuleGroupID SERIAL NOT NULL,
+    ModuleGroupLabel VARCHAR(64) NOT NULL,
     PlantID INT NOT NULL,
     LocationID INT NOT NULL,
     Param_TDS FLOAT NOT NULL,
     Param_PH FLOAT NOT NULL,
     Param_Humidity FLOAT NOT NULL,
     OnAuto BOOLEAN NOT NULL,
-    LightOnTime time NOT NULL,
-    LightOffTime time NOT NULL,
+    LightsOnTime time NOT NULL,
+    LightsOffTime time NOT NULL,
     PRIMARY KEY (ModuleGroupID),
     FOREIGN KEY (PlantID) REFERENCES Plant (PlantID),
     FOREIGN KEY (LocationID) REFERENCES Location (LocationID)

@@ -6,7 +6,6 @@ import (
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/user/repository"
 	"github.com/golang/gddo/httputil/header"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 )
 
@@ -20,27 +19,67 @@ func GetAllUsers() []models.User {
 	return registeredUsers
 }
 
-func GetUser(username string) *models.User {
-	if exists, user := Exists(username); exists {
+func GetUserByUsername(username string) *models.User {
+	if exists, user := ExistsByUsername(username); exists {
+		return user
+	}
+
+	return nil
+}
+func GetUserByID(userID int) *models.User {
+	if exists, user := ExistsByID(userID); exists {
 		return user
 	}
 
 	return nil
 }
 
-func GetUserFromRequest(r *http.Request) *models.User {
-	username := r.Form.Get("username")
+func GetUsersByID(userIDs []int) []models.User {
+	var users []models.User
 
-	return GetUser(username)
+	for _, userID := range userIDs {
+		if exists, user := ExistsByID(userID); exists {
+			users = append(users, *user)
+		}
+	}
 }
 
-func Exists(username string) (bool, *models.User) {
+func GetUserFromRequest(w http.ResponseWriter, r *http.Request) *models.User {
+	username := ""
+
+	if r.Header.Get("Content-Type") != "" {
+		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
+		if value != "application/json" {
+			msg := "Content-Type header is not application/json"
+			http.Error(w, msg, http.StatusUnsupportedMediaType)
+			return nil
+		}
+	}
+	err := json.NewDecoder(r.Body).Decode(&username)
+	if err != nil {
+		panic(err)
+	}
+
+	return GetUserByUsername(username)
+}
+
+func ExistsByUsername(username string) (bool, *models.User) {
 	for _, user := range registeredUsers {
 		if user.Username == username {
 			return true, &user
 		}
 	}
 	return false, nil
+}
+
+func ExistsByID(userID int) (bool, *models.User) {
+	for _, user := range registeredUsers {
+		if user.UserID == userID {
+			return true, &user
+		}
+
+		return false, nil
+	}
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -67,14 +106,4 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	repository.CreateUser(input.Username, input.Password, input.IsAdministrator)
-}
-
-func hash(password string, salt string) string {
-	s := password + salt
-	h, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.DefaultCost)
-	if err != nil {
-		panic(err)
-	}
-
-	return string(h)
 }

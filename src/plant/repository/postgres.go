@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func GetPlant(plantID string) *models.Plant {
+func GetPlant(plantID int) *models.Plant {
 	db := database.GetDB()
 
 	rows, err := db.Query("SELECT * FROM Plant WHERE PlantID = ?", plantID)
