@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/KitaPDev/fogfarms-server/src/plant"
@@ -42,7 +41,7 @@ func GetAllModuleGroups() []models.ModuleGroup {
 	return moduleGroups
 }
 
-func GetModuleGroup(moduleGroupID int) *models.ModuleGroup {
+func GetModuleGroupByID(moduleGroupID int) *models.ModuleGroup {
 	db := database.GetDB()
 
 	rows, err := db.Query("SELECT * FROM ModuleGroup WHERE ModuleGroupID = ?;", moduleGroupID)
@@ -73,19 +72,48 @@ func GetModuleGroup(moduleGroupID int) *models.ModuleGroup {
 }
 
 func GetModuleGroupsByID(moduleGroupIDs []int) []models.ModuleGroup {
+	db := database.GetDB()
 
+	rows, err := db.Query("SELECT * FROM ModuleGroup WHERE ModuleGroupID IN (?);", moduleGroupIDs)
+	if err != nil {
+		panic(err)
+	}
+	defer log.Fatal(rows.Close())
+
+	var moduleGroups []models.ModuleGroup
+	for rows.Next() {
+		moduleGroup := models.ModuleGroup{}
+
+		err := rows.Scan(
+			&moduleGroup.ModuleGroupID,
+			&moduleGroup.ModuleGroupLabel,
+			&moduleGroup.PlantID,
+			&moduleGroup.TDS,
+			&moduleGroup.PH,
+			&moduleGroup.Humidity,
+			&moduleGroup.LightsOnTime,
+			&moduleGroup.LightsOffTime,
+		)
+		if err != nil {
+			panic(err)
+		}
+
+		moduleGroups = append(moduleGroups, moduleGroup)
+	}
+
+	return moduleGroups
 }
 
 func NewModuleGroup(label string, plantID int, locationID int, humidity float32, lightsOn float32,
 	lightsOff float32) {
 	db := database.GetDB()
 
-	plant := plant.GetPlant(plantID)
+	p := plant.GetPlant(plantID)
 
 	sqlStatement := `INSERT INTO ModuleGroup (ModuleGroupLabel, PlantID, LocationID,
                          Param_TDS, Param_Ph, Param_Humidity, LightsOnTime, LightsOffTime)
                          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
-	_, err := db.Query(sqlStatement, label, plantID, locationID, plant.TDS, plant.PH, humidity, lightsOn, lightsOff)
+	_, err := db.Query(sqlStatement, label, plantID, locationID, p.TDS, p.PH, humidity, lightsOn, lightsOff)
 	if err != nil {
 		panic(err)
 	}

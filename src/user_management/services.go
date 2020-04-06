@@ -1,21 +1,32 @@
 package user_management
 
 import (
+	"encoding/json"
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/modulegroup"
 	"github.com/KitaPDev/fogfarms-server/src/permission"
 	"github.com/KitaPDev/fogfarms-server/src/user"
 	"github.com/KitaPDev/fogfarms-server/src/user/repository"
+	"log"
 	"net/http"
 )
 
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
-	repository.GetAllUsers()
+	users := repository.GetAllUsers()
+
+	userJson, err := json.Marshal(users)
+	if err != nil {
+		panic(err)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	log.Fatal(w.Write(userJson))
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	user.CreateUser(w, r)
+	w.WriteHeader(http.StatusOK)
 }
 
 func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
@@ -23,7 +34,7 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u := user.GetUserFromRequest(w, r)
+	u := user.GetUserByUsernameFromRequest(w, r)
 
 	type moduleGroupPermission struct {
 		moduleGroupLabel string
@@ -52,5 +63,22 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		moduleGroupIDs = append (moduleGroupIDs, mg.ModuleGroupID)
 	}
 
+	userModuleGroupPermission := permission.GetUserModuleGroupPermissions(userIDs, moduleGroupIDs)
 
+	dataJson, err := json.Marshal(userModuleGroupPermission)
+	if err != nil {
+		panic(err)
+	}
+
+	w.Header().Set("Content-Type","application/json")
+	w.WriteHeader(http.StatusOK)
+	log.Fatal(w.Write(dataJson))
+}
+
+func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUser(w, r) {
+		return
+	}
+
+	
 }

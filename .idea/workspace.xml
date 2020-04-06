@@ -2,29 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d770124b-efb5-4882-b4d8-54ca8965e534" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/location/repository.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/location/repository/postgres.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/location/services.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/kitap.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/kitap.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/postgres.sql" beforeDir="false" afterPath="$PROJECT_DIR$/data/postgres.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/device.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/device.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/errors.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/grow_unit.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/grow_unit.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/location.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/location.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/module.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/module.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/modulegroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/modulegroup.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/nutrient.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/nutrient.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/nutrient_unit.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/nutrient_unit.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/permission.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/permission.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/plant.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/plant.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/sensordata.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/sensordata.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/auth/jwt/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth/jwt/services.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modulegroup/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/modulegroup/repository.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modulegroup/repository/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/modulegroup/repository/postgres.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modulegroup/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/modulegroup/services.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/permission/repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/permission/repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/permission/repository/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/permission/repository/postgres.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/permission/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/permission/services.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/plant/repository/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/plant/repository/postgres.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/plant/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/plant/services.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/user/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/services.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/user_management/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user_management/handler.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/user_management/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user_management/services.go" afterDir="false" />

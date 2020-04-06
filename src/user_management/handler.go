@@ -1,7 +1,6 @@
 package user_management
 
 import (
-	"github.com/KitaPDev/fogfarms-server/src/user"
 	"github.com/gorilla/mux"
 	"net/http"
 )
@@ -12,7 +11,11 @@ func MakeHTTPHandler() http.Handler {
 		Methods("GET").
 		Schemes("http")
 
-	router.HandleFunc("/user_management_register", register).
+	router.HandleFunc("/user_management/register", register).
+		Methods("POST").
+		Schemes("http")
+
+	router.HandleFunc("/user_management/assign/", assignUserModuleGroupPermission).
 		Methods("POST").
 		Schemes("http")
 
@@ -20,10 +23,14 @@ func MakeHTTPHandler() http.Handler {
 }
 
 func register(w http.ResponseWriter, r *http.Request) {
-	user.CreateUser(w, r)
+	CreateUser(w, r)
 }
 
 
 func populateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 	PopulateUserManagementPage(w, r)
+}
+
+func assignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
+	AssignUserModuleGroupPermission(w, r)
 }

@@ -12,18 +12,45 @@ func GetUserModuleGroupPermissions(userIDs []int, moduleGroupIDs []int) map[stri
 		return make(map[string]map[string]int)
 	}
 
-	permissions := repository.GetAllPermissions()
 	userModuleGroupPermissions := make(map[string]map[string]int)
+
+	permissions := repository.GetAllPermissions()
 	users := user.GetUsersByID(userIDs)
-	moduleGroups := modulegroup.GetModuleGroupsByID()
+	moduleGroups := modulegroup.GetModuleGroupsByID(moduleGroupIDs)
+
+	fGetUsername := func(userID int) string {
+		for _, uTemp := range users {
+			if uTemp.UserID == userID {
+				return uTemp.Username
+			}
+		}
+		return ""
+	}
+
+	fGetModuleGroupLabel := func(moduleGroupID int) string {
+		for _, mg := range moduleGroups {
+			if mg.ModuleGroupID == moduleGroupID {
+				return mg.ModuleGroupLabel
+			}
+		}
+		return ""
+	}
+
+	fGetPermission := func(userID int, moduleGroupID int) int {
+		for _, p := range permissions {
+			if p.UserID == userID && p.ModuleGroupID == moduleGroupID {
+				return p.PermissionLevel
+			}
+		}
+		return 0
+	}
 
 	for _, uid := range userIDs {
-		u := user.GetUserByID(uid)
-		userModuleGroupPermissions[]
+		userModuleGroupPermissions[fGetUsername(uid)] = make(map[string]int)
 
 		for mgid := range moduleGroupIDs {
-
-
+			userModuleGroupPermissions[fGetUsername(uid)][fGetModuleGroupLabel(mgid)] =
+				fGetPermission(uid, mgid)
 		}
 
 	}

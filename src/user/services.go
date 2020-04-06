@@ -42,9 +42,11 @@ func GetUsersByID(userIDs []int) []models.User {
 			users = append(users, *user)
 		}
 	}
+
+	return users
 }
 
-func GetUserFromRequest(w http.ResponseWriter, r *http.Request) *models.User {
+func GetUserByUsernameFromRequest(w http.ResponseWriter, r *http.Request) *models.User {
 	username := ""
 
 	if r.Header.Get("Content-Type") != "" {
@@ -77,9 +79,9 @@ func ExistsByID(userID int) (bool, *models.User) {
 		if user.UserID == userID {
 			return true, &user
 		}
-
-		return false, nil
 	}
+
+	return false, nil
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
