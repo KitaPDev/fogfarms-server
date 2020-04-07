@@ -2,7 +2,6 @@ package user
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/user/repository"
 	"github.com/golang/gddo/httputil/header"
@@ -37,7 +36,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
-	err := repository.CreateUser(input.Username, input.Password, input.IsAdministrator)
+	err = repository.CreateUser(input.Username, input.Password, input.IsAdministrator)
 	if err != nil {
 		msg := "Error: Failed to Create User"
 		http.Error(w, msg, http.StatusBadRequest)
