@@ -56,18 +56,7 @@ func AssignUserModuleGroupPermission(userID int, moduleGroupID int, level int) e
 			END IF;
 		END;
 	$$ LANGUAGE plpgsql;`
-		// `DO $$
-		// 	BEGIN
-		// 		IF (SELECT COUNT(*) FROM Permission WHERE UserID = $2 AND ModuleGroupID = $3) > 0 THEN
-		// 			UPDATE Permission
-		// 		    SET PermissionLevel = $1
-		// 		    WHERE
-		// 		    	UserID = $2 AND ModuleGroupID = $3;
-		// 		ELSE
-		// 			INSERT INTO Permission (PermissionLevel, UserID, ModuleGroupID)
-		// 			VALUES ($1, $2, $3);
-		// 	END IF;
-		// END $$;`
+
 	_, err1 := db.Query(sqlStatement)
 	if err1 != nil {
 		fmt.Printf("hi")
