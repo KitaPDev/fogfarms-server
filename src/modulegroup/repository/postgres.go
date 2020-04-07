@@ -16,7 +16,7 @@ func GetAllModuleGroups() ([]models.ModuleGroup, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer log.Fatal(rows.Close())
+	defer rows.Close()
 
 	var moduleGroups []models.ModuleGroup
 	for rows.Next() {
@@ -49,7 +49,7 @@ func GetModuleGroupByID(moduleGroupID int) (*models.ModuleGroup, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer log.Fatal(rows.Close())
+	defer rows.Close()
 
 	moduleGroup := &models.ModuleGroup{}
 	for rows.Next() {
@@ -79,7 +79,7 @@ func GetModuleGroupsByID(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer log.Fatal(rows.Close())
+	defer rows.Close()
 
 	var moduleGroups []models.ModuleGroup
 	for rows.Next() {

@@ -4,7 +4,6 @@ import (
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/jmoiron/sqlx"
-	"log"
 )
 
 func GetAllPermissions() []models.Permission {
@@ -15,7 +14,7 @@ func GetAllPermissions() []models.Permission {
 	if err != nil {
 		panic(err)
 	}
-	defer log.Fatal(rows.Close())
+	defer rows.Close()
 
 	var permissions []models.Permission
 	for rows.Next() {
@@ -69,7 +68,7 @@ func GetSupervisorModuleGroups(userID int) []models.ModuleGroup {
 	if err != nil {
 		panic(err)
 	}
-	defer log.Fatal(rows.Close())
+	defer rows.Close()
 
 	var supervisorModuleGroupIDs []int
 	for rows.Next() {

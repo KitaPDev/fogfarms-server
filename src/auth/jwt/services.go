@@ -59,6 +59,7 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 
 		msg := "Error: Failed to Parse Token"
 		http.Error(w, msg, http.StatusUnauthorized)
+		http.Error(w, msg, http.StatusUnauthorized)
 		log.Fatal(err)
 		return false
 	}
