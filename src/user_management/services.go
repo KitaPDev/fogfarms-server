@@ -26,17 +26,17 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 
 	u, err := user.GetUserByUsernameFromRequest(w, r)
 	if err != nil {
-		msg := "Error: user.GetUserByUsernameFromRequest"
+		msg := "Error: Failed to Get User By Username From Request"
 		http.Error(w, msg, http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 
 	users, err := user.GetAllUsers()
 	if err != nil {
-		msg := "Error: user.GetAllUsers()"
+		msg := "Error: Failed to Get All Users"
 		http.Error(w, msg, http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 
@@ -45,9 +45,9 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 	if u.IsAdministrator {
 		moduleGroups, err = modulegroup.GetAllModuleGroups()
 		if err != nil {
-			msg := "Error: moduleGroup.GetAllModuleGroups()"
+			msg := "Error: Failed to Get All Module Groups"
 			http.Error(w, msg, http.StatusInternalServerError)
-			log.Fatal(err)
+			log.Println(err)
 			return
 		}
 
@@ -67,9 +67,9 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 
 	userModuleGroupPermission, err := permission.GetUserModuleGroupPermissions(userIDs, moduleGroupIDs)
 	if err != nil {
-		msg := "Error: permission.GetUserModuleGroupPermission(userIDs, moduleGroupIDs)"
+		msg := "Error: Failed to Get User ModuleGroup Permissions"
 		http.Error(w, msg, http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 
@@ -77,13 +77,13 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		msg := "Error: json.Marshal(userModuleGroupPermission)"
 		http.Error(w, msg, http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	log.Fatal(w.Write(dataJson))
+	log.Println(w.Write(dataJson))
 }
 
 func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
@@ -109,18 +109,18 @@ func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 	}
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		msg := "Error: json.NewDecoder(r.Body).Decode(&input)"
+		msg := "Error: Failed to Decode JSON"
 		http.Error(w, msg, http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 	fmt.Printf("%+v", input)
 
 	err = permission.AssignUserModuleGroupPermission(input.UserID, input.ModuleGroupID, input.PermissionLevel)
 	if err != nil {
-		msg := "Error: permission.AssignUserModuleGroupPermission(input.UserID, input.ModuleGroupID, input.PermissionLevel)"
+		msg := "Error: Failed to Assign User ModuleGroup Permission"
 		http.Error(w, msg, http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 

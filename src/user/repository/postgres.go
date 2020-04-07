@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"math/rand"
 	"time"
 
@@ -19,7 +18,7 @@ func GetAllUsers() ([]models.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer log.Fatal(rows.Close())
+	defer rows.Close()
 
 	var users []models.User
 	for rows.Next() {
@@ -49,7 +48,8 @@ func GetUserByUsername(username string) (*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	rows.Close()
+  
+	defer rows.Close()
 
 	var user models.User
 	for rows.Next() {
@@ -77,7 +77,7 @@ func GetUserByID(userID int) (*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer log.Fatal(rows.Close())
+	defer rows.Close()
 
 	var user models.User
 	for rows.Next() {

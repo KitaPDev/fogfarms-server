@@ -83,7 +83,7 @@ CREATE TABLE SensorData (
 -- Module
 CREATE TABLE Module (
     ModuleID SERIAL NOT NULL,
-    ModuleGroupID INT NOT NULL,
+    ModuleGroupID INT NOT NULL DEFAULT 0,
     Token VARCHAR(256) NOT NULL,
     PRIMARY KEY (ModuleID),
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)

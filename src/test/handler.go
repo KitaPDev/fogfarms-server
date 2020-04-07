@@ -111,7 +111,7 @@ func GenerateToken(username string, w http.ResponseWriter) {
 	tokenString, err := token.SignedString([]byte(jwtKey))
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		log.Fatal(io.WriteString(w, `{"error":"token_generation_failed"`))
+		log.Println(io.WriteString(w, `{"error":"token_generation_failed"`))
 		return
 	}
 

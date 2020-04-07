@@ -35,7 +35,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("%+v", input)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	repository.CreateUser(input.Username, input.Password, input.IsAdministrator)
@@ -101,7 +101,7 @@ func GetUserByUsernameFromRequest(w http.ResponseWriter, r *http.Request) (*mode
 	if err != nil {
 		msg := "Failed to Decode JSON"
 		http.Error(w, msg, http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	return GetUserByUsername(username)

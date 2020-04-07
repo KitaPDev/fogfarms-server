@@ -10,7 +10,7 @@ import (
 
 func MakeHTTPHandler() http.Handler {
 	router := mux.NewRouter()
-	router.HandleFunc("/modulegroup_management", GetAllModuleGroup).
+	router.HandleFunc("/modulegroup_management", populateModuleGroupManagementPage).
 		Methods("GET").
 		Schemes("http")
 	router.HandleFunc("/modulegroup_management/test", test).
@@ -19,7 +19,7 @@ func MakeHTTPHandler() http.Handler {
 
 	return router
 }
-func test(w http.ResponseWriter, r *http.Request) {
-	v := jwt.AuthenticateUserToken(w, r)
-	fmt.Printf(("%+v"), v)
+
+func populateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
+
 }

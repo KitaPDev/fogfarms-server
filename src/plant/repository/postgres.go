@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"log"
-
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 )
@@ -14,7 +12,7 @@ func GetPlantByID(plantID int) (*models.Plant, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer log.Fatal(rows.Close())
+	defer rows.Close()
 
 	plant := &models.Plant{}
 	for rows.Next() {
