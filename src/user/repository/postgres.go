@@ -98,16 +98,21 @@ func GetUserByID(userID int) (*models.User, error) {
 	return &user, nil
 }
 
-func CreateUser(username string, password string, isAdministrator bool) {
+func CreateUser(username string, password string, isAdministrator bool) error {
 	db := database.GetDB()
 
 	salt := generateSalt()
-	hash := hash(password, salt)
+	hash, err := hash(password, salt)
+	if err != nil {
+		return err
+	}
 
 	sqlStatement := `INSERT INTO Users (Username, IsAdministrator, Hash, Salt, CreatedAt) 
 		VALUES ($1, $2, $3, $4, Now());`
 
 	db.QueryRow(sqlStatement, username, isAdministrator, hash, salt)
+
+	return nil
 }
 
 func ValidateUserByUsername(username string, inputPassword string) (bool, error) {
@@ -164,12 +169,12 @@ func generateSalt() string {
 	return string(salt)
 }
 
-func hash(password string, salt string) string {
+func hash(password string, salt string) (string, error) {
 	s := password + salt
 	h, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.DefaultCost)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
-	return string(h)
+	return string(h), nil
 }

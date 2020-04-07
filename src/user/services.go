@@ -31,14 +31,18 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	err := json.NewDecoder(r.Body).Decode(&input)
-
-	fmt.Printf("%+v", input)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		msg := "Error: Failed to Decode JSON"
+		http.Error(w, msg, http.StatusBadRequest)
 		log.Println(err)
 	}
 
-	repository.CreateUser(input.Username, input.Password, input.IsAdministrator)
+	err := repository.CreateUser(input.Username, input.Password, input.IsAdministrator)
+	if err != nil {
+		msg := "Error: Failed to Create User"
+		http.Error(w, msg, http.StatusBadRequest)
+		log.Println(err)
+	}
 }
 
 
