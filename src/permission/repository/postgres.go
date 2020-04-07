@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/jmoiron/sqlx"
@@ -40,21 +43,30 @@ func AssignUserModuleGroupPermission(userID int, moduleGroupID int, level int) e
 	db := database.GetDB()
 
 	sqlStatement :=
-		`DO $$
-			BEGIN
-				IF (SELECT COUNT(*) FROM Permission WHERE UserID = $2 AND ModuleGroupID = $3) > 0 THEN
-					UPDATE Permission
-				    SET PermissionLevel = $1
+		`CREATE OR REPLACE FUNCTION alterPermission(userIDI int, moduleGroupIDI int,levelI int)  RETURNS void
+	AS $$
+		BEGIN
+		IF (SELECT COUNT(*) FROM Permission WHERE UserID = userIDI AND ModuleGroupID = moduleGroupIDI) > 0 THEN
+					UPDATE Permission SET PermissionLevel = levelI
 				    WHERE
-				    	UserID = $2 AND ModuleGroupID = $3;
+				    	UserID = userIDI AND ModuleGroupID = moduleGroupIDI;
 				ELSE
 					INSERT INTO Permission (PermissionLevel, UserID, ModuleGroupID)
-					VALUES ($1, $2, $3);
+					VALUES (levelI, userIDI, moduleGroupIDI);
 			END IF;
-		END $$;`
+		END;
+	$$ LANGUAGE plpgsql;`
 
-	_, err := db.Query(sqlStatement, level, userID, moduleGroupID)
+	_, err1 := db.Query(sqlStatement)
+	if err1 != nil {
+		fmt.Printf("hi")
+		return err1
+	}
+	fmt.Printf("%+v", userID)
+
+	_, err := db.Query(`SELECT alterPermission($1,$2,$3)`, userID, moduleGroupID, level)
 	if err != nil {
+		fmt.Printf("hi")
 		return err
 	}
 

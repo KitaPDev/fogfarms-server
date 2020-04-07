@@ -44,10 +44,11 @@ func GetAllUsers() ([]models.User, error) {
 func GetUserByUsername(username string) (*models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM Users WHERE Username = ?;", username)
+	rows, err := db.Query("SELECT * FROM Users WHERE Username = $1;", username)
 	if err != nil {
 		return nil, err
 	}
+  
 	defer rows.Close()
 
 	var user models.User
@@ -116,10 +117,7 @@ func ValidateUserByUsername(username string, inputPassword string) (bool, error)
 
 	user := models.User{}
 
-	row, err := db.Query(sqlStatement, username)
-	if err != nil {
-		return false, err
-	}
+	row := db.QueryRow(sqlStatement, username)
 
 	switch err := row.Scan(
 		&user.UserID,
@@ -144,6 +142,7 @@ func ValidateUserByUsername(username string, inputPassword string) (bool, error)
 		return false, nil
 
 	default:
+		fmt.Printf("%+v", err)
 		return false, nil
 	}
 
