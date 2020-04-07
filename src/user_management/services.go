@@ -2,14 +2,16 @@ package user_management
 
 import (
 	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/modulegroup"
 	"github.com/KitaPDev/fogfarms-server/src/permission"
 	"github.com/KitaPDev/fogfarms-server/src/user"
 	"github.com/golang/gddo/httputil/header"
-	"log"
-	"net/http"
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -95,7 +97,7 @@ func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 		PermissionLevel int `json:"permission_level"`
 	}
 
-	var input *Input
+	var input Input
 
 	if r.Header.Get("Content-Type") != "" {
 		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
@@ -112,6 +114,7 @@ func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 		return
 	}
+	fmt.Printf("%+v", input)
 
 	err = permission.AssignUserModuleGroupPermission(input.UserID, input.ModuleGroupID, input.PermissionLevel)
 	if err != nil {

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
@@ -25,8 +24,8 @@ type Claims struct {
 }
 
 func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
-	jwtKey := os.Getenv("SECRET_KEY_JWT")
-
+	//jwtKey := os.Getenv("SECRET_KEY_JWT")
+	jwtKey := "s"
 	cookie, err := r.Cookie("jwtToken")
 	if err != nil {
 		if err == http.ErrNoCookie {
@@ -52,6 +51,7 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 		if err == jwt.ErrSignatureInvalid {
 			msg := "Error: Invalid Signature"
 			http.Error(w, msg, http.StatusUnauthorized)
+			fmt.Printf("%+v", err)
 			log.Fatal(err)
 			return false
 		}
@@ -70,8 +70,9 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 
 	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 0*time.Second {
 
-		if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
+		if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 10*time.Minute {
 			InvalidateToken(w)
+			fmt.Printf("Token exceed timeout")
 			msg := "Error: Token Exceeded Timeout Limit, Sign In Again"
 			http.Error(w, msg, http.StatusUnauthorized)
 			return false
@@ -149,12 +150,13 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func GenerateToken(username string, w http.ResponseWriter) {
-	jwtKey := os.Getenv("SECRET_KEY_JWT")
+	//jwtKey := os.Getenv("SECRET_KEY_JWT")
+	jwtKey := "s"
 	fmt.Printf("\n %+v", jwtKey)
 	expirationTime := time.Now().Add(10 * time.Minute)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user": username,
-		"exp":  expirationTime,
+		"exp":  expirationTime.Unix(),
 		"iat":  time.Now().Unix(),
 	})
 
