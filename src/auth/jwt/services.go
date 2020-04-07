@@ -11,6 +11,7 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/user"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/golang/gddo/httputil/header"
+	"github.com/gorilla/securecookie"
 )
 
 const (
@@ -23,9 +24,12 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+//var jwtKey := os.Getenv("SECRET_KEY_JWT")
+var jwtKey = "s"
+
+var secureCookie = securecookie.New([]byte(jwtKey), nil)
+
 func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
-	//jwtKey := os.Getenv("SECRET_KEY_JWT")
-	jwtKey := "s"
 	cookie, err := r.Cookie("jwtToken")
 	if err != nil {
 		if err == http.ErrNoCookie {
@@ -35,13 +39,22 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 			return false
 		}
 
-		msg := `Error: r.Cookie("jwtToken")`
+		msg := `Error: Failed to Retrieve Token from Cookie"`
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Println(err)
 		return false
 	}
 
-	tokenString := cookie.Value
+	var tokenString string
+
+	err = secureCookie.Decode("jwtToken", cookie.Value, &tokenString)
+	if err != nil {
+		msg := `Error: Failed to Decode Token Value"`
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Println(err)
+		return false
+	}
+
 	claims := &Claims{}
 
 	token, err := jwt.ParseWithClaims(tokenString, claims,
@@ -151,8 +164,6 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func GenerateToken(username string, w http.ResponseWriter) {
-	//jwtKey := os.Getenv("SECRET_KEY_JWT")
-	jwtKey := "s"
 	fmt.Printf("\n %+v", jwtKey)
 	expirationTime := time.Now().Add(10 * time.Minute)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -168,15 +179,24 @@ func GenerateToken(username string, w http.ResponseWriter) {
 		return
 	}
 
-	http.SetCookie(w, &http.Cookie{
+	encoded, err := secureCookie.Encode("jwtToken", tokenString)
+	if err != nil {
+		msg := "Error: Failed to Encode Cookie"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	cookie := &http.Cookie {
 		Name:    "jwtToken",
-		Value:   tokenString,
+		Value:   encoded,
 		Expires: expirationTime,
-	})
+	}
+	http.SetCookie(w, cookie)
 }
 
 func InvalidateToken(w http.ResponseWriter) {
-	http.SetCookie(w, &http.Cookie{
+	http.SetCookie(w, &http.Cookie {
 		Name:    "jwtToken",
 		Value:   "",
 		Expires: time.Unix(0, 0),

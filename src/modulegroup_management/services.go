@@ -1,10 +1,8 @@
 package modulegroup_management
 
 import (
-	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/modulegroup"
-	"github.com/KitaPDev/fogfarms-server/src/modulegroup/repository"
 	"github.com/KitaPDev/fogfarms-server/src/permission"
 	"github.com/KitaPDev/fogfarms-server/src/user"
 	"log"
@@ -16,7 +14,7 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := user.GetUserByUsernameFromRequest(w, r)
+	u, err := user.GetUserByUsernameFromCookie(w, r)
 	if err != nil {
 		msg := "Error: Failed to Get User By Username From Request"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -24,10 +22,8 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var moduleGroups []models.ModuleGroup
-
 	if u.IsAdministrator {
-		moduleGroups, err = modulegroup.GetAllModuleGroups()
+		_, err := modulegroup.GetAllModuleGroups()
 		if err != nil {
 			msg := "Error: Failed to Get All Module Groups"
 			http.Error(w, msg, http.StatusInternalServerError)
@@ -36,7 +32,13 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else {
-		moduleGroups = permission.GetSupervisorModuleGroups(u)
+		_, err := permission.GetAssignedModuleGroups(u)
+		if err != nil {
+			msg := "Error: Failed to Get Assigned Module Groups"
+			http.Error(w, msg, http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
 	}
 
 

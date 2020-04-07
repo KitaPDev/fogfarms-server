@@ -90,7 +90,7 @@ func GetUsersByID(userIDs []int) ([]models.User, error) {
 	return users, nil
 }
 
-func GetUserByUsernameFromRequest(w http.ResponseWriter, r *http.Request) (*models.User, error) {
+func GetUserByUsernameFromCookie(w http.ResponseWriter, r *http.Request) (*models.User, error) {
 	username := ""
 
 	if r.Header.Get("Content-Type") != "" {

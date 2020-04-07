@@ -1,20 +1,21 @@
 package repository
 
 import (
+	"database/sql"
 	"log"
 
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
-	"github.com/jmoiron/sqlx"
 )
 
-func GetAllPermissions() []models.Permission {
+func GetAllPermissions() ([]models.Permission, error) {
 	db := database.GetDB()
 
 	sqlStatement := `SELECT * FROM Permission`
 	rows, err := db.Query(sqlStatement)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -29,13 +30,14 @@ func GetAllPermissions() []models.Permission {
 			&permission.PermissionLevel,
 		)
 		if err != nil {
-			panic(err)
+			log.Println(err)
+			return nil, err
 		}
 
 		permissions = append(permissions, permission)
 	}
 
-	return permissions
+	return permissions, nil
 }
 
 func AssignUserModuleGroupPermission(userID int, moduleGroupID int, level int) error {
@@ -71,67 +73,53 @@ func AssignUserModuleGroupPermission(userID int, moduleGroupID int, level int) e
 	return nil
 }
 
-func GetSupervisorModuleGroups(userID int) []models.ModuleGroup {
+func GetAssignedModuleGroupsWithPermissionLevel(userID int, permissionLevel int) (map[models.ModuleGroup]int, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT ModuleGroupID, PermissionLevel FROM Permission WHERE UserID = ?", userID)
+	sqlStatement :=
+		`SELECT m.ModuleGroupID, m.ModuleGroupLabel, m.PlantID, m.LocationID, m.Param_TDS, m.Param_PH, m.Param_Humidity,
+       m.onAuto, m.LightsOffHour, m.LightsOnHour, p.PermissionLevel
+		FROM ModuleGroup m, Permission p 
+		WHERE p.UserID = $1 AND m.ModuleGroupID = p.ModuleGroupID`
+
+	sqlStatementPermissionLevel := ` AND p.PermissionLevel = $2`
+
+	var rows *sql.Rows
+	var err error
+	if permissionLevel != -1 {
+		rows, err = db.Query(sqlStatement + sqlStatementPermissionLevel, userID, permissionLevel)
+	} else {
+		rows, err = db.Query(sqlStatement, userID)
+	}
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer rows.Close()
 
-	var supervisorModuleGroupIDs []int
+	mapModuleGroupPermissionLevel := make(map[models.ModuleGroup]int)
 	for rows.Next() {
-		var moduleGroupID int
+		moduleGroup := models.ModuleGroup{}
 		var permissionLevel int
 
 		err := rows.Scan(
-			&moduleGroupID,
+			&moduleGroup.ModuleGroupID,
+			&moduleGroup.ModuleGroupLabel,
+			&moduleGroup.PlantID,
+			&moduleGroup.LocationID,
+			&moduleGroup.TDS,
+			&moduleGroup.PH,
+			&moduleGroup.Humidity,
+			&moduleGroup.OnAuto,
+			&moduleGroup.LightsOffHour,
+			&moduleGroup.LightsOnHour,
 			&permissionLevel,
 		)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
-		if permissionLevel == 3 {
-			supervisorModuleGroupIDs = append(supervisorModuleGroupIDs, moduleGroupID)
-		}
+		mapModuleGroupPermissionLevel[moduleGroup] = permissionLevel
 	}
 
-	query, _, err := sqlx.In("SELECT * FROM ModuleGroup WHERE ModuleGroupID IN (?)",
-		supervisorModuleGroupIDs)
-	if err != nil {
-		panic(err)
-	}
-
-	query = sqlx.Rebind(sqlx.DOLLAR, query)
-
-	rows, err = db.Query(query)
-	if err != nil {
-		panic(err)
-	}
-
-	var moduleGroups []models.ModuleGroup
-	for rows.Next() {
-		moduleGroup := models.ModuleGroup{}
-
-		err := rows.Scan(
-			moduleGroup.ModuleGroupID,
-			moduleGroup.ModuleGroupLabel,
-			moduleGroup.PlantID,
-			moduleGroup.OnAuto,
-			moduleGroup.TDS,
-			moduleGroup.PH,
-			moduleGroup.Humidity,
-			moduleGroup.LightsOnHour,
-			moduleGroup.LightsOffHour,
-		)
-		if err != nil {
-			panic(err)
-		}
-
-		moduleGroups = append(moduleGroups, moduleGroup)
-	}
-
-	return moduleGroups
+	return mapModuleGroupPermissionLevel, nil
 }

@@ -14,7 +14,11 @@ func GetUserModuleGroupPermissions(userIDs []int, moduleGroupIDs []int) (map[str
 
 	userModuleGroupPermissions := make(map[string]map[string]int)
 
-	permissions := repository.GetAllPermissions()
+	permissions, err := repository.GetAllPermissions()
+	if err != nil {
+		return make(map[string]map[string]int), err
+	}
+
 	users, err := user.GetUsersByID(userIDs)
 	if err != nil {
 		return make(map[string]map[string]int), err
@@ -69,6 +73,21 @@ func AssignUserModuleGroupPermission(userID int, moduleGroupID int, permissionLe
 	return repository.AssignUserModuleGroupPermission(userID, moduleGroupID, permissionLevel)
 }
 
-func GetSupervisorModuleGroups(user *models.User) []models.ModuleGroup {
-	return repository.GetSupervisorModuleGroups(user.UserID)
+func GetSupervisorModuleGroups(user *models.User) ([]models.ModuleGroup, error) {
+	mapModuleGroupPermissionLevels, err := repository.
+		GetAssignedModuleGroupsWithPermissionLevel(user.UserID, 3)
+	if err != nil {
+		return nil, err
+	}
+
+	moduleGroups := make([]models.ModuleGroup, 0, len(mapModuleGroupPermissionLevels))
+	for k := range mapModuleGroupPermissionLevels {
+		moduleGroups = append(moduleGroups, k)
+	}
+
+	return moduleGroups, nil
+}
+
+func GetAssignedModuleGroups(user *models.User) (map[models.ModuleGroup]int, error) {
+	return repository.GetAssignedModuleGroupsWithPermissionLevel(user.UserID, -1)
 }

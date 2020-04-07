@@ -24,7 +24,7 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := user.GetUserByUsernameFromRequest(w, r)
+	u, err := user.GetUserByUsernameFromCookie(w, r)
 	if err != nil {
 		msg := "Error: Failed to Get User By Username From Request"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -52,7 +52,13 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else {
-		moduleGroups = permission.GetSupervisorModuleGroups(u)
+		moduleGroups, err = permission.GetSupervisorModuleGroups(u)
+		if err != nil {
+			msg := "Error: Failed to Get Supervisor Module Groups"
+			http.Error(w, msg, http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
 	}
 
 	var userIDs []int
