@@ -14,7 +14,7 @@ import (
 func GetAllUsers() ([]models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM Users;")
+	rows, err := db.Query("SELECT userid, username,isadministrator,hash,salt,createdat FROM Users;")
 	if err != nil {
 		return nil, err
 	}
@@ -26,9 +26,9 @@ func GetAllUsers() ([]models.User, error) {
 		err := rows.Scan(
 			&user.UserID,
 			&user.Username,
+			&user.IsAdministrator,
 			&user.Hash,
 			&user.Salt,
-			&user.IsAdministrator,
 			&user.CreatedAt,
 		)
 		if err != nil {
@@ -44,11 +44,11 @@ func GetAllUsers() ([]models.User, error) {
 func GetUserByUsername(username string) (*models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM Users WHERE Username = $1;", username)
+	rows, err := db.Query("SELECT userid, username,isadministrator,hash,salt,createdat FROM Users WHERE Username = $1;", username)
 	if err != nil {
 		return nil, err
 	}
-  
+
 	defer rows.Close()
 
 	var user models.User
@@ -56,9 +56,9 @@ func GetUserByUsername(username string) (*models.User, error) {
 		err := rows.Scan(
 			&user.UserID,
 			&user.Username,
+			&user.IsAdministrator,
 			&user.Hash,
 			&user.Salt,
-			&user.IsAdministrator,
 			&user.CreatedAt,
 		)
 		if err != nil {
@@ -73,7 +73,7 @@ func GetUserByUsername(username string) (*models.User, error) {
 func GetUserByID(userID int) (*models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM Users WHERE UserID = ?;", userID)
+	rows, err := db.Query("SELECT userid, username,isadministrator,hash,salt,createdat FROM Users WHERE UserID = ?;", userID)
 	if err != nil {
 		return nil, err
 	}
@@ -84,9 +84,9 @@ func GetUserByID(userID int) (*models.User, error) {
 		err := rows.Scan(
 			&user.UserID,
 			&user.Username,
+			&user.IsAdministrator,
 			&user.Hash,
 			&user.Salt,
-			&user.IsAdministrator,
 			&user.CreatedAt,
 		)
 		if err != nil {
