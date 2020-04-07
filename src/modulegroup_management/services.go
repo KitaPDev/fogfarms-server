@@ -1,7 +1,6 @@
 package modulegroup_management
 
 import (
-	"fmt"
 	"github.com/KitaPDev/fogfarms-server/src/modulegroup/repository"
 	"net/http"
 )

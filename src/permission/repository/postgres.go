@@ -2,7 +2,6 @@ package repository
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"

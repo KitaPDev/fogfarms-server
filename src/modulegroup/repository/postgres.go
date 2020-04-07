@@ -119,6 +119,8 @@ func NewModuleGroup(label string, plantID int, locationID int, humidity float32,
 	if err != nil {
 		return err
 	}
+
+	return nil
 }
 
 func SetManualOperation(moduleGroupID int, toManual bool) error {
@@ -130,6 +132,8 @@ func SetManualOperation(moduleGroupID int, toManual bool) error {
 	if err != nil {
 		return err
 	}
+
+	return nil
 }
 
 func SetEnvironmentParameters(moduleGroupID int, humidity float32, ph float32, tds float32,
@@ -144,4 +148,6 @@ func SetEnvironmentParameters(moduleGroupID int, humidity float32, ph float32, t
 	if err != nil {
 		return err
 	}
+
+	return nil
 }

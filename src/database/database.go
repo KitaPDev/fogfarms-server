@@ -12,8 +12,8 @@ var db *sql.DB
 const (
 	DbHost = "localhost"
 	DbPort = 5432
-	DbUser = "postgres"
-	DbPass = "postgres"
+	DbUser = "fogfarms"
+	DbPass = "fogfarms"
 	DbName = "fogfarms-01"
 )
 

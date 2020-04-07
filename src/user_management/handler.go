@@ -33,7 +33,7 @@ func populateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 	PopulateUserManagementPage(w, r)
 }
 
-// ok but have to delete fatal
+// ok
 func assignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 	AssignUserModuleGroupPermission(w, r)
 }
