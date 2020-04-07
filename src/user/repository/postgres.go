@@ -3,18 +3,19 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-	"github.com/KitaPDev/fogfarms-server/models"
-	"github.com/KitaPDev/fogfarms-server/src/database"
-	"golang.org/x/crypto/bcrypt"
 	"log"
 	"math/rand"
 	"time"
+
+	"github.com/KitaPDev/fogfarms-server/models"
+	"github.com/KitaPDev/fogfarms-server/src/database"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetAllUsers() ([]models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM User;")
+	rows, err := db.Query("SELECT * FROM Users;")
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +45,7 @@ func GetAllUsers() ([]models.User, error) {
 func GetUserByUsername(username string) (*models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM User WHERE Username = ?;", username)
+	rows, err := db.Query("SELECT * FROM Users WHERE Username = ?;", username)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +73,7 @@ func GetUserByUsername(username string) (*models.User, error) {
 func GetUserByID(userID int) (*models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM User WHERE UserID = ?;", userID)
+	rows, err := db.Query("SELECT * FROM Users WHERE UserID = ?;", userID)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +104,7 @@ func CreateUser(username string, password string, isAdministrator bool) {
 	salt := generateSalt()
 	hash := hash(password, salt)
 
-	sqlStatement := `INSERT INTO User (Username, IsAdministrator, Hash, Salt, CreatedAt) 
+	sqlStatement := `INSERT INTO Users (Username, IsAdministrator, Hash, Salt, CreatedAt) 
 		VALUES ($1, $2, $3, $4, Now());`
 
 	db.QueryRow(sqlStatement, username, isAdministrator, hash, salt)
@@ -112,7 +113,7 @@ func CreateUser(username string, password string, isAdministrator bool) {
 func ValidateUserByUsername(username string, inputPassword string) (bool, error) {
 	db := database.GetDB()
 
-	sqlStatement := `SELECT UserID, Username, Hash, Salt FROM User WHERE Username = $1;`
+	sqlStatement := `SELECT UserID, Username, Hash, Salt FROM Users WHERE Username = $1;`
 
 	user := models.User{}
 
@@ -126,25 +127,25 @@ func ValidateUserByUsername(username string, inputPassword string) (bool, error)
 		&user.Username,
 		&user.Hash,
 		&user.Salt,
-		); err {
+	); err {
 
-		case sql.ErrNoRows:
-			fmt.Println("No Rows Returned!")
+	case sql.ErrNoRows:
+		fmt.Println("No Rows Returned!")
 
-		case nil:
-			password := inputPassword + user.Salt
-			fmt.Println(username, user.Salt)
-			fmt.Printf("this works \n")
-			fmt.Printf("%+v , %+v \n", username, password)
+	case nil:
+		password := inputPassword + user.Salt
+		fmt.Println(username, user.Salt)
+		fmt.Printf("this works \n")
+		fmt.Printf("%+v , %+v \n", username, password)
 
-			if username == username &&
-				bcrypt.CompareHashAndPassword([]byte(user.Hash), []byte(password)) == nil {
-				return true
-			}
-			return false, nil
+		if username == username &&
+			bcrypt.CompareHashAndPassword([]byte(user.Hash), []byte(password)) == nil {
+			return true, nil
+		}
+		return false, nil
 
-		default:
-			return false, nil
+	default:
+		return false, nil
 	}
 
 	return false, nil

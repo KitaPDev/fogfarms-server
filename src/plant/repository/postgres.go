@@ -1,12 +1,13 @@
 package repository
 
 import (
+	"log"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
-	"log"
 )
 
-func GetPlant(plantID int) (*models.Plant, error) {
+func GetPlantByID(plantID int) (*models.Plant, error) {
 	db := database.GetDB()
 
 	rows, err := db.Query("SELECT * FROM Plant WHERE PlantID = ?", plantID)
@@ -24,6 +25,8 @@ func GetPlant(plantID int) (*models.Plant, error) {
 			&plant.TDS,
 			&plant.PH,
 			&plant.Lux,
+			&plant.LightsOnHour,
+			&plant.LightsOffHour,
 		)
 		if err != nil {
 			return nil, err
@@ -39,7 +42,7 @@ func GetAllPlants() ([]models.Plant, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer log.Fatal(rows.Close())
+	defer rows.Close()
 
 	var plants []models.Plant
 	for rows.Next() {
@@ -51,6 +54,8 @@ func GetAllPlants() ([]models.Plant, error) {
 			&plant.TDS,
 			&plant.PH,
 			&plant.Lux,
+			&plant.LightsOffHour,
+			&plant.LightsOffHour,
 		)
 		if err != nil {
 			return nil, err
@@ -71,6 +76,7 @@ func NewPlant(name string, tds float32, ph float32, lux float32, lightsOnHour fl
 	if err != nil {
 		return err
 	}
+	return err
 }
 
 func DeletePlant(plantID int) error {
@@ -81,4 +87,5 @@ func DeletePlant(plantID int) error {
 	if err != nil {
 		return err
 	}
+	return err
 }

@@ -6,7 +6,8 @@ import (
 )
 
 func GetAllPlants() ([]models.Plant, error) {
-	return repository.GetAllPlants()
+	plant, err := repository.GetAllPlants()
+	return plant, err
 }
 
 func NewPlant(plant models.Plant) error {
@@ -16,4 +17,9 @@ func NewPlant(plant models.Plant) error {
 
 func DeletePlant(plantID int) error {
 	return repository.DeletePlant(plantID)
+}
+
+func GetPlantByID(plantID int) (*models.Plant, error) {
+	plant, err := repository.GetPlantByID(plantID)
+	return plant, err
 }
