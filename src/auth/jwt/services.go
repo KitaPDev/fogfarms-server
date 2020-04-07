@@ -3,14 +3,15 @@ package jwt
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/KitaPDev/fogfarms-server/src/user"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/golang/gddo/httputil/header"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/KitaPDev/fogfarms-server/src/user"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/golang/gddo/httputil/header"
 )
 
 const (
@@ -46,7 +47,7 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 
 	token, err := jwt.ParseWithClaims(tokenString, claims,
 		func(token *jwt.Token) (interface{}, error) {
-			return jwtKey, nil
+			return []byte(jwtKey), nil
 		})
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {

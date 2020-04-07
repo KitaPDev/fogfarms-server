@@ -1,8 +1,9 @@
 package user_management
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func MakeHTTPHandler() http.Handler {
@@ -21,7 +22,8 @@ func MakeHTTPHandler() http.Handler {
 
 	return router
 }
-// todo ddfsd - test
+
+//  ok
 func register(w http.ResponseWriter, r *http.Request) {
 	CreateUser(w, r)
 }

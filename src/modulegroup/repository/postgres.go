@@ -1,11 +1,12 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/KitaPDev/fogfarms-server/src/plant"
 	"github.com/labstack/gommon/log"
-	"time"
 )
 
 func GetAllModuleGroups() ([]models.ModuleGroup, error) {
@@ -108,8 +109,10 @@ func NewModuleGroup(label string, plantID int, locationID int, humidity float32,
 	lightsOff float32) {
 	db := database.GetDB()
 
-	p := plant.GetPlantByID(plantID)
-
+	p, errTemp := plant.GetPlantByID(plantID)
+	if errTemp != nil {
+		panic(errTemp)
+	}
 	sqlStatement := `INSERT INTO ModuleGroup (ModuleGroupLabel, PlantID, LocationID,
                          Param_TDS, Param_Ph, Param_Humidity, LightsOnHour, LightsOffHour)
                          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`

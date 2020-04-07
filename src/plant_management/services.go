@@ -2,23 +2,30 @@ package plant_management
 
 import (
 	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/plant"
 	"github.com/golang/gddo/httputil/header"
-	"log"
-	"net/http"
 )
 
-func GetAllPlants(w http.ResponseWriter) {
+func GetAllPlants(w http.ResponseWriter, r *http.Request) {
 	plants, err := plant.GetAllPlants()
+	fmt.Printf("Hi")
 	if err != nil {
 		msg := "Error: plant.GetAllPlants()"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Fatal(err)
 		return
 	}
-
-	plantsJson, err := json.Marshal(plants)
+	fmt.Printf("%+v", plants)
+	type Output struct {
+		Data []models.Plant
+	}
+	out := Output{plants}
+	plantsJson, err := json.Marshal(out)
 	if err != nil {
 		msg := "Error: json.Marshal(plants)"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -27,7 +34,7 @@ func GetAllPlants(w http.ResponseWriter) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	log.Fatal(w.Write(plantsJson))
+	w.Write(plantsJson)
 }
 
 func NewPlant(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +55,7 @@ func NewPlant(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 		return
 	}
-
+	fmt.Print("%+v", input)
 	err = plant.NewPlant(input)
 	if err != nil {
 		msg := "Error: plant.NewPlant(input)"
