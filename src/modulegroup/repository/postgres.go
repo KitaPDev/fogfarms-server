@@ -8,12 +8,12 @@ import (
 	"time"
 )
 
-func GetAllModuleGroups() []models.ModuleGroup {
+func GetAllModuleGroups() ([]models.ModuleGroup, error) {
 	db := database.GetDB()
 
 	rows, err := db.Query("SELECT * FROM ModuleGroup;")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer log.Fatal(rows.Close())
 
@@ -32,21 +32,21 @@ func GetAllModuleGroups() []models.ModuleGroup {
 			&moduleGroup.LightsOffHour,
 		)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		moduleGroups = append(moduleGroups, moduleGroup)
 	}
 
-	return moduleGroups
+	return moduleGroups, nil
 }
 
-func GetModuleGroupByID(moduleGroupID int) *models.ModuleGroup {
+func GetModuleGroupByID(moduleGroupID int) (*models.ModuleGroup, error) {
 	db := database.GetDB()
 
 	rows, err := db.Query("SELECT * FROM ModuleGroup WHERE ModuleGroupID = ?;", moduleGroupID)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer log.Fatal(rows.Close())
 
@@ -64,19 +64,19 @@ func GetModuleGroupByID(moduleGroupID int) *models.ModuleGroup {
 			&moduleGroup.LightsOffHour,
 		)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 	}
 
-	return moduleGroup
+	return moduleGroup, nil
 }
 
-func GetModuleGroupsByID(moduleGroupIDs []int) []models.ModuleGroup {
+func GetModuleGroupsByID(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 	db := database.GetDB()
 
 	rows, err := db.Query("SELECT * FROM ModuleGroup WHERE ModuleGroupID IN (?);", moduleGroupIDs)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer log.Fatal(rows.Close())
 
@@ -95,20 +95,20 @@ func GetModuleGroupsByID(moduleGroupIDs []int) []models.ModuleGroup {
 			&moduleGroup.LightsOffHour,
 		)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		moduleGroups = append(moduleGroups, moduleGroup)
 	}
 
-	return moduleGroups
+	return moduleGroups, err
 }
 
 func NewModuleGroup(label string, plantID int, locationID int, humidity float32, lightsOn float32,
 	lightsOff float32) {
 	db := database.GetDB()
 
-	p := plant.GetPlant(plantID)
+	p := plant.GetPlantByID(plantID)
 
 	sqlStatement := `INSERT INTO ModuleGroup (ModuleGroupLabel, PlantID, LocationID,
                          Param_TDS, Param_Ph, Param_Humidity, LightsOnHour, LightsOffHour)

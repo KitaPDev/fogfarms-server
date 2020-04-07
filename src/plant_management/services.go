@@ -12,7 +12,7 @@ import (
 func GetAllPlants(w http.ResponseWriter) {
 	plants, err := plant.GetAllPlants()
 	if err != nil {
-		msg := "Failed to GetAllPlants"
+		msg := "Error: plant.GetAllPlants()"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Fatal(err)
 		return
@@ -20,7 +20,7 @@ func GetAllPlants(w http.ResponseWriter) {
 
 	plantsJson, err := json.Marshal(plants)
 	if err != nil {
-		msg := "Failed to Marshal plants to JSON"
+		msg := "Error: json.Marshal(plants)"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Fatal(err)
 		return
@@ -43,7 +43,7 @@ func NewPlant(w http.ResponseWriter, r *http.Request) {
 	}
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		msg := "Failed to Decode JSON"
+		msg := "Error: json.NewDecoder(r.Body).Decode(&input)"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Fatal(err)
 		return
@@ -51,7 +51,7 @@ func NewPlant(w http.ResponseWriter, r *http.Request) {
 
 	err = plant.NewPlant(input)
 	if err != nil {
-		msg := "Failed to Create New Plant"
+		msg := "Error: plant.NewPlant(input)"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Fatal(err)
 		return
@@ -73,7 +73,7 @@ func DeletePlant(w http.ResponseWriter, r *http.Request) {
 	}
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		msg := "Failed to Decode JSON"
+		msg := "Error: json.NewDecoder(r.Body).Decode(&input)"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Fatal(err)
 		return
@@ -81,7 +81,7 @@ func DeletePlant(w http.ResponseWriter, r *http.Request) {
 
 	err = plant.DeletePlant(input.PlantID)
 	if err != nil {
-		msg := "Failed to Delete Plant"
+		msg := "Error: plant.DeletePlant(input.PlantID)"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Fatal(err)
 		return

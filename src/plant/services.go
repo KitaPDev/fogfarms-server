@@ -7,11 +7,7 @@ import (
 
 func GetAllPlants() ([]models.Plant, error) {
 	plants, err := repository.GetAllPlants()
-	if err != nil {
-		return nil, err
-	}
-
-	return plants, nil
+	return plants, err
 }
 
 func NewPlant(plant models.Plant) error {

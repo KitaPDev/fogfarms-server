@@ -5,10 +5,12 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/modulegroup/repository"
 )
 
-func GetAllModuleGroups() []models.ModuleGroup{
-	return repository.GetAllModuleGroups()
+func GetAllModuleGroups() ([]models.ModuleGroup, error) {
+	moduleGroups, err := repository.GetAllModuleGroups()
+	return moduleGroups, err
 }
 
-func GetModuleGroupsByID(moduleGroupIDs []int) []models.ModuleGroup {
-
+func GetModuleGroupsByID(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
+	moduleGroups, err := repository.GetModuleGroupsByID(moduleGroupIDs)
+	return moduleGroups, err
 }

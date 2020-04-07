@@ -20,7 +20,10 @@ func GetUserModuleGroupPermissions(userIDs []int, moduleGroupIDs []int) (map[str
 		return make(map[string]map[string]int), err
 	}
 
-	moduleGroups := modulegroup.GetModuleGroupsByID(moduleGroupIDs)
+	moduleGroups, err := modulegroup.GetModuleGroupsByID(moduleGroupIDs)
+	if err != nil {
+		return make(map[string]map[string]int), err
+	}
 
 	fGetUsername := func(userID int) string {
 		for _, uTemp := range users {
