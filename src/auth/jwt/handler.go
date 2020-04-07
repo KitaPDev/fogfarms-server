@@ -1,14 +1,15 @@
 package jwt
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func MakeHTTPHandler() http.Handler {
 	router := mux.NewRouter()
 	router.HandleFunc("/auth/sign_in", SignIn).
-		Methods("GET").
+		Methods("POST").
 		Schemes("http")
 	router.HandleFunc("/auth/sign_out", SignOut).
 		Methods("GET").

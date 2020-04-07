@@ -32,7 +32,6 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 		if err == http.ErrNoCookie {
 			msg := "Error: No Token Found"
 			http.Error(w, msg, http.StatusUnauthorized)
-			log.Fatal(err)
 			return false
 		}
 
@@ -151,7 +150,7 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 
 func GenerateToken(username string, w http.ResponseWriter) {
 	jwtKey := os.Getenv("SECRET_KEY_JWT")
-
+	fmt.Printf("\n %+v", jwtKey)
 	expirationTime := time.Now().Add(10 * time.Minute)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user": username,
