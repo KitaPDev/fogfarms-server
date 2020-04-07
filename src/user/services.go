@@ -10,6 +10,37 @@ import (
 	"net/http"
 )
 
+func AuthenticateByUsername(username string, password string) (bool, error) {
+	return repository.ValidateUserByUsername(username, password)
+}
+
+func CreateUser(w http.ResponseWriter, r *http.Request) {
+	type Input struct {
+		Username        string `json:"username"`
+		Password        string `json:"password"`
+		IsAdministrator bool   `json:"is_administrator"`
+	}
+
+	var input Input
+	if r.Header.Get("Content-Type") != "" {
+		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
+		if value != "application/json" {
+			msg := "Content-Type header is not application/json"
+			http.Error(w, msg, http.StatusUnsupportedMediaType)
+			return
+		}
+	}
+	err := json.NewDecoder(r.Body).Decode(&input)
+
+	fmt.Printf("%+v", input)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Fatal(err)
+	}
+
+	repository.CreateUser(input.Username, input.Password, input.IsAdministrator)
+}
+
 
 func GetAllUsers() ([]models.User, error) {
 	users, err := repository.GetAllUsers()
@@ -90,31 +121,4 @@ func ExistsByID(userID int) (bool, *models.User, error) {
 	} else {
 		return false, nil, err
 	}
-}
-
-func CreateUser(w http.ResponseWriter, r *http.Request) {
-	type Input struct {
-		Username        string `json:"username"`
-		Password        string `json:"password"`
-		IsAdministrator bool   `json:"is_administrator"`
-	}
-
-	var input Input
-	if r.Header.Get("Content-Type") != "" {
-		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-		if value != "application/json" {
-			msg := "Content-Type header is not application/json"
-			http.Error(w, msg, http.StatusUnsupportedMediaType)
-			return
-		}
-	}
-	err := json.NewDecoder(r.Body).Decode(&input)
-
-	fmt.Printf("%+v", input)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		log.Fatal(err)
-	}
-
-	repository.CreateUser(input.Username, input.Password, input.IsAdministrator)
 }

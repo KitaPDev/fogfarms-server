@@ -21,7 +21,7 @@ CREATE TABLE Location (
 );
 
 -- Users
-CREATE TABLE Users (
+CREATE TABLE User (
     UserID SERIAL NOT NULL,
     Username VARCHAR(256) NOT NULL,
     IsAdministrator BOOLEAN NOT NULL DEFAULT FALSE,

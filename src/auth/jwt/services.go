@@ -6,6 +6,7 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/user"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/golang/gddo/httputil/header"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -22,7 +23,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func AuthenticateUser(w http.ResponseWriter, r *http.Request) bool {
+func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 	jwtKey := os.Getenv("SECRET_KEY_JWT")
 
 	cookie, err := r.Cookie("jwtToken")
@@ -30,10 +31,13 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) bool {
 		if err == http.ErrNoCookie {
 			msg := "Error: No Token Found"
 			http.Error(w, msg, http.StatusUnauthorized)
+			log.Fatal(err)
 			return false
 		}
 
-		w.WriteHeader(http.StatusBadRequest)
+		msg := `Error: r.Cookie("jwtToken")`
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Fatal(err)
 		return false
 	}
 
@@ -48,11 +52,13 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) bool {
 		if err == jwt.ErrSignatureInvalid {
 			msg := "Error: Invalid Signature"
 			http.Error(w, msg, http.StatusUnauthorized)
+			log.Fatal(err)
 			return false
 		}
 
 		msg := "Error: Failed to Parse Token"
 		http.Error(w, msg, http.StatusUnauthorized)
+		log.Fatal(err)
 		return false
 	}
 
@@ -65,7 +71,8 @@ func AuthenticateUser(w http.ResponseWriter, r *http.Request) bool {
 	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 0*time.Second {
 
 		if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
-			msg := "Error: Token Exceeded Timeout Limit"
+			InvalidateToken(w)
+			msg := "Error: Token Exceeded Timeout Limit, Sign In Again"
 			http.Error(w, msg, http.StatusUnauthorized)
 			return false
 
@@ -111,21 +118,32 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	username := credentials.Username
-	//password := credentials.Password
+	password := credentials.Password
 
-	exists, _ := user.ExistsByUsername(username)
+	exists, _, err := user.ExistsByUsername(username)
+	if err != nil {
+		msg := "Error: user.ExistsByUsername(username)"
+		http.Error(w, msg, http.StatusUnauthorized)
+		log.Fatal(err)
+		return
+	}
 	if !exists {
 		msg := "Error: User Not Found"
 		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
-	// exists, _ := user.ExistsByUsername(username)
-	// if !exists {
-	// 	w.WriteHeader(http.StatusUnauthorized)
-	// 	log.Fatal(io.WriteString(w, `{"error":"user_not_found"}"`))
-	// 	return
-	// }
+	valid, err := user.AuthenticateByUsername(username, password)
+	if err != nil {
+		msg := "Error: Failed to AuthenticateByUsername"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+	if !valid {
+		msg := "Error: Failed to Invalid Credentials"
+		http.Error(w, msg, http.StatusUnauthorized)
+		return
+	}
 
 	GenerateToken(username, w)
 }
@@ -153,48 +171,6 @@ func GenerateToken(username string, w http.ResponseWriter) {
 		Expires: expirationTime,
 	})
 }
-
-//func RefreshToken(w http.ResponseWriter, r *http.Request) {
-//	jwtKey := os.Getenv("SECRET_KEY_JWT")
-//
-//	cookie, err := r.Cookie("jwtToken")
-//	if err != nil {
-//		if err == http.ErrNoCookie {
-//			w.WriteHeader(http.StatusUnauthorized)
-//			return
-//		}
-//		w.WriteHeader(http.StatusBadRequest)
-//		return
-//	}
-//
-//	tokenString := cookie.Value
-//	claims := &Claims{}
-//
-//	token, err := jwt.ParseWithClaims(tokenString, claims,
-//		func(token *jwt.Token) (interface{}, error) {
-//			return jwtKey, nil
-//		})
-//	if err != nil {
-//		if err == jwt.ErrSignatureInvalid {
-//			w.WriteHeader(http.StatusUnauthorized)
-//			return
-//		}
-//		w.WriteHeader(http.StatusBadRequest)
-//		return
-//	}
-//
-//	if !token.Valid {
-//		w.WriteHeader(http.StatusUnauthorized)
-//		return
-//	}
-//
-//	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 30*time.Second {
-//		w.WriteHeader(http.StatusBadRequest)
-//		return
-//	}
-//
-//	GenerateToken(claims.Username, w)
-//}
 
 func InvalidateToken(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{

@@ -14,7 +14,7 @@ import (
 func GetAllUsers() ([]models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM Users;")
+	rows, err := db.Query("SELECT * FROM User;")
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func GetAllUsers() ([]models.User, error) {
 func GetUserByUsername(username string) (*models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM Users WHERE Username = ?;", username)
+	rows, err := db.Query("SELECT * FROM User WHERE Username = ?;", username)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func GetUserByUsername(username string) (*models.User, error) {
 func GetUserByID(userID int) (*models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM Users WHERE UserID = ?;", userID)
+	rows, err := db.Query("SELECT * FROM User WHERE UserID = ?;", userID)
 	if err != nil {
 		return nil, err
 	}
@@ -103,23 +103,22 @@ func CreateUser(username string, password string, isAdministrator bool) {
 	salt := generateSalt()
 	hash := hash(password, salt)
 
-	sqlStatement := `INSERT INTO Users (Username, IsAdministrator, Hash, Salt, CreatedAt) 
+	sqlStatement := `INSERT INTO User (Username, IsAdministrator, Hash, Salt, CreatedAt) 
 		VALUES ($1, $2, $3, $4, Now());`
 
 	db.QueryRow(sqlStatement, username, isAdministrator, hash, salt)
 }
 
-func ValidateUser(username string, inputPassword string) bool {
+func ValidateUserByUsername(username string, inputPassword string) (bool, error) {
 	db := database.GetDB()
 
-	sqlStatement := fmt.Sprintf("SELECT UserID, Username, Hash, Salt FROM Users WHERE Username = %s;",
-		username)
+	sqlStatement := `SELECT UserID, Username, Hash, Salt FROM User WHERE Username = $1;`
 
 	user := models.User{}
 
-	row, err := db.Query(sqlStatement)
+	row, err := db.Query(sqlStatement, username)
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
 	switch err := row.Scan(
@@ -142,13 +141,13 @@ func ValidateUser(username string, inputPassword string) bool {
 				bcrypt.CompareHashAndPassword([]byte(user.Hash), []byte(password)) == nil {
 				return true
 			}
-			return false
+			return false, nil
 
 		default:
-			panic(err)
+			return false, nil
 	}
 
-	return false
+	return false, nil
 }
 
 func generateSalt() string {

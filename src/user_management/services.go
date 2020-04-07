@@ -18,7 +18,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
-	if !jwt.AuthenticateUser(w, r) {
+	if !jwt.AuthenticateUserToken(w, r) {
 		return
 	}
 
@@ -85,7 +85,7 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
-	if !jwt.AuthenticateUser(w, r) {
+	if !jwt.AuthenticateUserToken(w, r) {
 		return
 	}
 
