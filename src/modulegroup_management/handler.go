@@ -16,5 +16,5 @@ func MakeHTTPHandler() http.Handler {
 }
 
 func populateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
-
+	PopulateModuleGroupManagementPage(w, r)
 }

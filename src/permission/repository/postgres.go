@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
@@ -42,30 +42,29 @@ func AssignUserModuleGroupPermission(userID int, moduleGroupID int, level int) e
 	db := database.GetDB()
 
 	sqlStatement :=
-		`CREATE OR REPLACE FUNCTION alterPermission(userIDI int, moduleGroupIDI int,levelI int)  RETURNS void
-	AS $$
-		BEGIN
-		IF (SELECT COUNT(*) FROM Permission WHERE UserID = userIDI AND ModuleGroupID = moduleGroupIDI) > 0 THEN
-					UPDATE Permission SET PermissionLevel = levelI
-				    WHERE
-				    	UserID = userIDI AND ModuleGroupID = moduleGroupIDI;
-				ELSE
-					INSERT INTO Permission (PermissionLevel, UserID, ModuleGroupID)
-					VALUES (levelI, userIDI, moduleGroupIDI);
-			END IF;
-		END;
-	$$ LANGUAGE plpgsql;`
+		`CREATE OR REPLACE FUNCTION alterPermission(userIDI INT, moduleGroupIDI INT, levelI INT)  RETURNS VOID
+			AS $$
+				BEGIN
+				IF (SELECT COUNT(*) FROM Permission WHERE UserID = userIDI AND ModuleGroupID = moduleGroupIDI) > 0 THEN
+							UPDATE Permission SET PermissionLevel = levelI
+							WHERE
+								UserID = userIDI AND ModuleGroupID = moduleGroupIDI;
+						ELSE
+							INSERT INTO Permission (PermissionLevel, UserID, ModuleGroupID)
+							VALUES (levelI, userIDI, moduleGroupIDI);
+					END IF;
+				END;
+			$$ LANGUAGE plpgsql;`
 
-	_, err1 := db.Query(sqlStatement)
-	if err1 != nil {
-		fmt.Printf("hi")
-		return err1
-	}
-	fmt.Printf("%+v", userID)
-
-	_, err := db.Query(`SELECT alterPermission($1,$2,$3)`, userID, moduleGroupID, level)
+	_, err := db.Query(sqlStatement)
 	if err != nil {
-		fmt.Printf("hi")
+		log.Println(err)
+		return err
+	}
+
+	_, err = db.Query(`SELECT alterPermission($1, $2, $3)`, userID, moduleGroupID, level)
+	if err != nil {
+		log.Println(err)
 		return err
 	}
 
