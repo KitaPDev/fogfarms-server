@@ -6,7 +6,6 @@ import (
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/KitaPDev/fogfarms-server/src/plant"
-	"github.com/labstack/gommon/log"
 )
 
 func GetAllModuleGroups() ([]models.ModuleGroup, error) {
@@ -106,43 +105,43 @@ func GetModuleGroupsByID(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 }
 
 func NewModuleGroup(label string, plantID int, locationID int, humidity float32, lightsOn float32,
-	lightsOff float32) {
+	lightsOff float32) error {
 	db := database.GetDB()
 
-	p, errTemp := plant.GetPlantByID(plantID)
-	if errTemp != nil {
-		panic(errTemp)
+	p, err := plant.GetPlantByID(plantID)
+	if err != nil {
+		return err
 	}
 	sqlStatement := `INSERT INTO ModuleGroup (ModuleGroupLabel, PlantID, LocationID,
                          Param_TDS, Param_Ph, Param_Humidity, LightsOnHour, LightsOffHour)
                          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
-	_, err := db.Query(sqlStatement, label, plantID, locationID, p.TDS, p.PH, humidity, lightsOn, lightsOff)
+	_, err = db.Query(sqlStatement, label, plantID, locationID, p.TDS, p.PH, humidity, lightsOn, lightsOff)
 	if err != nil {
-		panic(err)
+		return err
 	}
 }
 
-func SetManualOperation(moduleGroupID int, toManual bool) {
+func SetManualOperation(moduleGroupID int, toManual bool) error {
 	db := database.GetDB()
 
 	sqlStatement := `UPDATE ModuleGroup SET OnAuto = $1
 		WHERE ModuleGroupID = $2`
 	_, err := db.Query(sqlStatement, toManual, moduleGroupID)
 	if err != nil {
-		panic(err)
+		return err
 	}
 }
 
 func SetEnvironmentParameters(moduleGroupID int, humidity float32, ph float32, tds float32,
-	lightsOn time.Time, lightsOff time.Time) {
+	lightsOn time.Time, lightsOff time.Time) error {
 	db := database.GetDB()
 
 	sqlStatement := `UPDATE ModuleGroup	
-						SET param_humidity = $1, param_ph = $2, param_tds = $3, lightsofftime = $4, 
-						    lightsontime = $5
+						SET Param_Humidity = $1, Param_PH = $2, Param_TDS = $3, LightsOnHour = $4, 
+						    LightsOffHour = $5
 						WHERE ModuleGroupID = $6`
 	_, err := db.Query(sqlStatement, humidity, ph, tds, lightsOff, lightsOn, moduleGroupID)
 	if err != nil {
-		panic(err)
+		return err
 	}
 }

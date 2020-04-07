@@ -15,9 +15,9 @@ func GetAllPlants(w http.ResponseWriter, r *http.Request) {
 	plants, err := plant.GetAllPlants()
 	fmt.Printf("Hi")
 	if err != nil {
-		msg := "Error: plant.GetAllPlants()"
+		msg := "Error: Failed to Get All Plants"
 		http.Error(w, msg, http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 	fmt.Printf("%+v", plants)
@@ -29,7 +29,7 @@ func GetAllPlants(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		msg := "Error: json.Marshal(plants)"
 		http.Error(w, msg, http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 
@@ -52,15 +52,15 @@ func NewPlant(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		msg := "Error: json.NewDecoder(r.Body).Decode(&input)"
 		http.Error(w, msg, http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 	fmt.Print("%+v", input)
 	err = plant.NewPlant(input)
 	if err != nil {
-		msg := "Error: plant.NewPlant(input)"
+		msg := "Error: Failed to New Plant"
 		http.Error(w, msg, http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 
@@ -80,17 +80,17 @@ func DeletePlant(w http.ResponseWriter, r *http.Request) {
 	}
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		msg := "Error: json.NewDecoder(r.Body).Decode(&input)"
+		msg := "Error: Failed to Decode JSON"
 		http.Error(w, msg, http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 
 	err = plant.DeletePlant(input.PlantID)
 	if err != nil {
-		msg := "Error: plant.DeletePlant(input.PlantID)"
+		msg := "Error: Failed to Delete Plant"
 		http.Error(w, msg, http.StatusInternalServerError)
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 
