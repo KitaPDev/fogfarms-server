@@ -73,7 +73,7 @@ func GetUserByUsername(username string) (*models.User, error) {
 func GetUserByID(userID int) (*models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT userid, username,isadministrator,hash,salt,createdat FROM Users WHERE UserID = ?;", userID)
+	rows, err := db.Query("SELECT userid, username,isadministrator,hash,salt,createdat FROM Users WHERE UserID = $1;", userID)
 	if err != nil {
 		return nil, err
 	}
