@@ -48,7 +48,7 @@ func GetUserByUsername(username string) (*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
-  
+
 	defer rows.Close()
 
 	var user models.User
@@ -56,9 +56,9 @@ func GetUserByUsername(username string) (*models.User, error) {
 		err := rows.Scan(
 			&user.UserID,
 			&user.Username,
+			&user.IsAdministrator,
 			&user.Hash,
 			&user.Salt,
-			&user.IsAdministrator,
 			&user.CreatedAt,
 		)
 		if err != nil {

@@ -9,11 +9,19 @@ import (
 
 var db *sql.DB
 
+// const (
+// 	DbHost = "localhost"
+// 	DbPort = 5432
+// 	DbUser = "fogfarms"
+// 	DbPass = "fogfarms"
+// 	DbName = "fogfarms-01"
+// )
+
 const (
 	DbHost = "localhost"
 	DbPort = 5432
-	DbUser = "fogfarms"
-	DbPass = "fogfarms"
+	DbUser = "postgres"
+	DbPass = "postgres"
 	DbName = "fogfarms-01"
 )
 
