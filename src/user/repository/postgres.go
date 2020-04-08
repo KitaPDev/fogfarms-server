@@ -296,6 +296,7 @@ func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, erro
 			IN ( SELECT ModuleGroupID from Permission WHERE UserID = $1 AND PermissionLevel = 3 );`
 
 	}
+	
 	rows, err = db.Query(sqlStatement, u.UserID)
 	if err != nil {
 		return nil, err
