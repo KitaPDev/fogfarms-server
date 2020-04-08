@@ -228,9 +228,16 @@ func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, erro
 	if err != nil {
 		return nil, err
 	}
-	sqlStatement := "SELECT DISTINCT modulegrouplabel FROM modulegroup,permission where modulegroup.modulegroupid=permission.modulegroupid AND USERID= $1 AND permissionlevel=3;"
+	var sqlStatement string
+	var rows *sql.Rows
+	if u.IsAdministrator {
+		sqlStatement = "SELECT DISTINCT modulegrouplabel FROM modulegroup"
+		rows, err = db.Query(sqlStatement)
+	} else {
+		sqlStatement = "SELECT DISTINCT modulegrouplabel FROM modulegroup,permission where modulegroup.modulegroupid=permission.modulegroupid AND USERID= $1 AND permissionlevel=3;"
+		rows, err = db.Query(sqlStatement, u.UserID)
+	}
 
-	rows, err := db.Query(sqlStatement, u.UserID)
 	if err != nil {
 		return nil, err
 	}
@@ -262,7 +269,13 @@ func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, erro
 		}
 	}
 	fmt.Printf("%+v", usernameMAP)
-	sqlStatement = "Select username, permissionlevel,modulegrouplabel from permission,modulegroup,users where users.userid=permission.userid AND users.userid!= $1 AND modulegroup.modulegroupid IN ( Select modulegroupid from permission where userid = $1 AND permissionlevel =3 );"
+	if u.IsAdministrator {
+		sqlStatement = "Select username, permissionlevel,modulegrouplabel from permission,modulegroup,users where users.userid=permission.userid AND users.userid!= $1 AND modulegroup.modulegroupid=permission.modulegroupid;"
+
+	} else {
+		sqlStatement = "Select username, permissionlevel,modulegrouplabel from permission,modulegroup,users where users.userid=permission.userid AND users.userid!= $1 AND modulegroup.modulegroupid=permission.modulegroupid AND modulegroup.modulegroupid IN ( Select modulegroupid from permission where userid = $1 AND permissionlevel =3 );"
+
+	}
 	rows, err = db.Query(sqlStatement, u.UserID)
 	if err != nil {
 		return nil, err

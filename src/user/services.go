@@ -38,6 +38,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		msg := "Error: Failed to Decode JSON"
 		http.Error(w, msg, http.StatusBadRequest)
 		log.Println(err)
+		return
 	}
 
 	err = repository.CreateUser(input.Username, input.Password, input.IsAdministrator)

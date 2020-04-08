@@ -14,7 +14,6 @@ import (
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	user.CreateUser(w, r)
-	w.WriteHeader(http.StatusOK)
 }
 
 func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
