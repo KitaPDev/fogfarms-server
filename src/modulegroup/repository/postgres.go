@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/KitaPDev/fogfarms-server/models"
@@ -107,7 +107,7 @@ func GetModuleGroupsByID(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 		}
 
 	}
-	fmt.Printf("%+v", moduleGroups)
+	log.Println("Variable moduleGroups in GetModuleGroups by ID", moduleGroups)
 	return moduleGroups, err
 }
 

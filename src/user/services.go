@@ -4,10 +4,13 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/user/repository"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/golang/gddo/httputil/header"
+	"github.com/gorilla/securecookie"
 )
 
 func AuthenticateByUsername(username string, password string) (bool, error) {
@@ -90,23 +93,30 @@ func GetUsersByID(userIDs []int) ([]models.User, error) {
 }
 
 func GetUserByUsernameFromCookie(w http.ResponseWriter, r *http.Request) (*models.User, error) {
-	username := "ddfsdd6"
+	// username := "ddfsdd6"
+	var jwtKey = "s"
+	var secureCookie = securecookie.New([]byte(jwtKey), nil)
+	type Claims struct {
+		Username string `json:"username"`
+		jwt.StandardClaims
+	}
+	cookie, err := r.Cookie("jwtToken")
+	var tokenString string
+	err = secureCookie.Decode("jwtToken", cookie.Value, &tokenString)
+	claims := &Claims{}
 
-	// if r.Header.Get("Content-Type") != "" {
-	// 	value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-	// 	if value != "application/json" {
-	// 		msg := "Content-Type header is not application/json"
-	// 		http.Error(w, msg, http.StatusUnsupportedMediaType)
-	// 	}
-	// }
-	// err := json.NewDecoder(r.Body).Decode(&username)
-	// if err != nil {
-	// 	msg := "Failed to Decode JSON"
-	// 	http.Error(w, msg, http.StatusInternalServerError)
-	// 	log.Println(err)
-	// }
+	token, err := jwt.ParseWithClaims(tokenString, claims,
+		func(token *jwt.Token) (interface{}, error) {
+			return []byte(jwtKey), nil
+		})
+	log.Println(err)
+	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 0*time.Second && token.Valid {
 
-	return GetUserByUsername(username)
+		return GetUserByUsername(claims.Username)
+	} else {
+		return GetUserByUsername(claims.Username)
+	}
+
 }
 
 func ExistsByUsername(username string) (bool, *models.User, error) {
