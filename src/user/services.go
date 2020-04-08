@@ -2,11 +2,12 @@ package user
 
 import (
 	"encoding/json"
+	"log"
+	"net/http"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/user/repository"
 	"github.com/golang/gddo/httputil/header"
-	"log"
-	"net/http"
 )
 
 func AuthenticateByUsername(username string, password string) (bool, error) {
@@ -44,7 +45,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
 func GetAllUsers() ([]models.User, error) {
 	users, err := repository.GetAllUsers()
 	if err != nil {
@@ -76,7 +76,6 @@ func GetUsersByID(userIDs []int) ([]models.User, error) {
 	var users []models.User
 
 	for _, userID := range userIDs {
-
 		exists, user, err := ExistsByID(userID)
 		if err != nil {
 			return nil, err
@@ -91,21 +90,21 @@ func GetUsersByID(userIDs []int) ([]models.User, error) {
 }
 
 func GetUserByUsernameFromCookie(w http.ResponseWriter, r *http.Request) (*models.User, error) {
-	username := ""
+	username := "ddfsdd6"
 
-	if r.Header.Get("Content-Type") != "" {
-		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-		if value != "application/json" {
-			msg := "Content-Type header is not application/json"
-			http.Error(w, msg, http.StatusUnsupportedMediaType)
-		}
-	}
-	err := json.NewDecoder(r.Body).Decode(&username)
-	if err != nil {
-		msg := "Failed to Decode JSON"
-		http.Error(w, msg, http.StatusInternalServerError)
-		log.Println(err)
-	}
+	// if r.Header.Get("Content-Type") != "" {
+	// 	value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
+	// 	if value != "application/json" {
+	// 		msg := "Content-Type header is not application/json"
+	// 		http.Error(w, msg, http.StatusUnsupportedMediaType)
+	// 	}
+	// }
+	// err := json.NewDecoder(r.Body).Decode(&username)
+	// if err != nil {
+	// 	msg := "Failed to Decode JSON"
+	// 	http.Error(w, msg, http.StatusInternalServerError)
+	// 	log.Println(err)
+	// }
 
 	return GetUserByUsername(username)
 }

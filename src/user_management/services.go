@@ -70,7 +70,8 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 	for _, mg := range moduleGroups {
 		moduleGroupIDs = append(moduleGroupIDs, mg.ModuleGroupID)
 	}
-
+	fmt.Printf("%+v", userIDs)
+	fmt.Printf("%+v", moduleGroupIDs)
 	userModuleGroupPermission, err := permission.GetUserModuleGroupPermissions(userIDs, moduleGroupIDs)
 	if err != nil {
 		msg := "Error: Failed to Get User ModuleGroup Permissions"

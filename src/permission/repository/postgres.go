@@ -11,7 +11,7 @@ import (
 func GetAllPermissions() ([]models.Permission, error) {
 	db := database.GetDB()
 
-	sqlStatement := `SELECT * FROM Permission`
+	sqlStatement := `SELECT * FROM Permission;`
 	rows, err := db.Query(sqlStatement)
 	if err != nil {
 		log.Println(err)
@@ -24,7 +24,6 @@ func GetAllPermissions() ([]models.Permission, error) {
 		permission := models.Permission{}
 
 		err := rows.Scan(
-			&permission.PermissionID,
 			&permission.UserID,
 			&permission.ModuleGroupID,
 			&permission.PermissionLevel,
@@ -87,7 +86,7 @@ func GetAssignedModuleGroupsWithPermissionLevel(userID int, permissionLevel int)
 	var rows *sql.Rows
 	var err error
 	if permissionLevel != -1 {
-		rows, err = db.Query(sqlStatement + sqlStatementPermissionLevel, userID, permissionLevel)
+		rows, err = db.Query(sqlStatement+sqlStatementPermissionLevel, userID, permissionLevel)
 	} else {
 		rows, err = db.Query(sqlStatement, userID)
 	}
