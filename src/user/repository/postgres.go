@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"github.com/lib/pq"
 	"math/rand"
 	"time"
 
@@ -44,7 +45,9 @@ func GetAllUsers() ([]models.User, error) {
 func GetUserByUsername(username string) (*models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT userid, username,isadministrator,hash,salt,createdat FROM Users WHERE Username = $1;", username)
+	sqlStatement := `SELECT UserID, Username, IsAdministrator, Hash, Salt, CreatedAt FROM Users WHERE Username = $1;`
+
+	rows, err := db.Query(sqlStatement, username)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +76,9 @@ func GetUserByUsername(username string) (*models.User, error) {
 func GetUserByID(userID int) (*models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT userid, username,isadministrator,hash,salt,createdat FROM Users WHERE UserID = $1;", userID)
+	sqlStatement := `SELECT UserId, Username, IsAdministrator, Hash, Salt, CreatedAt FROM Users WHERE UserID = $1;`
+
+	rows, err := db.Query(sqlStatement, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +111,7 @@ func GetUsersByID(userIDs []int) ([]models.User, error) {
 		FROM Users 
 		WHERE UserID IN ($1);`
 
-	rows, err := db.Query(sqlStatement, userIDs)
+	rows, err := db.Query(sqlStatement, pq.Array(userIDs))
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/lib/pq"
 	"time"
 
 	"github.com/KitaPDev/fogfarms-server/models"
@@ -77,18 +78,11 @@ func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 	var moduleGroups []models.ModuleGroup
 	var err error
 
-	sqlStatement := `SELECT * FROM ModuleGroup WHERE ModuleGroupID IN (`
-	for i, moduleGroupID := range moduleGroupIDs {
-		if i > 0 {
-			sqlStatement = sqlStatement + `,`
-		}
-		sqlStatement = sqlStatement + string(moduleGroupID)
-	}
-	sqlStatement = sqlStatement + `;`
+	sqlStatement := `SELECT * FROM ModuleGroup WHERE ModuleGroupID IN ($1);`
 
 	db := database.GetDB()
 
-	rows, err := db.Query(sqlStatement)
+	rows, err := db.Query(sqlStatement, pq.Array(moduleGroupIDs))
 	if err != nil {
 		return nil, err
 	}

@@ -8,7 +8,9 @@ import (
 func GetPlantByID(plantID int) (*models.Plant, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM Plant WHERE PlantID = ?", plantID)
+	sqlStatement := `SELECT * FROM Plant WHERE PlantID = $1`
+
+	rows, err := db.Query(sqlStatement, plantID)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +38,9 @@ func GetPlantByID(plantID int) (*models.Plant, error) {
 func GetAllPlants() ([]models.Plant, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM Plant")
+	sqlStatement := `SELECT * FROM Plant`
+
+	rows, err := db.Query(sqlStatement)
 	if err != nil {
 		return nil, err
 	}
