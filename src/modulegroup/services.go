@@ -10,7 +10,7 @@ func GetAllModuleGroups() ([]models.ModuleGroup, error) {
 	return moduleGroups, err
 }
 
-func GetModuleGroupsByID(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
-	moduleGroups, err := repository.GetModuleGroupsByID(moduleGroupIDs)
+func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
+	moduleGroups, err := repository.GetModuleGroupsByIDs(moduleGroupIDs)
 	return moduleGroups, err
 }

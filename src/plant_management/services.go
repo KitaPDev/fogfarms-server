@@ -48,14 +48,15 @@ func NewPlant(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		msg := "Error: json.NewDecoder(r.Body).Decode(&input)"
+		msg := "Error: Failed to Decode JSON"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
-	fmt.Print("%+v", input)
+
 	err = plant.NewPlant(input)
 	if err != nil {
 		msg := "Error: Failed to New Plant"
