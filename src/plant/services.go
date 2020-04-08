@@ -10,7 +10,7 @@ func GetAllPlants() ([]models.Plant, error) {
 	return plant, err
 }
 
-func NewPlant(plant models.Plant) error {
+func CreatePlant(plant models.Plant) error {
 	return repository.NewPlant(plant.Name, plant.TDS, plant.PH, plant.Lux, plant.LightsOnHour,
 		plant.LightsOffHour)
 }

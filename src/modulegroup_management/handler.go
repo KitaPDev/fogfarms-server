@@ -12,9 +12,17 @@ func MakeHTTPHandler() http.Handler {
 		Methods("GET").
 		Schemes("http")
 
+	router.HandleFunc("/modulegroup_management/create_modulegroup", createModuleGroup).
+		Methods("POST").
+		Schemes("http")
+
 	return router
 }
 
 func populateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 	PopulateModuleGroupManagementPage(w, r)
+}
+
+func createModuleGroup(w http.ResponseWriter, r *http.Request) {
+	CreateModuleGroup(w, r)
 }

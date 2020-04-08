@@ -14,10 +14,14 @@ import (
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	user.CreateUser(w, r)
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Operation: Create User; Successful"))
 }
 
 func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
+		msg := "Unauthorized"
+		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
@@ -37,6 +41,42 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+
+	var moduleGroups []models.ModuleGroup
+
+	if u.IsAdministrator {
+		moduleGroups, err = modulegroup.GetAllModuleGroups()
+		if err != nil {
+			msg := "Error: Failed to Get All Module Groups"
+			http.Error(w, msg, http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
+	} else {
+		moduleGroups, err = permission.GetSupervisorModuleGroups(u)
+		if err != nil {
+			msg := "Error: Failed to Get Supervisor Module Groups"
+			http.Error(w, msg, http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+	}
+
+	var userIDs []int
+	for _, u := range users {
+		userIDs = append(userIDs, u.UserID)
+	}
+
+	var moduleGroupIDs []int
+	for _, mg := range moduleGroups {
+		moduleGroupIDs = append(moduleGroupIDs, mg.ModuleGroupID)
+	}
+	log.Println(" Variable userIDs in PopulateUserManagement", userIDs)
+
+	log.Println(" Variable moduleGroupIDs in PopulateUserManagement", moduleGroupIDs)
+
+	userModuleGroupPermission, err := permission.GetUserModuleGroupPermissions(userIDs, moduleGroupIDs)
 	js, err := json.Marshal(usernameMAP)
 	if err != nil {
 		msg := "Error: Failed to return JSON"
@@ -50,6 +90,8 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 
 func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
+		msg := "Unauthorized"
+		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 

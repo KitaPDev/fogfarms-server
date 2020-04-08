@@ -3,6 +3,7 @@ package plant_management
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
 	"log"
 	"net/http"
 
@@ -12,6 +13,12 @@ import (
 )
 
 func GetAllPlants(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		msg := "Unauthorized"
+		http.Error(w, msg, http.StatusUnauthorized)
+		return
+	}
+
 	plants, err := plant.GetAllPlants()
 	fmt.Printf("Hi")
 	if err != nil {
@@ -37,7 +44,13 @@ func GetAllPlants(w http.ResponseWriter, r *http.Request) {
 	w.Write(plantsJson)
 }
 
-func NewPlant(w http.ResponseWriter, r *http.Request) {
+func CreatePlant(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		msg := "Unauthorized"
+		http.Error(w, msg, http.StatusUnauthorized)
+		return
+	}
+
 	input := models.Plant{}
 
 	if r.Header.Get("Content-Type") != "" {
@@ -57,7 +70,7 @@ func NewPlant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = plant.NewPlant(input)
+	err = plant.CreatePlant(input)
 	if err != nil {
 		msg := "Error: Failed to New Plant"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -70,6 +83,12 @@ func NewPlant(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePlant(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		msg := "Unauthorized"
+		http.Error(w, msg, http.StatusUnauthorized)
+		return
+	}
+
 	input := models.Plant{}
 
 	if r.Header.Get("Content-Type") != "" {
@@ -97,4 +116,5 @@ func DeletePlant(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Operation: Delete Plant; Successful"))
 }

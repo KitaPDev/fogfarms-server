@@ -180,7 +180,7 @@ func ValidateUserByUsername(username string, inputPassword string) (bool, error)
 	case nil:
 		password := inputPassword + user.Salt
 		fmt.Println(username, user.Salt)
-		fmt.Printf("this works \n")
+		fmt.Printf("user validated \n")
 		fmt.Printf("%+v , %+v \n", username, password)
 
 		if username == username &&

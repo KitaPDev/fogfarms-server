@@ -12,7 +12,7 @@ func MakeHTTPHandler() http.Handler {
 		Methods("GET").
 		Schemes("http")
 
-	router.HandleFunc("/plant_management/new_plant", newPlant).
+	router.HandleFunc("/plant_management/create_plant", createPlant).
 		Methods("POST").
 		Schemes("http")
 
@@ -29,8 +29,8 @@ func getAllPlants(w http.ResponseWriter, r *http.Request) {
 }
 
 //  ok
-func newPlant(w http.ResponseWriter, r *http.Request) {
-	NewPlant(w, r)
+func createPlant(w http.ResponseWriter, r *http.Request) {
+	CreatePlant(w, r)
 }
 
 // ok
