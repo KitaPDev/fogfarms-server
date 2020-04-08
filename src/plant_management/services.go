@@ -66,6 +66,7 @@ func NewPlant(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Operation: New Plant; Successful"))
 }
 
 func DeletePlant(w http.ResponseWriter, r *http.Request) {

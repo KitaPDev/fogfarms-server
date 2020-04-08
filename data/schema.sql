@@ -3,7 +3,7 @@
 -- Plant
 CREATE TABLE Plant (
     PlantID SERIAL NOT NULL,
-    Name VARCHAR(256) NOT NULL,
+    Name VARCHAR(256) UNIQUE NOT NULL,
     TDS FLOAT NOT NULL,
     PH FLOAT NOT NULL,
     Lux FLOAT NOT NULL,
@@ -17,13 +17,14 @@ CREATE TABLE Location (
     LocationID SERIAL NOT NULL,
     City VARCHAR(256) NOT NULL,
     Province VARCHAR(256) NOT NULL,
-    PRIMARY KEY (LocationID)
+    PRIMARY KEY (LocationID),
+    UNIQUE (City, Province)
 );
 
 -- Users
-CREATE TABLE User (
+CREATE TABLE Users (
     UserID SERIAL NOT NULL,
-    Username VARCHAR(256) NOT NULL,
+    Username VARCHAR(256) UNIQUE NOT NULL,
     IsAdministrator BOOLEAN NOT NULL DEFAULT FALSE,
     Hash VARCHAR(256) NOT NULL,
     Salt VARCHAR(256) NOT NULL,
@@ -37,7 +38,8 @@ CREATE TABLE Nutrient (
     Part INT NOT NULL,
     Nitrogen INT NOT NULL,
     Phosphorus INT NOT NULL,
-    Potassium INT NOT NULL
+    Potassium INT NOT NULL,
+    UNIQUE (Part, Nitrogen, Phosphorus, Potassium)
 );
 
 -- PHUpUnit
@@ -52,7 +54,7 @@ CREATE TABLE PHDownUnit (
 -- ModuleGroup
 CREATE TABLE ModuleGroup (
     ModuleGroupID SERIAL NOT NULL,
-    ModuleGroupLabel VARCHAR(64) NOT NULL,
+    ModuleGroupLabel VARCHAR(64) UNIQUE NOT NULL,
     PlantID INT NOT NULL,
     LocationID INT NOT NULL,
     Param_TDS FLOAT NOT NULL,
@@ -64,6 +66,15 @@ CREATE TABLE ModuleGroup (
     PRIMARY KEY (ModuleGroupID),
     FOREIGN KEY (PlantID) REFERENCES Plant (PlantID),
     FOREIGN KEY (LocationID) REFERENCES Location (LocationID)
+);
+
+-- Module
+CREATE TABLE Module (
+                        ModuleID SERIAL NOT NULL,
+                        ModuleGroupID INT NOT NULL DEFAULT 0,
+                        Token VARCHAR(256) UNIQUE NOT NULL,
+                        PRIMARY KEY (ModuleID),
+                        FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );
 
 -- SensorData
@@ -78,15 +89,6 @@ CREATE TABLE SensorData (
     ArrGrowUnitTemperature FLOAT ARRAY NOT NULL,
     PRIMARY KEY (Timestamp, ModuleID),
     FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID)
-);
-
--- Module
-CREATE TABLE Module (
-    ModuleID SERIAL NOT NULL,
-    ModuleGroupID INT NOT NULL DEFAULT 0,
-    Token VARCHAR(256) NOT NULL,
-    PRIMARY KEY (ModuleID),
-    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );
 
 -- NutrientUnit
@@ -121,7 +123,7 @@ CREATE TABLE Device (
     DeviceID SERIAL NOT NULL,
     IsOn BOOLEAN NOT NULL DEFAULT FALSE,
     ModuleID INT NOT NULL,
-    Label VARCHAR(256) NOT NULL,
+    Label VARCHAR(256) UNIQUE NOT NULL,
     PRIMARY KEY (DeviceID),
     FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID)
 );
@@ -143,6 +145,7 @@ CREATE TABLE Permission (
     PermissionLevel INT NOT NULL DEFAULT 0,
     PRIMARY KEY (UserID, ModuleGroupID),
     FOREIGN KEY (UserID) REFERENCES Users (UserID),
-    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
+    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID),
+    UNIQUE (UserID, ModuleGroupID)
 );
 
