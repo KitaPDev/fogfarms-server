@@ -32,9 +32,8 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	log.Println(" Varialbe u in PopulateUserManagement", u)
-	usernameMAP, err := user.PopulateUserManagementPage(u)
-	//	usernameMAP["ddfsdd6"] = modulegrouplabelsMAP
+
+	mapUsername, err := user.PopulateUserManagementPage(u)
 	if err != nil {
 		msg := "Error: Failed to Get User By Username From Request"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -42,42 +41,7 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var moduleGroups []models.ModuleGroup
-
-	if u.IsAdministrator {
-		moduleGroups, err = modulegroup.GetAllModuleGroups()
-		if err != nil {
-			msg := "Error: Failed to Get All Module Groups"
-			http.Error(w, msg, http.StatusInternalServerError)
-			log.Println(err)
-			return
-		}
-
-	} else {
-		moduleGroups, err = permission.GetSupervisorModuleGroups(u)
-		if err != nil {
-			msg := "Error: Failed to Get Supervisor Module Groups"
-			http.Error(w, msg, http.StatusInternalServerError)
-			log.Println(err)
-			return
-		}
-	}
-
-	var userIDs []int
-	for _, u := range users {
-		userIDs = append(userIDs, u.UserID)
-	}
-
-	var moduleGroupIDs []int
-	for _, mg := range moduleGroups {
-		moduleGroupIDs = append(moduleGroupIDs, mg.ModuleGroupID)
-	}
-	log.Println(" Variable userIDs in PopulateUserManagement", userIDs)
-
-	log.Println(" Variable moduleGroupIDs in PopulateUserManagement", moduleGroupIDs)
-
-	userModuleGroupPermission, err := permission.GetUserModuleGroupPermissions(userIDs, moduleGroupIDs)
-	js, err := json.Marshal(usernameMAP)
+	jsonData, err := json.Marshal(mapUsername)
 	if err != nil {
 		msg := "Error: Failed to return JSON"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -85,7 +49,7 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	w.Write(jsonData)
 }
 
 func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {

@@ -112,7 +112,6 @@ func GetUserByUsernameFromCookie(w http.ResponseWriter, r *http.Request) (*model
 
 }
 func GetUserStringByUsernameFromCookie(w http.ResponseWriter, r *http.Request) (string, error) {
-	// username := "ddfsdd6"
 	var jwtKey = "s"
 	var secureCookie = securecookie.New([]byte(jwtKey), nil)
 	type Claims struct {

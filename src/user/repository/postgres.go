@@ -224,17 +224,25 @@ func hash(password string, salt string) (string, error) {
 
 func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, error) {
 	db := database.GetDB()
+
 	users, err := GetAllUsers()
 	if err != nil {
 		return nil, err
 	}
+
 	var sqlStatement string
 	var rows *sql.Rows
+
 	if u.IsAdministrator {
-		sqlStatement = "SELECT DISTINCT modulegrouplabel FROM modulegroup"
+		sqlStatement = `SELECT DISTINCT ModuleGroupLabel FROM ModuleGroup`
 		rows, err = db.Query(sqlStatement)
+
 	} else {
-		sqlStatement = "SELECT DISTINCT modulegrouplabel FROM modulegroup,permission where modulegroup.modulegroupid=permission.modulegroupid AND USERID= $1 AND permissionlevel=3;"
+		sqlStatement =
+			`SELECT DISTINCT ModuleGroupLabel 
+			FROM ModuleGroup, Permission
+			WHERE ModuleGroup.ModuleGroupID = Permission.ModuleGroupID
+			AND UserID = $1 AND PermissionLevel = 3;`
 		rows, err = db.Query(sqlStatement, u.UserID)
 	}
 
@@ -243,37 +251,49 @@ func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, erro
 	}
 	defer rows.Close()
 
-	var modulegrouplabels []string
+	var moduleGroupLabels []string
 	for rows.Next() {
-		var modulegrouplabel string
+		var moduleGroupLabel string
 
 		err := rows.Scan(
-			&modulegrouplabel,
+			&moduleGroupLabel,
 		)
 		if err != nil {
 			return nil, err
 		}
 
-		modulegrouplabels = append(modulegrouplabels, modulegrouplabel)
+		moduleGroupLabels = append(moduleGroupLabels, moduleGroupLabel)
 
 	}
 
-	var usernameMAP = make(map[string]map[string]int)
+	var mapUsername = make(map[string]map[string]int)
 	for i := range users {
-		var modulegrouplabelsMAP = make(map[string]int)
-		for i := range modulegrouplabels {
-			modulegrouplabelsMAP[modulegrouplabels[i]] = 0
+		var mapModuleGroupLabels = make(map[string]int)
+
+		for i := range moduleGroupLabels {
+			mapModuleGroupLabels[moduleGroupLabels[i]] = 0
 		}
+
 		if users[i].Username != u.Username {
-			usernameMAP[users[i].Username] = modulegrouplabelsMAP
+			mapUsername[users[i].Username] = mapModuleGroupLabels
 		}
 	}
-	fmt.Printf("%+v", usernameMAP)
+
 	if u.IsAdministrator {
-		sqlStatement = "Select username, permissionlevel,modulegrouplabel from permission,modulegroup,users where users.userid=permission.userid AND users.userid!= $1 AND modulegroup.modulegroupid=permission.modulegroupid;"
+		sqlStatement =
+			`SELECT Username, PermissionLevel, ModuleGroupLabel 
+			FROM Permission, ModuleGroup, Users
+			WHERE Users.UserID = Permission.UserID
+			AND USERS.UserID != $1 AND ModuleGroup.ModuleGroupID = Permission.ModuleGroupID;`
 
 	} else {
-		sqlStatement = "Select username, permissionlevel,modulegrouplabel from permission,modulegroup,users where users.userid=permission.userid AND users.userid!= $1 AND modulegroup.modulegroupid=permission.modulegroupid AND modulegroup.modulegroupid IN ( Select modulegroupid from permission where userid = $1 AND permissionlevel =3 );"
+		sqlStatement =
+			`SELECT Username, PermissionLevel, ModuleGroupLabel
+			FROM Permission, ModuleGroup, Users
+			WHERE Users.UserID = Permission.UserID
+			AND Users.UserID != $1 AND ModuleGroup.ModuleGroupID = Permission.ModuleGroupID
+			AND ModuleGroup.ModuleGroupID
+			IN ( SELECT ModuleGroupID from Permission WHERE UserID = $1 AND PermissionLevel = 3 );`
 
 	}
 	rows, err = db.Query(sqlStatement, u.UserID)
@@ -284,19 +304,20 @@ func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, erro
 
 	for rows.Next() {
 		var username string
-		var permissionlevel int
-		var modulegrouplabel string
+		var permissionLevel int
+		var moduleGroupLabel string
+
 		err := rows.Scan(
 			&username,
-			&permissionlevel,
-			&modulegrouplabel,
+			&permissionLevel,
+			&moduleGroupLabel,
 		)
 		if err != nil {
 			return nil, err
 		}
 
-		usernameMAP[username][modulegrouplabel] = permissionlevel
+		mapUsername[username][moduleGroupLabel] = permissionLevel
 
 	}
-	return usernameMAP, err
+	return mapUsername, err
 }
