@@ -138,11 +138,10 @@ CREATE TABLE SensorData_ModuleGroup (
 
 -- Permission
 CREATE TABLE Permission (
-    PermissionID SERIAL NOT NULL,
     UserID INT NOT NULL,
     ModuleGroupID INT NOT NULL,
     PermissionLevel INT NOT NULL DEFAULT 0,
-    PRIMARY KEY (PermissionID),
+    PRIMARY KEY (UserID, ModuleGroupID),
     FOREIGN KEY (UserID) REFERENCES Users (UserID),
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );

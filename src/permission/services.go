@@ -19,6 +19,7 @@ func GetUserModuleGroupPermissions(userIDs []int, moduleGroupIDs []int) (map[str
 	if err != nil {
 		return make(map[string]map[string]int), err
 	}
+
 	users, err := user.GetUsersByID(userIDs)
 	if err != nil {
 		return make(map[string]map[string]int), err
