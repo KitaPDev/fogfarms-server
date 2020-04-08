@@ -98,6 +98,43 @@ func GetUserByID(userID int) (*models.User, error) {
 	return &user, nil
 }
 
+func GetUsersByID(userIDs []int) ([]models.User, error) {
+	db := database.GetDB()
+
+	sqlStatement :=
+		`SELECT UserID, Username, IsAdministrator, Hash, Salt, CreatedAt 
+		FROM Users 
+		WHERE UserID IN ($1);`
+
+	rows, err := db.Query(sqlStatement, userIDs)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []models.User
+	for rows.Next() {
+		var user models.User
+
+		err := rows.Scan(
+			&user.UserID,
+			&user.Username,
+			&user.IsAdministrator,
+			&user.Hash,
+			&user.Salt,
+			&user.CreatedAt,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+
+	}
+
+	return users, nil
+}
+
 func CreateUser(username string, password string, isAdministrator bool) error {
 	db := database.GetDB()
 

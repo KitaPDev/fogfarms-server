@@ -73,17 +73,9 @@ func GetUserByID(userID int) (*models.User, error) {
 }
 
 func GetUsersByID(userIDs []int) ([]models.User, error) {
-	var users []models.User
-
-	for _, userID := range userIDs {
-		exists, user, err := ExistsByID(userID)
-		if err != nil {
-			return nil, err
-		}
-
-		if exists {
-			users = append(users, *user)
-		}
+	users, err := repository.GetUsersByID(userIDs)
+	if err != nil {
+		return nil, err
 	}
 
 	return users, nil

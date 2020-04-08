@@ -23,7 +23,7 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if u.IsAdministrator {
-		_, err := modulegroup.GetAllModuleGroups()
+		moduleGroups, err := modulegroup.GetAllModuleGroups()
 		if err != nil {
 			msg := "Error: Failed to Get All Module Groups"
 			http.Error(w, msg, http.StatusInternalServerError)
@@ -31,15 +31,18 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+
+
 	} else {
-		_, err := permission.GetAssignedModuleGroups(u)
+		mapModuleGroupPermissions, err := permission.GetAssignedModuleGroups(u)
 		if err != nil {
 			msg := "Error: Failed to Get Assigned Module Groups"
 			http.Error(w, msg, http.StatusInternalServerError)
 			log.Println(err)
 			return
 		}
+
+
+
 	}
-
-
 }
