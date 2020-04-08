@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/KitaPDev/fogfarms-server/models"
@@ -45,7 +44,9 @@ func GetAllModuleGroups() ([]models.ModuleGroup, error) {
 func GetModuleGroupByID(moduleGroupID int) (*models.ModuleGroup, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM ModuleGroup WHERE ModuleGroupID = ?;", moduleGroupID)
+	sqlStatement := `SELECT * FROM ModuleGroup WHERE ModuleGroupID = $1;`
+
+	rows, err := db.Query(sqlStatement, moduleGroupID)
 	if err != nil {
 		return nil, err
 	}
@@ -73,41 +74,47 @@ func GetModuleGroupByID(moduleGroupID int) (*models.ModuleGroup, error) {
 }
 
 func GetModuleGroupsByID(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
-
 	var moduleGroups []models.ModuleGroup
 	var err error
+
+	sqlStatement := `SELECT * FROM ModuleGroup WHERE ModuleGroupID IN (`
+	for i, moduleGroupID := range moduleGroupIDs {
+		if i > 0 {
+			sqlStatement = sqlStatement + `,`
+		}
+		sqlStatement = sqlStatement + string(moduleGroupID)
+	}
+	sqlStatement = sqlStatement + `;`
+
 	db := database.GetDB()
-	for _, moduleGroupID := range moduleGroupIDs {
-		rows, err := db.Query("SELECT * FROM ModuleGroup WHERE ModuleGroupID =$1;", moduleGroupID)
+
+	rows, err := db.Query(sqlStatement)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		moduleGroup := models.ModuleGroup{}
+
+		err := rows.Scan(
+			&moduleGroup.ModuleGroupID,
+			&moduleGroup.ModuleGroupLabel,
+			&moduleGroup.PlantID,
+			&moduleGroup.LocationID,
+			&moduleGroup.TDS,
+			&moduleGroup.PH,
+			&moduleGroup.Humidity,
+			&moduleGroup.OnAuto,
+			&moduleGroup.LightsOnHour,
+			&moduleGroup.LightsOffHour,
+		)
 		if err != nil {
 			return nil, err
 		}
-		defer rows.Close()
 
-		for rows.Next() {
-			moduleGroup := models.ModuleGroup{}
-
-			err := rows.Scan(
-				&moduleGroup.ModuleGroupID,
-				&moduleGroup.ModuleGroupLabel,
-				&moduleGroup.PlantID,
-				&moduleGroup.LocationID,
-				&moduleGroup.TDS,
-				&moduleGroup.PH,
-				&moduleGroup.Humidity,
-				&moduleGroup.OnAuto,
-				&moduleGroup.LightsOnHour,
-				&moduleGroup.LightsOffHour,
-			)
-			if err != nil {
-				return nil, err
-			}
-
-			moduleGroups = append(moduleGroups, moduleGroup)
-		}
-
+		moduleGroups = append(moduleGroups, moduleGroup)
 	}
-	fmt.Printf("%+v", moduleGroups)
+
 	return moduleGroups, err
 }
 

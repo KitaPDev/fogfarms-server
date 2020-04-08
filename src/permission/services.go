@@ -1,6 +1,7 @@
 package permission
 
 import (
+	"fmt"
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/modulegroup"
 	"github.com/KitaPDev/fogfarms-server/src/permission/repository"
@@ -27,6 +28,10 @@ func GetUserModuleGroupPermissions(userIDs []int, moduleGroupIDs []int) (map[str
 	if err != nil {
 		return make(map[string]map[string]int), err
 	}
+
+	fmt.Println("permissions:\n", permissions)
+	fmt.Println("users:\n", users)
+	fmt.Println("moduleGroups:\n", moduleGroups)
 
 	fGetUsername := func(userID int) string {
 		for _, uTemp := range users {
@@ -64,6 +69,7 @@ func GetUserModuleGroupPermissions(userIDs []int, moduleGroupIDs []int) (map[str
 		}
 
 	}
+	fmt.Println("userModuleGroupPermissions:\n", userModuleGroupPermissions)
 
 	return userModuleGroupPermissions, nil
 }

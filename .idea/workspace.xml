@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="d770124b-efb5-4882-b4d8-54ca8965e534" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modulegroup_management/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/modulegroup_management/services.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/user/repository/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/repository/postgres.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/user/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/services.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/modulegroup/repository/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/modulegroup/repository/postgres.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/permission/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/permission/services.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,12 +131,12 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="go build fogfarms-server" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+    <configuration name="go build fogfarms-server main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="fogfarms-server" />
       <working_directory value="$PROJECT_DIR$/" />
       <go_parameters value="-i" />
       <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/|$PROJECT_DIR$/api/main.go" />
+      <filePath value="$PROJECT_DIR$/|$PROJECT_DIR$/src/main.go" />
       <directory value="$PROJECT_DIR$/" />
       <method v="2" />
     </configuration>
@@ -197,12 +196,13 @@
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
     <state x="1580" y="-395" key="#SQL_Dialects/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1585406894641" />
-    <state x="1578" y="-781" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585816859402">
+    <state x="1449" y="-781" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586321144513">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
     <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1584238822322" />
     <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/1440.-1020.1080.1920/0.0.1440.900@0.0.1440.900" timestamp="1585235425871" />
     <state x="1578" y="-781" key="#com.intellij.execution.impl.EditConfigurationsDialog/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1585816859402" />
+    <state x="1449" y="-781" key="#com.intellij.execution.impl.EditConfigurationsDialog/1440.-1020.1080.1920/0.23.1440.877@1440.-1020.1080.1920" timestamp="1586321144513" />
     <state x="1734" y="-250" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1585542825368">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
@@ -270,7 +270,7 @@
     </state>
     <state x="1716" y="-370" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586114858215" />
     <state x="1716" y="-370" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog/1440.-1020.1080.1920/0.23.1440.877@1440.-1020.1080.1920" timestamp="1585577687076" />
-    <state x="1540" y="-920" width="880" height="1720" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1586009946903">
+    <state x="1540" y="-920" width="880" height="1720" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1586319441164">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
     <state x="1540" y="-920" width="880" height="1720" maximized="true" key="com.intellij.history.integration.ui.views.FileHistoryDialog/1440.-1020.1080.1920/0.23.1440.812@1440.-1020.1080.1920" timestamp="1586009946903" />
