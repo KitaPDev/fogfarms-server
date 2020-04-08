@@ -78,7 +78,7 @@ func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 	var moduleGroups []models.ModuleGroup
 	var err error
 
-	sqlStatement := `SELECT * FROM ModuleGroup WHERE ModuleGroupID IN ($1);`
+	sqlStatement := `SELECT * FROM ModuleGroup WHERE ModuleGroupID = ANY($1);`
 
 	db := database.GetDB()
 

@@ -3,9 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="d770124b-efb5-4882-b4d8-54ca8965e534" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/database/database.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/database/database.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modulegroup/repository/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/modulegroup/repository/postgres.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modulegroup_management/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/modulegroup_management/services.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/plant/repository/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/plant/repository/postgres.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/plant_management/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/plant_management/services.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/user/repository/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/user/repository/postgres.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -153,7 +153,7 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="go build fogfarms-server main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
+    <configuration name="go build fogfarms-server main.go" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="fogfarms-server" />
       <working_directory value="$PROJECT_DIR$/" />
       <go_parameters value="-i" />
@@ -218,12 +218,12 @@
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
     <state x="1580" y="-395" key="#SQL_Dialects/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1585406894641" />
-    <state x="1449" y="-781" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586321144513">
+    <state x="1449" y="-824" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586330541757">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
     <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1584238822322" />
     <state x="184" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/1440.-1020.1080.1920/0.0.1440.900@0.0.1440.900" timestamp="1585235425871" />
-    <state x="1578" y="-781" key="#com.intellij.execution.impl.EditConfigurationsDialog/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1585816859402" />
+    <state x="1449" y="-824" key="#com.intellij.execution.impl.EditConfigurationsDialog/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586330541757" />
     <state x="1449" y="-781" key="#com.intellij.execution.impl.EditConfigurationsDialog/1440.-1020.1080.1920/0.23.1440.877@1440.-1020.1080.1920" timestamp="1586321144513" />
     <state x="1734" y="-250" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1585542825368">
       <screen x="1440" y="-1020" width="1080" height="1920" />
@@ -300,10 +300,10 @@
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
     <state x="1785" y="-136" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586080559365" />
-    <state x="1660" y="-425" width="639" height="729" key="find.popup" timestamp="1586329599996">
+    <state x="1660" y="-425" width="639" height="729" key="find.popup" timestamp="1586330590228">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
-    <state x="1660" y="-425" width="639" height="729" key="find.popup/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586329599996" />
+    <state x="1660" y="-425" width="639" height="729" key="find.popup/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586330590228" />
     <state x="1660" y="-425" width="639" height="729" key="find.popup/1440.-1020.1080.1920/0.23.1440.877@1440.-1020.1080.1920" timestamp="1586194804773" />
     <state x="1645" y="-569" width="670" height="676" key="search.everywhere.popup" timestamp="1586263234724">
       <screen x="1440" y="-1020" width="1080" height="1920" />

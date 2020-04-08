@@ -109,7 +109,7 @@ func GetUsersByID(userIDs []int) ([]models.User, error) {
 	sqlStatement :=
 		`SELECT UserID, Username, IsAdministrator, Hash, Salt, CreatedAt 
 		FROM Users 
-		WHERE UserID IN ($1);`
+		WHERE UserID = ANY($1);`
 
 	rows, err := db.Query(sqlStatement, pq.Array(userIDs))
 	if err != nil {
