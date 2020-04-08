@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/KitaPDev/fogfarms-server/models"
@@ -72,35 +73,41 @@ func GetModuleGroupByID(moduleGroupID int) (*models.ModuleGroup, error) {
 }
 
 func GetModuleGroupsByID(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
-	db := database.GetDB()
-
-	rows, err := db.Query("SELECT * FROM ModuleGroup WHERE ModuleGroupID IN (?);", moduleGroupIDs)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
 
 	var moduleGroups []models.ModuleGroup
-	for rows.Next() {
-		moduleGroup := models.ModuleGroup{}
-
-		err := rows.Scan(
-			&moduleGroup.ModuleGroupID,
-			&moduleGroup.ModuleGroupLabel,
-			&moduleGroup.PlantID,
-			&moduleGroup.TDS,
-			&moduleGroup.PH,
-			&moduleGroup.Humidity,
-			&moduleGroup.LightsOnHour,
-			&moduleGroup.LightsOffHour,
-		)
+	var err error
+	db := database.GetDB()
+	for _, moduleGroupID := range moduleGroupIDs {
+		rows, err := db.Query("SELECT * FROM ModuleGroup WHERE ModuleGroupID =$1;", moduleGroupID)
 		if err != nil {
 			return nil, err
 		}
+		defer rows.Close()
 
-		moduleGroups = append(moduleGroups, moduleGroup)
+		for rows.Next() {
+			moduleGroup := models.ModuleGroup{}
+
+			err := rows.Scan(
+				&moduleGroup.ModuleGroupID,
+				&moduleGroup.ModuleGroupLabel,
+				&moduleGroup.PlantID,
+				&moduleGroup.LocationID,
+				&moduleGroup.TDS,
+				&moduleGroup.PH,
+				&moduleGroup.Humidity,
+				&moduleGroup.OnAuto,
+				&moduleGroup.LightsOnHour,
+				&moduleGroup.LightsOffHour,
+			)
+			if err != nil {
+				return nil, err
+			}
+
+			moduleGroups = append(moduleGroups, moduleGroup)
+		}
+
 	}
-
+	fmt.Printf("%+v", moduleGroups)
 	return moduleGroups, err
 }
 
