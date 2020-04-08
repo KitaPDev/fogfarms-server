@@ -73,7 +73,7 @@ func GetModuleGroupByID(moduleGroupID int) (*models.ModuleGroup, error) {
 	return moduleGroup, nil
 }
 
-func GetModuleGroupsByID(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
+func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 	var moduleGroups []models.ModuleGroup
 	var err error
 

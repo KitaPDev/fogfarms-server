@@ -11,6 +11,6 @@ func GetAllModuleGroups() ([]models.ModuleGroup, error) {
 }
 
 func GetModuleGroupsByID(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
-	moduleGroups, err := repository.GetModuleGroupsByID(moduleGroupIDs)
+	moduleGroups, err := repository.GetModuleGroupsByIDs(moduleGroupIDs)
 	return moduleGroups, err
 }
