@@ -1,6 +1,9 @@
 package repository
 
 import (
+
+	"log"
+
 	"github.com/lib/pq"
 	"time"
 
@@ -108,6 +111,8 @@ func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 
 		moduleGroups = append(moduleGroups, moduleGroup)
 	}
+
+	log.Println("Variable moduleGroups in GetModuleGroups by ID", moduleGroups)
 
 	return moduleGroups, err
 }

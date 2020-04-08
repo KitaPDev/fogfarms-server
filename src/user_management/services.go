@@ -31,7 +31,7 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-
+	log.Println(" Varialbe u in PopulateUserManagement", u)
 	users, err := user.GetAllUsers()
 	if err != nil {
 		msg := "Error: Failed to Get All Users"
@@ -70,9 +70,10 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 	for _, mg := range moduleGroups {
 		moduleGroupIDs = append(moduleGroupIDs, mg.ModuleGroupID)
 	}
-	fmt.Printf("%+v", userIDs)
-	fmt.Printf("%+v", moduleGroupIDs)
-	fmt.Printf("yeahhhh")
+	log.Println(" Varialbe userIDs in PopulateUserManagement", userIDs)
+
+	log.Println(" Varialbe moduleGroupIDs in PopulateUserManagement", moduleGroupIDs)
+
 	userModuleGroupPermission, err := permission.GetUserModuleGroupPermissions(userIDs, moduleGroupIDs)
 	if err != nil {
 		msg := "Error: Failed to Get User ModuleGroup Permissions"

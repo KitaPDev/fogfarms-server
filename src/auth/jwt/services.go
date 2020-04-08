@@ -46,7 +46,7 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 	}
 
 	var tokenString string
-
+	//tokenString := cookie.Value
 	err = secureCookie.Decode("jwtToken", cookie.Value, &tokenString)
 	if err != nil {
 		msg := `Error: Failed to Decode Token Value"`
@@ -56,7 +56,6 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 	}
 
 	claims := &Claims{}
-
 	token, err := jwt.ParseWithClaims(tokenString, claims,
 		func(token *jwt.Token) (interface{}, error) {
 			return []byte(jwtKey), nil
@@ -92,6 +91,7 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 			return false
 
 		} else {
+			fmt.Printf("This is username %+v \n", claims.Username)
 			GenerateToken(claims.Username, w)
 		}
 
@@ -166,11 +166,14 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 func GenerateToken(username string, w http.ResponseWriter) {
 	fmt.Printf("\n %+v", jwtKey)
 	expirationTime := time.Now().Add(10 * time.Minute)
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user": username,
-		"exp":  expirationTime.Unix(),
-		"iat":  time.Now().Unix(),
-	})
+	claims := &Claims{
+		Username: username,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	tokenString, err := token.SignedString([]byte(jwtKey))
 	if err != nil {
@@ -178,7 +181,6 @@ func GenerateToken(username string, w http.ResponseWriter) {
 		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
-
 	encoded, err := secureCookie.Encode("jwtToken", tokenString)
 	if err != nil {
 		msg := "Error: Failed to Encode Cookie"
@@ -187,16 +189,17 @@ func GenerateToken(username string, w http.ResponseWriter) {
 		return
 	}
 
-	cookie := &http.Cookie {
+	cookie := &http.Cookie{
 		Name:    "jwtToken",
 		Value:   encoded,
 		Expires: expirationTime,
 	}
+
 	http.SetCookie(w, cookie)
 }
 
 func InvalidateToken(w http.ResponseWriter) {
-	http.SetCookie(w, &http.Cookie {
+	http.SetCookie(w, &http.Cookie{
 		Name:    "jwtToken",
 		Value:   "",
 		Expires: time.Unix(0, 0),
