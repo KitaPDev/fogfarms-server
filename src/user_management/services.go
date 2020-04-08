@@ -6,9 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
-	"github.com/KitaPDev/fogfarms-server/src/modulegroup"
 	"github.com/KitaPDev/fogfarms-server/src/permission"
 	"github.com/KitaPDev/fogfarms-server/src/user"
 	"github.com/golang/gddo/httputil/header"
@@ -16,7 +14,6 @@ import (
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	user.CreateUser(w, r)
-	w.WriteHeader(http.StatusOK)
 }
 
 func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
@@ -32,67 +29,23 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Println(" Varialbe u in PopulateUserManagement", u)
-	users, err := user.GetAllUsers()
+	usernameMAP, err := user.PopulateUserManagementPage(u)
+	//	usernameMAP["ddfsdd6"] = modulegrouplabelsMAP
 	if err != nil {
-		msg := "Error: Failed to Get All Users"
+		msg := "Error: Failed to Get User By Username From Request"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
-
-	var moduleGroups []models.ModuleGroup
-
-	if u.IsAdministrator {
-		moduleGroups, err = modulegroup.GetAllModuleGroups()
-		if err != nil {
-			msg := "Error: Failed to Get All Module Groups"
-			http.Error(w, msg, http.StatusInternalServerError)
-			log.Println(err)
-			return
-		}
-
-	} else {
-		moduleGroups, err = permission.GetSupervisorModuleGroups(u)
-		if err != nil {
-			msg := "Error: Failed to Get Supervisor Module Groups"
-			http.Error(w, msg, http.StatusInternalServerError)
-			log.Println(err)
-			return
-		}
-	}
-
-	var userIDs []int
-	for _, u := range users {
-		userIDs = append(userIDs, u.UserID)
-	}
-
-	var moduleGroupIDs []int
-	for _, mg := range moduleGroups {
-		moduleGroupIDs = append(moduleGroupIDs, mg.ModuleGroupID)
-	}
-	log.Println(" Varialbe userIDs in PopulateUserManagement", userIDs)
-
-	log.Println(" Varialbe moduleGroupIDs in PopulateUserManagement", moduleGroupIDs)
-
-	userModuleGroupPermission, err := permission.GetUserModuleGroupPermissions(userIDs, moduleGroupIDs)
+	js, err := json.Marshal(usernameMAP)
 	if err != nil {
-		msg := "Error: Failed to Get User ModuleGroup Permissions"
+		msg := "Error: Failed to return JSON"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Println(err)
 		return
 	}
-
-	dataJson, err := json.Marshal(userModuleGroupPermission)
-	if err != nil {
-		msg := "Error: json.Marshal(userModuleGroupPermission)"
-		http.Error(w, msg, http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	log.Println(w.Write(dataJson))
+	w.Write(js)
 }
 
 func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {

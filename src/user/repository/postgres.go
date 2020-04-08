@@ -3,9 +3,10 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-	"github.com/lib/pq"
 	"math/rand"
 	"time"
+
+	"github.com/lib/pq"
 
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
@@ -219,4 +220,83 @@ func hash(password string, salt string) (string, error) {
 	}
 
 	return string(h), nil
+}
+
+func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, error) {
+	db := database.GetDB()
+	users, err := GetAllUsers()
+	if err != nil {
+		return nil, err
+	}
+	var sqlStatement string
+	var rows *sql.Rows
+	if u.IsAdministrator {
+		sqlStatement = "SELECT DISTINCT modulegrouplabel FROM modulegroup"
+		rows, err = db.Query(sqlStatement)
+	} else {
+		sqlStatement = "SELECT DISTINCT modulegrouplabel FROM modulegroup,permission where modulegroup.modulegroupid=permission.modulegroupid AND USERID= $1 AND permissionlevel=3;"
+		rows, err = db.Query(sqlStatement, u.UserID)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var modulegrouplabels []string
+	for rows.Next() {
+		var modulegrouplabel string
+
+		err := rows.Scan(
+			&modulegrouplabel,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		modulegrouplabels = append(modulegrouplabels, modulegrouplabel)
+
+	}
+
+	var usernameMAP = make(map[string]map[string]int)
+	for i := range users {
+		var modulegrouplabelsMAP = make(map[string]int)
+		for i := range modulegrouplabels {
+			modulegrouplabelsMAP[modulegrouplabels[i]] = 0
+		}
+		if users[i].Username != u.Username {
+			usernameMAP[users[i].Username] = modulegrouplabelsMAP
+		}
+	}
+	fmt.Printf("%+v", usernameMAP)
+	if u.IsAdministrator {
+		sqlStatement = "Select username, permissionlevel,modulegrouplabel from permission,modulegroup,users where users.userid=permission.userid AND users.userid!= $1 AND modulegroup.modulegroupid=permission.modulegroupid;"
+
+	} else {
+		sqlStatement = "Select username, permissionlevel,modulegrouplabel from permission,modulegroup,users where users.userid=permission.userid AND users.userid!= $1 AND modulegroup.modulegroupid=permission.modulegroupid AND modulegroup.modulegroupid IN ( Select modulegroupid from permission where userid = $1 AND permissionlevel =3 );"
+
+	}
+	rows, err = db.Query(sqlStatement, u.UserID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var username string
+		var permissionlevel int
+		var modulegrouplabel string
+		err := rows.Scan(
+			&username,
+			&permissionlevel,
+			&modulegrouplabel,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		usernameMAP[username][modulegrouplabel] = permissionlevel
+
+	}
+	return usernameMAP, err
 }

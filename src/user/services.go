@@ -38,6 +38,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		msg := "Error: Failed to Decode JSON"
 		http.Error(w, msg, http.StatusBadRequest)
 		log.Println(err)
+		return
 	}
 
 	err = repository.CreateUser(input.Username, input.Password, input.IsAdministrator)
@@ -110,6 +111,32 @@ func GetUserByUsernameFromCookie(w http.ResponseWriter, r *http.Request) (*model
 	}
 
 }
+func GetUserStringByUsernameFromCookie(w http.ResponseWriter, r *http.Request) (string, error) {
+	// username := "ddfsdd6"
+	var jwtKey = "s"
+	var secureCookie = securecookie.New([]byte(jwtKey), nil)
+	type Claims struct {
+		Username string `json:"username"`
+		jwt.StandardClaims
+	}
+	cookie, err := r.Cookie("jwtToken")
+	var tokenString string
+	err = secureCookie.Decode("jwtToken", cookie.Value, &tokenString)
+	claims := &Claims{}
+
+	token, err := jwt.ParseWithClaims(tokenString, claims,
+		func(token *jwt.Token) (interface{}, error) {
+			return []byte(jwtKey), nil
+		})
+	log.Println(err)
+	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 0*time.Second && token.Valid {
+
+		return claims.Username, err
+	} else {
+		return claims.Username, err
+	}
+
+}
 
 func ExistsByUsername(username string) (bool, *models.User, error) {
 	if user, err := GetUserByUsername(username); user != nil && err == nil {
@@ -125,4 +152,7 @@ func ExistsByID(userID int) (bool, *models.User, error) {
 	} else {
 		return false, nil, err
 	}
+}
+func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, error) {
+	return repository.PopulateUserManagementPage(u)
 }
