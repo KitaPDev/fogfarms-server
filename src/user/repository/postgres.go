@@ -224,7 +224,7 @@ func hash(password string, salt string) (string, error) {
 	return string(h), nil
 }
 
-func PopulateUserManagementPage(u *models.User) (map[models.User]map[models.ModuleGroup]int, error) {
+func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, error) {
 	db := database.GetDB()
 
 	users, err := GetAllUsers()
@@ -236,15 +236,15 @@ func PopulateUserManagementPage(u *models.User) (map[models.User]map[models.Modu
 	var rows *sql.Rows
 
 	if u.IsAdministrator {
-		sqlStatement = `SELECT * FROM ModuleGroup`
+		sqlStatement = `SELECT DISTINCT ModuleGroupID FROM ModuleGroup`
 		rows, err = db.Query(sqlStatement)
 
 	} else {
 		sqlStatement =
-			`SELECT * 
+			`SELECT DISTINCT ModuleGroupID 
 			FROM ModuleGroup, Permission
 			WHERE ModuleGroup.ModuleGroupID = Permission.ModuleGroupID
-			AND Permission.UserID = $1 AND PermissionLevel = 3;`
+			AND UserID = $1 AND PermissionLevel = 3;`
 		rows, err = db.Query(sqlStatement, u.UserID)
 	}
 
