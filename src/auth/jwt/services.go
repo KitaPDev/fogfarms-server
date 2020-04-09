@@ -90,7 +90,7 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 			return false
 
 		} else {
-			log.Println("Username: ", claims.Username)
+			log.Println("UserID: ", claims.Username)
 			GenerateToken(claims.Username, w)
 		}
 
@@ -136,7 +136,7 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 
 	exists, _, err := user.ExistsByUsername(username)
 	if err != nil {
-		msg := "Error: Failed to Exists By Username"
+		msg := "Error: Failed to Exists By UserID"
 		http.Error(w, msg, http.StatusUnauthorized)
 		log.Println(err)
 		return
@@ -149,7 +149,7 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 
 	valid, err := user.AuthenticateByUsername(username, password)
 	if err != nil {
-		msg := "Error: Failed to Authenticate By Username"
+		msg := "Error: Failed to Authenticate By UserID"
 		http.Error(w, msg, http.StatusInternalServerError)
 		return
 	}
@@ -199,6 +199,7 @@ func GenerateToken(username string, w http.ResponseWriter) error {
 		Name:    "jwtToken",
 		Value:   encoded,
 		Expires: expirationTime,
+		Path: "/",
 	}
 	http.SetCookie(w, cookie)
 

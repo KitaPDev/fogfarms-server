@@ -125,9 +125,9 @@ func CreateModuleGroup(label string, plantID int, locationID int, humidity float
 	if err != nil {
 		return err
 	}
-	sqlStatement := `INSERT INTO ModuleGroup (ModuleGroupLabel, PlantID, LocationID, onAuto,
+	sqlStatement := `INSERT INTO ModuleGroup (ModuleGroupID, PlantID, LocationID, onAuto,
                          Param_TDS, Param_Ph, Param_Humidity, LightsOnHour, LightsOffHour)
-                         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+                         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
 	_, err = db.Query(sqlStatement, label, plantID, locationID, onAuto, p.TDS, p.PH, humidity, lightsOn, lightsOff)
 	if err != nil {
 		return err

@@ -1,7 +1,8 @@
 package models
 
 type Device struct {
-	DeviceID int `json:"device_id"`
-	Name     string `json:"name"`
-	Status   bool   `json:"status"`
+	DeviceID int    `json:"device_id"`
+	IsOn     bool   `json:"IsOn"`
+	ModuleID int    `json:"module_id"`
+	Label    string `json:"label"`
 }

@@ -76,7 +76,7 @@ func GetAssignedModuleGroupsWithPermissionLevel(userID int, permissionLevel int)
 	db := database.GetDB()
 
 	sqlStatement :=
-		`SELECT m.ModuleGroupID, m.ModuleGroupLabel, m.PlantID, m.LocationID, m.Param_TDS, m.Param_PH, m.Param_Humidity,
+		`SELECT m.ModuleGroupID, m.ModuleGroupID, m.PlantID, m.LocationID, m.Param_TDS, m.Param_PH, m.Param_Humidity,
        m.onAuto, m.LightsOffHour, m.LightsOnHour, p.PermissionLevel
 		FROM ModuleGroup m, Permission p 
 		WHERE p.UserID = $1 AND m.ModuleGroupID = p.ModuleGroupID`

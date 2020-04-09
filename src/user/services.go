@@ -156,6 +156,6 @@ func ExistsByID(userID int) (bool, *models.User, error) {
 		return false, nil, err
 	}
 }
-func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, error) {
+func PopulateUserManagementPage(u *models.User) (map[models.User]map[models.ModuleGroup]int, error) {
 	return repository.PopulateUserManagementPage(u)
 }
