@@ -2,7 +2,6 @@ package jwt
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -16,7 +15,7 @@ import (
 
 const (
 	bearer       string = "bearer"
-	bearerFormat string = "Bearer %s"
+	bearerFormat string = "Bearer "
 )
 
 type Claims struct {
@@ -85,13 +84,13 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 
 		if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 10*time.Minute {
 			InvalidateToken(w)
-			fmt.Printf("Token exceed timeout")
+			log.Println("Token exceeded timeout")
 			msg := "Error: Token Exceeded Timeout Limit, Sign In Again"
 			http.Error(w, msg, http.StatusUnauthorized)
 			return false
 
 		} else {
-			fmt.Printf("This is username %+v \n", claims.Username)
+			log.Println("Username: ", claims.Username)
 			GenerateToken(claims.Username, w)
 		}
 
@@ -160,11 +159,18 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	GenerateToken(username, w)
+	err = GenerateToken(username, w)
+	if err != nil {
+		msg := "Error: Failed to Generate Token"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Operation: Authenticate Sign In; Successful"))
 }
 
-func GenerateToken(username string, w http.ResponseWriter) {
-	fmt.Printf("\n %+v", jwtKey)
+func GenerateToken(username string, w http.ResponseWriter) error {
 	expirationTime := time.Now().Add(10 * time.Minute)
 	claims := &Claims{
 		Username: username,
@@ -179,14 +185,14 @@ func GenerateToken(username string, w http.ResponseWriter) {
 	if err != nil {
 		msg := "Error: Failed to Generate Token"
 		http.Error(w, msg, http.StatusUnauthorized)
-		return
+		return err
 	}
 	encoded, err := secureCookie.Encode("jwtToken", tokenString)
 	if err != nil {
 		msg := "Error: Failed to Encode Cookie"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Println(err)
-		return
+		return err
 	}
 
 	cookie := &http.Cookie{
@@ -194,8 +200,9 @@ func GenerateToken(username string, w http.ResponseWriter) {
 		Value:   encoded,
 		Expires: expirationTime,
 	}
-
 	http.SetCookie(w, cookie)
+
+	return nil
 }
 
 func InvalidateToken(w http.ResponseWriter) {
@@ -216,5 +223,5 @@ func extractTokenFromAuthHeader(val string) (token string, ok bool) {
 }
 
 func generateAuthHeaderFromToken(token string) string {
-	return fmt.Sprintf(bearerFormat, token)
+	return bearerFormat + token
 }
