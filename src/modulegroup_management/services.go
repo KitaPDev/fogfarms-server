@@ -2,7 +2,9 @@ package modulegroup_management
 
 import (
 	"encoding/json"
+	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
+	"github.com/KitaPDev/fogfarms-server/src/module"
 	"github.com/KitaPDev/fogfarms-server/src/modulegroup"
 	"github.com/KitaPDev/fogfarms-server/src/modulegroup/repository"
 	"github.com/KitaPDev/fogfarms-server/src/permission"
@@ -14,9 +16,9 @@ import (
 
 func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-	msg := "Unauthorized"
-	http.Error(w, msg, http.StatusUnauthorized)
-	return
+		msg := "Unauthorized"
+		http.Error(w, msg, http.StatusUnauthorized)
+		return
 	}
 
 	u, err := user.GetUserByUsernameFromCookie(w, r)
@@ -27,6 +29,8 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var jsonData []byte
+
 	if u.IsAdministrator {
 		moduleGroups, err := modulegroup.GetAllModuleGroups()
 		if err != nil {
@@ -36,7 +40,27 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		var moduleGroupIDs []int
+		for _, mg := range moduleGroups {
+			moduleGroupIDs = append(moduleGroupIDs, mg.ModuleGroupID)
+		}
 
+		modules, err := module.GetModulesByModuleGroupIDs(moduleGroupIDs)
+		if err != nil {
+			msg := "Error: Failed to Get Modules By ModuleGroupIDs"
+			http.Error(w, msg, http.StatusInternalServerError)
+			return
+		}
+
+		mapModuleGroupModules := MapModulesToModuleGroup(moduleGroups, modules)
+
+		jsonData, err = json.Marshal(mapModuleGroupModules)
+		if err != nil {
+			msg := "Error: Failed to marshal JSON"
+			http.Error(w, msg, http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
 
 	} else {
 		mapModuleGroupPermissions, err := permission.GetAssignedModuleGroups(u)
@@ -47,9 +71,43 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		var moduleGroups []models.ModuleGroup
+		var moduleGroupIDs []int
+		for mg := range mapModuleGroupPermissions {
+			moduleGroups = append(moduleGroups, mg)
+			moduleGroupIDs = append(moduleGroupIDs, mg.ModuleGroupID)
+		}
 
+		modules, err := module.GetModulesByModuleGroupIDs(moduleGroupIDs)
+		if err != nil {
+			msg := "Error: Failed to Get Modules By ModuleGroupIDs"
+			http.Error(w, msg, http.StatusInternalServerError)
+			return
+		}
 
+		mapModuleGroupModules := MapModulesToModuleGroup(moduleGroups, modules)
+
+		type ModuleGroupManagementData struct {
+			MapModuleGroupModules    map[models.ModuleGroup][]models.Module
+			MapModuleGroupPermission map[models.ModuleGroup]int
+		}
+
+		data := ModuleGroupManagementData{
+			MapModuleGroupModules:    mapModuleGroupModules,
+			MapModuleGroupPermission: mapModuleGroupPermissions,
+		}
+
+		jsonData, err = json.Marshal(data)
+		if err != nil {
+			msg := "Error: Failed to marshal JSON"
+			http.Error(w, msg, http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
 	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 }
 
 func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
@@ -99,4 +157,19 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Operation: Create ModuleGroup; Successful"))
+}
+
+func MapModulesToModuleGroup(moduleGroups []models.ModuleGroup, modules []models.Module) map[models.ModuleGroup][]models.Module {
+	mapModuleGroupModules := make(map[models.ModuleGroup][]models.Module)
+	for _, mg := range moduleGroups {
+		mapModuleGroupModules[mg] = make([]models.Module, 0)
+
+		for _, m := range modules {
+			if m.ModuleGroupID == mg.ModuleGroupID {
+				mapModuleGroupModules[mg] = append(mapModuleGroupModules[mg], m)
+			}
+		}
+	}
+
+	return mapModuleGroupModules
 }

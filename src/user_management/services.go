@@ -49,7 +49,7 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, err := json.Marshal(mapUsername)
 	if err != nil {
-		msg := "Error: Failed to return JSON"
+		msg := "Error: Failed to marshal JSON"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Println(err)
 		return
@@ -99,5 +99,5 @@ func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	return
+	w.Write([]byte("Operation: Assign User Module Group Permission; Successful"))
 }
