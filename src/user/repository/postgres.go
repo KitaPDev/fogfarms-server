@@ -16,7 +16,9 @@ import (
 func GetAllUsers() ([]models.User, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT userid, username,isadministrator,hash,salt,createdat FROM Users;")
+	sqlStatement := `SELECT UserID, Username, IsAdministrator, Hash, Salt, CreatedAt FROM Users;`
+
+	rows, err := db.Query(sqlStatement)
 	if err != nil {
 		return nil, err
 	}
