@@ -13,7 +13,13 @@ import (
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	user.CreateUser(w, r)
+	err := user.CreateUser(w, r)
+	if err != nil {
+		msg := "Error: Failed to Create User"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Operation: Create User; Successful"))
 }

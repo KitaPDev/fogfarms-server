@@ -2,6 +2,7 @@ package user
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"time"
@@ -17,7 +18,7 @@ func AuthenticateByUsername(username string, password string) (bool, error) {
 	return repository.ValidateUserByUsername(username, password)
 }
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
+func CreateUser(w http.ResponseWriter, r *http.Request) error {
 	type Input struct {
 		Username        string `json:"username"`
 		Password        string `json:"password"`
@@ -30,7 +31,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		if value != "application/json" {
 			msg := "Content-Type header is not application/json"
 			http.Error(w, msg, http.StatusUnsupportedMediaType)
-			return
+			return errors.New("Content-Type header is not application/json")
 		}
 	}
 	err := json.NewDecoder(r.Body).Decode(&input)
@@ -38,7 +39,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		msg := "Error: Failed to Decode JSON"
 		http.Error(w, msg, http.StatusBadRequest)
 		log.Println(err)
-		return
+		return err
 	}
 
 	err = repository.CreateUser(input.Username, input.Password, input.IsAdministrator)
@@ -46,7 +47,10 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		msg := "Error: Failed to Create User"
 		http.Error(w, msg, http.StatusBadRequest)
 		log.Println(err)
+		return err
 	}
+
+	return nil
 }
 
 func GetAllUsers() ([]models.User, error) {
