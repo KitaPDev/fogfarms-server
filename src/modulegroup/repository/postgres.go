@@ -164,3 +164,12 @@ func SetEnvironmentParameters(moduleGroupID int, humidity float32, ph float32, t
 
 	return nil
 }
+
+func AssignModulesToModuleGroup(moduleGroupID int, moduleIDs []int) error {
+	db := database.GetDB()
+
+	sqlStatement := `UPDATE Module SET ModuleGroupID = $1 WHERE ModuleID = ANY($2)`
+
+	_, err := db.Query(sqlStatement, moduleGroupID, moduleIDs)
+	return err
+}

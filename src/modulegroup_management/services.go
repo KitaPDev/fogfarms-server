@@ -52,9 +52,19 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		mapModuleGroupModules := MapModulesToModuleGroup(moduleGroups, modules)
+		mapModuleGroupModules, unassignedModules := mapModulesToModuleGroup(moduleGroups, modules)
 
-		jsonData, err = json.Marshal(mapModuleGroupModules)
+		type Data struct {
+			MapModuleGroupModules map[models.ModuleGroup][]models.Module
+			UnassignedModules     []models.Module `json:"unassigned_modules"`
+		}
+
+		data := Data{
+			MapModuleGroupModules: mapModuleGroupModules,
+			UnassignedModules:     unassignedModules,
+		}
+
+		jsonData, err = json.Marshal(data)
 		if err != nil {
 			msg := "Error: Failed to marshal JSON"
 			http.Error(w, msg, http.StatusInternalServerError)
@@ -85,16 +95,18 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		mapModuleGroupModules := MapModulesToModuleGroup(moduleGroups, modules)
+		mapModuleGroupModules, unassignedModules := mapModulesToModuleGroup(moduleGroups, modules)
 
-		type ModuleGroupManagementData struct {
+		type Data struct {
 			MapModuleGroupModules    map[models.ModuleGroup][]models.Module
 			MapModuleGroupPermission map[models.ModuleGroup]int
+			UnassignedModules        []models.Module `json:"unassigned_modules"`
 		}
 
-		data := ModuleGroupManagementData{
+		data := Data{
 			MapModuleGroupModules:    mapModuleGroupModules,
 			MapModuleGroupPermission: mapModuleGroupPermissions,
+			UnassignedModules:        unassignedModules,
 		}
 
 		jsonData, err = json.Marshal(data)
@@ -159,17 +171,78 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Operation: Create ModuleGroup; Successful"))
 }
 
-func MapModulesToModuleGroup(moduleGroups []models.ModuleGroup, modules []models.Module) map[models.ModuleGroup][]models.Module {
+func AssignModuleToModuleGroup(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		msg := "Unauthorized"
+		http.Error(w, msg, http.StatusUnauthorized)
+		return
+	}
+
+	type Input struct {
+		ModuleGroupID int   `json:"module_group_ids"`
+		ModuleIDs     []int `json:"module_ids"`
+	}
+
+	input := Input{}
+	if r.Header.Get("Content-Type") != "" {
+		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
+		if value != "application/json" {
+			msg := "Content-Type header is not application/json"
+			http.Error(w, msg, http.StatusUnsupportedMediaType)
+			return
+		}
+	}
+	err := json.NewDecoder(r.Body).Decode(&input)
+	if err != nil {
+		msg := "Error: Failed to Decode JSON"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	err = repository.AssignModulesToModuleGroup(input.ModuleGroupID, input.ModuleIDs)
+	if err != nil {
+		msg := "Error: Failed to Assign Modules To ModuleGroup"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Operation: Assign Module To ModuleGroup; Successful"))
+}
+
+func mapModulesToModuleGroup(moduleGroups []models.ModuleGroup,
+	modules []models.Module) (map[models.ModuleGroup][]models.Module, []models.Module) {
+
 	mapModuleGroupModules := make(map[models.ModuleGroup][]models.Module)
+	var assignedModules []models.Module
+	var unassignedModules []models.Module
+
 	for _, mg := range moduleGroups {
 		mapModuleGroupModules[mg] = make([]models.Module, 0)
 
 		for _, m := range modules {
 			if m.ModuleGroupID == mg.ModuleGroupID {
 				mapModuleGroupModules[mg] = append(mapModuleGroupModules[mg], m)
+				assignedModules = append(assignedModules, m)
 			}
 		}
 	}
 
-	return mapModuleGroupModules
+	for _, m1 := range modules {
+		found := false
+
+		for _, m2 := range assignedModules {
+			if m2 == m1 {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			unassignedModules = append(unassignedModules, m1)
+		}
+	}
+
+	return mapModuleGroupModules, unassignedModules
 }
