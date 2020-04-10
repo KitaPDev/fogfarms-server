@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-	"os"
-	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
-	"github.com/KitaPDev/fogfarms-server/src/modulegroup_management"
-	"github.com/KitaPDev/fogfarms-server/src/plant_management"
-	"github.com/KitaPDev/fogfarms-server/src/user_management"
+	"github.com/KitaPDev/fogfarms-server/src/components/modulegroup_management"
+	"github.com/KitaPDev/fogfarms-server/src/components/plant_management"
+	"github.com/KitaPDev/fogfarms-server/src/components/user_management"
+	"github.com/KitaPDev/fogfarms-server/src/util/auth/jwt"
 	"github.com/gorilla/mux"
 	"github.com/labstack/gommon/log"
+	"net/http"
+	"os"
 )
 
 func main() {

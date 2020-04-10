@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/KitaPDev/fogfarms-server/src/user"
+	"github.com/KitaPDev/fogfarms-server/src/util/user"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/golang/gddo/httputil/header"
 	"github.com/gorilla/securecookie"

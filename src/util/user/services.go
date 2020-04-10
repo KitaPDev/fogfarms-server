@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/KitaPDev/fogfarms-server/models"
-	"github.com/KitaPDev/fogfarms-server/src/user/repository"
+	"github.com/KitaPDev/fogfarms-server/src/util/user/repository"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/golang/gddo/httputil/header"
 	"github.com/gorilla/securecookie"

@@ -6,9 +6,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
-	"github.com/KitaPDev/fogfarms-server/src/permission"
-	"github.com/KitaPDev/fogfarms-server/src/user"
+	"github.com/KitaPDev/fogfarms-server/src/util/auth/jwt"
+	"github.com/KitaPDev/fogfarms-server/src/util/permission"
+	"github.com/KitaPDev/fogfarms-server/src/util/user"
 	"github.com/golang/gddo/httputil/header"
 )
 

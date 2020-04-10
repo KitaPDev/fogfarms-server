@@ -2,7 +2,7 @@ package plant
 
 import (
 	"github.com/KitaPDev/fogfarms-server/models"
-	"github.com/KitaPDev/fogfarms-server/src/plant/repository"
+	"github.com/KitaPDev/fogfarms-server/src/util/plant/repository"
 )
 
 func GetAllPlants() ([]models.Plant, error) {

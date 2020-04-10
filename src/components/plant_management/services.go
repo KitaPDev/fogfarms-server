@@ -3,12 +3,12 @@ package plant_management
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
+	"github.com/KitaPDev/fogfarms-server/src/util/auth/jwt"
 	"log"
 	"net/http"
 
 	"github.com/KitaPDev/fogfarms-server/models"
-	"github.com/KitaPDev/fogfarms-server/src/plant"
+	"github.com/KitaPDev/fogfarms-server/src/util/plant"
 	"github.com/golang/gddo/httputil/header"
 )
 
