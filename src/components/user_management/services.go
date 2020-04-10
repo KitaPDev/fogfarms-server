@@ -13,6 +13,12 @@ import (
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		msg := "Unauthorized"
+		http.Error(w, msg, http.StatusUnauthorized)
+		return
+	}
+
 	err := user.CreateUser(w, r)
 	if err != nil {
 		msg := "Error: Failed to Create User"
