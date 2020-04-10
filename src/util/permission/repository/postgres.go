@@ -39,20 +39,28 @@ func GetAllPermissions() ([]models.Permission, error) {
 	return permissions, nil
 }
 
-func AssignUserModuleGroupPermission(userID int, moduleGroupID int, level int) error {
+func AssignUserModuleGroupPermission(username string, moduleGroupLabel string, level int) error {
 	db := database.GetDB()
 
 	sqlStatement :=
-		`CREATE OR REPLACE FUNCTION alterPermission(userIDI INT, moduleGroupIDI INT, levelI INT)  RETURNS VOID
+		`CREATE OR REPLACE FUNCTION alterPermission(usernameI VARCHAR(256), moduleGroupLabelI VARCHAR(256), levelI INT)  RETURNS VOID
 			AS $$
 				BEGIN
-				IF (SELECT COUNT(*) FROM Permission WHERE UserID = userIDI AND ModuleGroupID = moduleGroupIDI) > 0 THEN
+				IF (SELECT COUNT(*) FROM Permission, Modulegroup, users WHERE users.userID = permission.userID AND Permission.ModuleGroupID = Modulegroup.moduleGroupID AND modulegrouplabel=moduleGroupLabelI AND username=usernameI) > 0 THEN
 							UPDATE Permission SET PermissionLevel = levelI
-							WHERE
-								UserID = userIDI AND ModuleGroupID = moduleGroupIDI;
+							FROM Modulegroup, Users
+							WHERE users.userID = permission.userID 
+								AND Permission.ModuleGroupID = Modulegroup.moduleGroupID
+								AND modulegrouplabel=moduleGroupLabelI 
+								AND username=usernameI;
 						ELSE
-							INSERT INTO Permission (PermissionLevel, UserID, ModuleGroupID)
-							VALUES (levelI, userIDI, moduleGroupIDI);
+						INSERT INTO Permission (UserID,ModuleGroupID,Permissionlevel) 
+						SELECT userid, modulegroupID, levelI
+						FROM users, Modulegroup 
+						WHERE modulegrouplabel=moduleGroupLabelI 
+							AND username=usernameI
+						;
+						
 					END IF;
 				END;
 			$$ LANGUAGE plpgsql;`
@@ -63,7 +71,7 @@ func AssignUserModuleGroupPermission(userID int, moduleGroupID int, level int) e
 		return err
 	}
 
-	_, err = db.Query(`SELECT alterPermission($1, $2, $3)`, userID, moduleGroupID, level)
+	_, err = db.Query(`SELECT alterPermission($1, $2, $3)`, username, moduleGroupLabel, level)
 	if err != nil {
 		log.Println(err)
 		return err

@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"fmt"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/util/modulegroup"
 	"github.com/KitaPDev/fogfarms-server/src/util/permission/repository"
@@ -81,8 +82,8 @@ func GetUserModuleGroupPermissions(userIDs []int, moduleGroupIDs []int) (map[str
 	return userModuleGroupPermissions, nil
 }
 
-func AssignUserModuleGroupPermission(userID int, moduleGroupID int, permissionLevel int) error {
-	return repository.AssignUserModuleGroupPermission(userID, moduleGroupID, permissionLevel)
+func AssignUserModuleGroupPermission(username string, moduleGroupLabel string, permissionLevel int) error {
+	return repository.AssignUserModuleGroupPermission(username, moduleGroupLabel, permissionLevel)
 }
 
 func GetSupervisorModuleGroups(user *models.User) ([]models.ModuleGroup, error) {

@@ -48,7 +48,7 @@ func GetAllUsers() ([]models.User, error) {
 func GetUserByUsername(username string) (*models.User, error) {
 	db := database.GetDB()
 
-	sqlStatement := `SELECT UserID, UserID, IsAdministrator, Hash, Salt, CreatedAt FROM Users WHERE UserID = $1;`
+	sqlStatement := `SELECT UserID, Username, IsAdministrator, Hash, Salt, CreatedAt FROM Users WHERE Username = $1;`
 
 	rows, err := db.Query(sqlStatement, username)
 	if err != nil {
@@ -163,7 +163,7 @@ func CreateUser(username string, password string, isAdministrator bool) error {
 func ValidateUserByUsername(username string, inputPassword string) (bool, error) {
 	db := database.GetDB()
 
-	sqlStatement := `SELECT UserID, UserID, Hash, Salt FROM Users WHERE UserID = $1;`
+	sqlStatement := `SELECT UserID, UserID, Hash, Salt FROM Users WHERE Username = $1;`
 
 	user := models.User{}
 
@@ -298,7 +298,7 @@ func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, erro
 			IN ( SELECT ModuleGroupID from Permission WHERE UserID = $1 AND PermissionLevel = 3 );`
 
 	}
-	
+
 	rows, err = db.Query(sqlStatement, u.UserID)
 	if err != nil {
 		return nil, err
