@@ -80,7 +80,8 @@ CREATE TABLE Module (
 
 -- SensorData
 CREATE TABLE SensorData (
-    ModuleID SERIAL NOT NULL,
+    ModuleGroupID INT NOT NULL,
+    ModuleID INT NOT NULL,
     Timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
     TDS FLOAT NOT NULL,
     PH FLOAT NOT NULL,
@@ -88,7 +89,8 @@ CREATE TABLE SensorData (
     ArrGrowUnitLux FLOAT ARRAY NOT NULL,
     ArrGrowUnitHumidity FLOAT ARRAY NOT NULL,
     ArrGrowUnitTemperature FLOAT ARRAY NOT NULL,
-    PRIMARY KEY (Timestamp, ModuleID),
+    PRIMARY KEY (Timestamp, ModuleGroupID, ModuleID),
+    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID),
     FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID)
 );
 
@@ -131,7 +133,7 @@ CREATE TABLE Device (
 
 -- SensorData_ModuleGroup
 CREATE TABLE SensorData_ModuleGroup (
-    ModuleGroupID SERIAL NOT NULL,
+    ModuleGroupID INT NOT NULL,
     Timestamp timestamp NOT NULL DEFAULT NOW(),
     Humidity FLOAT NOT NULL,
     Temperature FLOAT NOT NULL,
