@@ -1,17 +1,15 @@
 package user
 
 import (
-	"encoding/json"
-	"errors"
-	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 	"log"
 	"net/http"
 	"time"
 
+	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/util/user/repository"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/golang/gddo/httputil/header"
 	"github.com/gorilla/securecookie"
 )
 
@@ -29,10 +27,10 @@ func CreateUser(w http.ResponseWriter, r *http.Request) error {
 	var input Input
 	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
 	if !success {
-		return
+		return http.ErrBodyNotAllowed
 	}
 
-	err = repository.CreateUser(input.Username, input.Password, input.IsAdministrator)
+	err := repository.CreateUser(input.Username, input.Password, input.IsAdministrator)
 	if err != nil {
 		msg := "Error: Failed to Create User"
 		http.Error(w, msg, http.StatusBadRequest)

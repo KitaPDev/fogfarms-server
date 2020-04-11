@@ -2,6 +2,9 @@ package modulegroup_management
 
 import (
 	"encoding/json"
+	"log"
+	"net/http"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 	"github.com/KitaPDev/fogfarms-server/src/util/auth/jwt"
@@ -10,9 +13,6 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/util/modulegroup/repository"
 	"github.com/KitaPDev/fogfarms-server/src/util/permission"
 	"github.com/KitaPDev/fogfarms-server/src/util/user"
-	"github.com/golang/gddo/httputil/header"
-	"log"
-	"net/http"
 )
 
 func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
@@ -149,7 +149,7 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = repository.CreateModuleGroup(input.ModuleGroupLabel, input.PlantID, input.LocationID,
+	err := repository.CreateModuleGroup(input.ModuleGroupLabel, input.PlantID, input.LocationID,
 		input.Humidity, input.LightsOnHour, input.LightsOffHour, input.OnAuto)
 	if err != nil {
 		msg := "Error: Failed to Create Module Group"
@@ -180,7 +180,7 @@ func AssignModuleToModuleGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = repository.AssignModulesToModuleGroup(input.ModuleGroupID, input.ModuleIDs)
+	err := repository.AssignModulesToModuleGroup(input.ModuleGroupID, input.ModuleIDs)
 	if err != nil {
 		msg := "Error: Failed to Assign Modules To ModuleGroup"
 		http.Error(w, msg, http.StatusInternalServerError)

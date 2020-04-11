@@ -16,7 +16,7 @@ import (
 func GetAllUsers() ([]models.User, error) {
 	db := database.GetDB()
 
-	sqlStatement := `SELECT UserID, UserID, IsAdministrator, Hash, Salt, CreatedAt FROM Users;`
+	sqlStatement := `SELECT UserID, Username, IsAdministrator, Hash, Salt, CreatedAt FROM Users;`
 
 	rows, err := db.Query(sqlStatement)
 	if err != nil {
@@ -79,7 +79,7 @@ func GetUserByUsername(username string) (*models.User, error) {
 func GetUserByID(userID int) (*models.User, error) {
 	db := database.GetDB()
 
-	sqlStatement := `SELECT UserId, UserID, IsAdministrator, Hash, Salt, CreatedAt FROM Users WHERE UserID = $1;`
+	sqlStatement := `SELECT UserId, Username, IsAdministrator, Hash, Salt, CreatedAt FROM Users WHERE UserID = $1;`
 
 	rows, err := db.Query(sqlStatement, userID)
 	if err != nil {
@@ -110,7 +110,7 @@ func GetUsersByID(userIDs []int) ([]models.User, error) {
 	db := database.GetDB()
 
 	sqlStatement :=
-		`SELECT UserID, UserID, IsAdministrator, Hash, Salt, CreatedAt 
+		`SELECT UserID, Username, IsAdministrator, Hash, Salt, CreatedAt 
 		FROM Users 
 		WHERE UserID = ANY($1);`
 
@@ -152,7 +152,7 @@ func CreateUser(username string, password string, isAdministrator bool) error {
 		return err
 	}
 
-	sqlStatement := `INSERT INTO Users (UserID, IsAdministrator, Hash, Salt, CreatedAt) 
+	sqlStatement := `INSERT INTO Users (Username, IsAdministrator, Hash, Salt, CreatedAt) 
 		VALUES ($1, $2, $3, $4, Now());`
 
 	db.QueryRow(sqlStatement, username, isAdministrator, hash, salt)
