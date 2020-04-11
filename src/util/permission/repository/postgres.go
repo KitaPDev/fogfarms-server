@@ -2,8 +2,9 @@ package repository
 
 import (
 	"database/sql"
-	"github.com/KitaPDev/fogfarms-server/src/util/user"
 	"log"
+
+	"github.com/KitaPDev/fogfarms-server/src/util/user"
 
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
@@ -40,20 +41,27 @@ func GetAllPermissions() ([]models.Permission, error) {
 	return permissions, nil
 }
 
-func AssignUserModuleGroupPermission(userID int, moduleGroupID int, level int) error {
+func AssignUserModuleGroupPermission(username string, moduleGroupLabel string, level int) error {
 	db := database.GetDB()
 
 	sqlStatement :=
-		`CREATE OR REPLACE FUNCTION alterPermission(userIDI INT, moduleGroupIDI INT, levelI INT)  RETURNS VOID
+		`CREATE OR REPLACE FUNCTION alterPermission(usernameI VARCHAR(256), moduleGroupLabelI VARCHAR(256), levelI INT)  RETURNS VOID
 			AS $$
 				BEGIN
-				IF (SELECT COUNT(*) FROM Permission WHERE UserID = userIDI AND ModuleGroupID = moduleGroupIDI) > 0 THEN
+				IF (SELECT COUNT(*) FROM Permission, Modulegroup, users WHERE users.UserID = permission.userID AND Permission.ModuleGroupID = Modulegroup.moduleGroupID AND modulegrouplabel=modulegrouplabelI and username = usernameI) > 0 THEN
 							UPDATE Permission SET PermissionLevel = levelI
+							FROM Modulegroup,users
 							WHERE
-								UserID = userIDI AND ModuleGroupID = moduleGroupIDI;
+								users.UserID = permission.userID
+								AND Permission.ModuleGroupID = Modulegroup.moduleGroupID
+								AND modulegrouplabel = modulegrouplabelI
+								AND username = usernameI;
 						ELSE
 							INSERT INTO Permission (PermissionLevel, UserID, ModuleGroupID)
-							VALUES (levelI, userIDI, moduleGroupIDI);
+							SELECT userID,modulegroupID,levelI
+							FROM users, Modulegroup
+							Where modulegrouplabel=ModulegrouplabelI
+							AND username = usernameI;
 					END IF;
 				END;
 			$$ LANGUAGE plpgsql;`
@@ -64,7 +72,7 @@ func AssignUserModuleGroupPermission(userID int, moduleGroupID int, level int) e
 		return err
 	}
 
-	_, err = db.Query(`SELECT alterPermission($1, $2, $3)`, userID, moduleGroupID, level)
+	_, err = db.Query(`SELECT alterPermission($1, $2, $3)`, username, moduleGroupLabel, level)
 	if err != nil {
 		log.Println(err)
 		return err
@@ -136,12 +144,12 @@ func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, erro
 	var rows *sql.Rows
 
 	if u.IsAdministrator {
-		sqlStatement = `SELECT DISTINCT ModuleGroupID FROM ModuleGroup`
+		sqlStatement = `SELECT DISTINCT ModuleGroupLabel FROM ModuleGroup`
 		rows, err = db.Query(sqlStatement)
 
 	} else {
 		sqlStatement =
-			`SELECT DISTINCT ModuleGroupID 
+			`SELECT DISTINCT ModuleGroupLabel
 			FROM ModuleGroup, Permission
 			WHERE ModuleGroup.ModuleGroupID = Permission.ModuleGroupID
 			AND UserID = $1 AND PermissionLevel = 3;`

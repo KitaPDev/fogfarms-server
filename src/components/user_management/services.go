@@ -3,14 +3,14 @@ package user_management
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 	"log"
 	"net/http"
+
+	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 
 	"github.com/KitaPDev/fogfarms-server/src/util/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/util/permission"
 	"github.com/KitaPDev/fogfarms-server/src/util/user"
-	"github.com/golang/gddo/httputil/header"
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -73,9 +73,9 @@ func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type Input struct {
-		UserID          int `json:"user_id"`
-		ModuleGroupID   int `json:"module_group_id"`
-		PermissionLevel int `json:"permission_level"`
+		Username         string `json:"username"`
+		ModuleGroupLabel string `json:"module_group_label"`
+		PermissionLevel  int    `json:"permission_level"`
 	}
 
 	var input Input
@@ -86,7 +86,7 @@ func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Printf("%+v", input)
 
-	err := permission.AssignUserModuleGroupPermission(input.UserID, input.ModuleGroupID, input.PermissionLevel)
+	err := permission.AssignUserModuleGroupPermission(input.Username, input.ModuleGroupLabel, input.PermissionLevel)
 	if err != nil {
 		msg := "Error: Failed to Assign User ModuleGroup Permission"
 		http.Error(w, msg, http.StatusInternalServerError)

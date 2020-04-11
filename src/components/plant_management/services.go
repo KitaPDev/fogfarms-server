@@ -3,14 +3,14 @@ package plant_management
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
-	"github.com/KitaPDev/fogfarms-server/src/util/auth/jwt"
 	"log"
 	"net/http"
 
+	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
+	"github.com/KitaPDev/fogfarms-server/src/util/auth/jwt"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/util/plant"
-	"github.com/golang/gddo/httputil/header"
 )
 
 func GetAllPlants(w http.ResponseWriter, r *http.Request) {
@@ -60,7 +60,7 @@ func CreatePlant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = plant.CreatePlant(input)
+	err := plant.CreatePlant(input)
 	if err != nil {
 		msg := "Error: Failed to New Plant"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -86,7 +86,7 @@ func DeletePlant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = plant.DeletePlant(input.PlantID)
+	err := plant.DeletePlant(input.PlantID)
 	if err != nil {
 		msg := "Error: Failed to Delete Plant"
 		http.Error(w, msg, http.StatusInternalServerError)
