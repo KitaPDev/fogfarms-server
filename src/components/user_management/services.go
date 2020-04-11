@@ -37,7 +37,7 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := user.GetUserByUsernameFromCookie(w, r)
+	u, err := user.GetUserByUsernameFromCookie(r)
 	if err != nil {
 		msg := "Error: Failed to Get User By UserID From Request"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -45,7 +45,7 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mapUsername, err := user.PopulateUserManagementPage(u)
+	mapUsername, err := permission.PopulateUserManagementPage(u)
 	if err != nil {
 		msg := "Error: Failed to Get User By UserID From Request"
 		http.Error(w, msg, http.StatusInternalServerError)

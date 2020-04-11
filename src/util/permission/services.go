@@ -102,3 +102,7 @@ func GetSupervisorModuleGroups(user *models.User) ([]models.ModuleGroup, error) 
 func GetAssignedModuleGroups(user *models.User) (map[models.ModuleGroup]int, error) {
 	return repository.GetAssignedModuleGroupsWithPermissionLevel(user.UserID, -1)
 }
+
+func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, error) {
+	return repository.PopulateUserManagementPage(u)
+}

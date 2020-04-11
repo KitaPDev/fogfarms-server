@@ -21,7 +21,7 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := user.GetUserByUsernameFromCookie(w, r)
+	u, err := user.GetUserByUsernameFromCookie(r)
 	if err != nil {
 		msg := "Error: Failed to Get User By UserID From Request"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -118,6 +118,7 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
 }

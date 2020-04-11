@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/util/auth/jwt"
+	"github.com/KitaPDev/fogfarms-server/src/util/device"
+	"github.com/KitaPDev/fogfarms-server/src/util/sensordata"
 	"github.com/KitaPDev/fogfarms-server/src/util/user"
 	"github.com/golang/gddo/httputil/header"
 	"log"
@@ -17,7 +19,7 @@ func PopulateDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	u, err := user.GetUserByUsernameFromCookie(w, r)
+	u, err := user.GetUserByUsernameFromCookie(r)
 	if err != nil {
 		msg := "Error: Failed to Get User By UserID From Request"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -43,15 +45,41 @@ func PopulateDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
-
-	if u.IsAdministrator {
-
-
-	} else {
-
-
+	sensorData, err := sensordata.GetLatestSensorData(moduleGroup.ModuleGroupID)
+	if err != nil {
+		msg := "Error: Failed to Get Latest Sensor Data"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Println(err)
+		return
 	}
 
+	devices, err := device.GetModuleGroupDevices(moduleGroup.ModuleGroupID)
+	if err != nil {
+		msg := "Error: Failed to Get ModuleGroup Devices"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
 
+	type Data struct {
+		SensorData []models.SensorData
+		Devices    []models.Device
+	}
+
+	data := Data{
+		SensorData: sensorData,
+		Devices:    devices,
+	}
+
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		msg := "Error: Failed to marshal JSON"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 }

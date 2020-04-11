@@ -89,7 +89,7 @@ func GetUsersByID(userIDs []int) ([]models.User, error) {
 	return users, nil
 }
 
-func GetUserByUsernameFromCookie(w http.ResponseWriter, r *http.Request) (*models.User, error) {
+func GetUserByUsernameFromCookie(r *http.Request) (*models.User, error) {
 	// username := "ddfsdd6"
 	var jwtKey = "s"
 	var secureCookie = securecookie.New([]byte(jwtKey), nil)
@@ -155,7 +155,4 @@ func ExistsByID(userID int) (bool, *models.User, error) {
 	} else {
 		return false, nil, err
 	}
-}
-func PopulateUserManagementPage(u *models.User) (map[string]map[string]int, error) {
-	return repository.PopulateUserManagementPage(u)
 }
