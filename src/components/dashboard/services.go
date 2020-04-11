@@ -75,6 +75,7 @@ func ToggleDevice(w http.ResponseWriter, r *http.Request) {
 
 	success := jsonhandler.DecodeJsonFromBody(w, r, &deviceID)
 	if !success {
+		
 		return
 	}
 

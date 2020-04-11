@@ -1,17 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d770124b-efb5-4882-b4d8-54ca8965e534" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/jsonhandler/jsonhandler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/dashboard/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/dashboard/handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/dashboard/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/dashboard/services.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/modulegroup_management/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/modulegroup_management/services.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/plant_management/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/plant_management/services.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/user_management/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/user_management/services.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/util/auth/jwt/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/auth/jwt/services.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/util/user/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/user/services.go" afterDir="false" />
-    </list>
+    <list default="true" id="d770124b-efb5-4882-b4d8-54ca8965e534" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
