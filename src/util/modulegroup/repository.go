@@ -10,4 +10,5 @@ type Repository interface {
 	ToggleAuto(moduleGroupID int) error
 	SetEnvironmentParameters(moduleGroupID int, humidity float32, ph float32, tds float32,
 		lightsOn float32, lightsOff float32) error
+	ResetTimer(moduleGroupID int) error
 }

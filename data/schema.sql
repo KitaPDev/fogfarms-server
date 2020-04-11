@@ -63,6 +63,7 @@ CREATE TABLE ModuleGroup (
     OnAuto BOOLEAN NOT NULL,
     LightsOnHour FLOAT NOT NULL,
     LightsOffHour FLOAT NOT NULL,
+    TimerLastReset TIMESTAMP NOT NULL DEFAULT NOW(),
     PRIMARY KEY (ModuleGroupID),
     FOREIGN KEY (PlantID) REFERENCES Plant (PlantID),
     FOREIGN KEY (LocationID) REFERENCES Location (LocationID)

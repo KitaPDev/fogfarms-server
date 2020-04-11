@@ -19,6 +19,9 @@ func MakeHTTPHandler() http.Handler {
 	router.HandleFunc("/dashboard/set_env_param", setEnvironmentParameters).
 		Methods("POST").
 		Schemes("http")
+	router.HandleFunc("/dashboard/reset_timer", resetTimer).
+		Methods("POST").
+		Schemes("http")
 
 	return router
 }
@@ -37,4 +40,8 @@ func toggleAuto(w http.ResponseWriter, r *http.Request) {
 
 func setEnvironmentParameters(w http.ResponseWriter, r *http.Request) {
 	SetEnvironmentParameters(w, r)
+}
+
+func resetTimer(w http.ResponseWriter, r *http.Request) {
+	ResetTimer(w, r)
 }

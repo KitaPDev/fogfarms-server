@@ -152,3 +152,28 @@ func SetEnvironmentParameters(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Operation: Set Environment Parameters; Successful"))
 }
+
+func ResetTimer(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		msg := "Unauthorized"
+		http.Error(w, msg, http.StatusUnauthorized)
+		return
+	}
+
+	var moduleGroupID int
+
+	success := jsonhandler.DecodeJsonFromBody(w, r, &moduleGroupID)
+	if !success {
+		return
+	}
+
+	err := modulegroup.ResetTimer(moduleGroupID)
+	if err != nil {
+		msg := "Error: Failed to Reset Timer"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Operation: Reset Timer; Successful"))
+}

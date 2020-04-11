@@ -167,5 +167,16 @@ func AssignModulesToModuleGroup(moduleGroupID int, moduleIDs []int) error {
 	sqlStatement := `UPDATE Module SET ModuleGroupID = $1 WHERE ModuleID = ANY($2)`
 
 	_, err := db.Query(sqlStatement, moduleGroupID, moduleIDs)
+
+	return err
+}
+
+func ResetTimer(moduleGroupID int) error {
+	db := database.GetDB()
+
+	sqlStatement := `UPDATE ModuleGroup SET TimerLastReset = NOW() WHERE ModuleGroupID = $1;`
+
+	_, err := db.Query(sqlStatement, moduleGroupID)
+
 	return err
 }
