@@ -8,3 +8,7 @@ import (
 func GetModuleGroupDevices(moduleGroupID int) ([]models.Device, error) {
 	return repository.GetModuleGroupDevices(moduleGroupID)
 }
+
+func ToggleDevice(deviceID int) error {
+	return repository.ToggleDevice(deviceID)
+}

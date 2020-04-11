@@ -30,3 +30,12 @@ func GetModuleGroupDevices(moduleGroupID int) ([]models.Device, error) {
 
 	return devices, nil
 }
+
+func ToggleDevice(deviceID int) error {
+	db := database.GetDB()
+
+	sqlStatement := `UPDATE Device SET IsOn = NOT IsOn WHERE DeviceID = $1`
+
+	_, err := db.Query(sqlStatement, deviceID)
+	return err
+}

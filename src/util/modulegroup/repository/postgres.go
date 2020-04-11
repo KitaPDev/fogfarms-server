@@ -3,12 +3,10 @@ package repository
 import (
 	"log"
 
-	"github.com/lib/pq"
-	"time"
-
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/KitaPDev/fogfarms-server/src/util/plant"
+	"github.com/lib/pq"
 )
 
 func GetAllModuleGroups() ([]models.ModuleGroup, error) {
@@ -135,12 +133,11 @@ func CreateModuleGroup(label string, plantID int, locationID int, humidity float
 	return nil
 }
 
-func SetManualOperation(moduleGroupID int, toManual bool) error {
+func ToggleAuto(moduleGroupID int) error {
 	db := database.GetDB()
 
-	sqlStatement := `UPDATE ModuleGroup SET OnAuto = $1
-		WHERE ModuleGroupID = $2`
-	_, err := db.Query(sqlStatement, toManual, moduleGroupID)
+	sqlStatement := `UPDATE ModuleGroup SET OnAuto = NOT OnAuto WHERE ModuleGroupID = $1`
+	_, err := db.Query(sqlStatement, moduleGroupID)
 	if err != nil {
 		return err
 	}
@@ -149,14 +146,14 @@ func SetManualOperation(moduleGroupID int, toManual bool) error {
 }
 
 func SetEnvironmentParameters(moduleGroupID int, humidity float32, ph float32, tds float32,
-	lightsOn time.Time, lightsOff time.Time) error {
+	lightsOnHour float32, lightsOffHour float32) error {
 	db := database.GetDB()
 
 	sqlStatement := `UPDATE ModuleGroup	
 						SET Param_Humidity = $1, Param_PH = $2, Param_TDS = $3, LightsOnHour = $4, 
 						    LightsOffHour = $5
 						WHERE ModuleGroupID = $6`
-	_, err := db.Query(sqlStatement, humidity, ph, tds, lightsOff, lightsOn, moduleGroupID)
+	_, err := db.Query(sqlStatement, humidity, ph, tds, lightsOffHour, lightsOnHour, moduleGroupID)
 	if err != nil {
 		return err
 	}
