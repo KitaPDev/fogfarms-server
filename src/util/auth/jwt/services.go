@@ -1,7 +1,7 @@
 package jwt
 
 import (
-	"encoding/json"
+	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 	"log"
 	"net/http"
 	"strings"
@@ -115,20 +115,9 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 
 	var credentials Input
 
-	if r.Header.Get("Content-Type") != "" {
-		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-
-		if value != "application/json" {
-			msg := "Error: Content-Type header is not application/json"
-			http.Error(w, msg, http.StatusUnsupportedMediaType)
-			return
-		}
-	}
-
-	err := json.NewDecoder(r.Body).Decode(&credentials)
-	if err != nil {
-		msg := "Failed to Decode"
-		http.Error(w, msg, http.StatusBadRequest)
+	success := jsonhandler.DecodeJsonFromBody(w, r, &credentials)
+	if !success {
+		return
 	}
 
 	username := credentials.Username

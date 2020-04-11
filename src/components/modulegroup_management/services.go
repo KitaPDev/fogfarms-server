@@ -3,6 +3,7 @@ package modulegroup_management
 import (
 	"encoding/json"
 	"github.com/KitaPDev/fogfarms-server/models"
+	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 	"github.com/KitaPDev/fogfarms-server/src/util/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/util/module"
 	"github.com/KitaPDev/fogfarms-server/src/util/modulegroup"
@@ -143,19 +144,8 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	input := Input{}
-	if r.Header.Get("Content-Type") != "" {
-		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-		if value != "application/json" {
-			msg := "Content-Type header is not application/json"
-			http.Error(w, msg, http.StatusUnsupportedMediaType)
-			return
-		}
-	}
-	err := json.NewDecoder(r.Body).Decode(&input)
-	if err != nil {
-		msg := "Error: Failed to Decode JSON"
-		http.Error(w, msg, http.StatusInternalServerError)
-		log.Println(err)
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
 		return
 	}
 
@@ -185,19 +175,8 @@ func AssignModuleToModuleGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	input := Input{}
-	if r.Header.Get("Content-Type") != "" {
-		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-		if value != "application/json" {
-			msg := "Content-Type header is not application/json"
-			http.Error(w, msg, http.StatusUnsupportedMediaType)
-			return
-		}
-	}
-	err := json.NewDecoder(r.Body).Decode(&input)
-	if err != nil {
-		msg := "Error: Failed to Decode JSON"
-		http.Error(w, msg, http.StatusInternalServerError)
-		log.Println(err)
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
 		return
 	}
 

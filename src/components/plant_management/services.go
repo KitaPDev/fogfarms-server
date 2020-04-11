@@ -3,6 +3,7 @@ package plant_management
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 	"github.com/KitaPDev/fogfarms-server/src/util/auth/jwt"
 	"log"
 	"net/http"
@@ -54,20 +55,8 @@ func CreatePlant(w http.ResponseWriter, r *http.Request) {
 
 	input := models.Plant{}
 
-	if r.Header.Get("Content-Type") != "" {
-		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-		if value != "application/json" {
-			msg := "Content-Type header is not application/json"
-			http.Error(w, msg, http.StatusUnsupportedMediaType)
-			return
-		}
-	}
-
-	err := json.NewDecoder(r.Body).Decode(&input)
-	if err != nil {
-		msg := "Error: Failed to Decode JSON"
-		http.Error(w, msg, http.StatusInternalServerError)
-		log.Println(err)
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
 		return
 	}
 
@@ -92,19 +81,8 @@ func DeletePlant(w http.ResponseWriter, r *http.Request) {
 
 	input := models.Plant{}
 
-	if r.Header.Get("Content-Type") != "" {
-		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-		if value != "application/json" {
-			msg := "Content-Type header is not application/json"
-			http.Error(w, msg, http.StatusUnsupportedMediaType)
-			return
-		}
-	}
-	err := json.NewDecoder(r.Body).Decode(&input)
-	if err != nil {
-		msg := "Error: Failed to Decode JSON"
-		http.Error(w, msg, http.StatusInternalServerError)
-		log.Println(err)
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
 		return
 	}
 

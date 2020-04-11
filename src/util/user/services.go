@@ -3,6 +3,7 @@ package user
 import (
 	"encoding/json"
 	"errors"
+	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 	"log"
 	"net/http"
 	"time"
@@ -26,20 +27,9 @@ func CreateUser(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	var input Input
-	if r.Header.Get("Content-Type") != "" {
-		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-		if value != "application/json" {
-			msg := "Content-Type header is not application/json"
-			http.Error(w, msg, http.StatusUnsupportedMediaType)
-			return errors.New("Content-Type header is not application/json")
-		}
-	}
-	err := json.NewDecoder(r.Body).Decode(&input)
-	if err != nil {
-		msg := "Error: Failed to Decode JSON"
-		http.Error(w, msg, http.StatusBadRequest)
-		log.Println(err)
-		return err
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
+		return
 	}
 
 	err = repository.CreateUser(input.Username, input.Password, input.IsAdministrator)

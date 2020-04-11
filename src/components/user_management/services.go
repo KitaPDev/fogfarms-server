@@ -3,6 +3,7 @@ package user_management
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 	"log"
 	"net/http"
 
@@ -79,24 +80,13 @@ func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 
 	var input Input
 
-	if r.Header.Get("Content-Type") != "" {
-		value, _ := header.ParseValueAndParams(r.Header, "Content-Type")
-		if value != "application/json" {
-			msg := "Content-Type header is not application/json"
-			http.Error(w, msg, http.StatusUnsupportedMediaType)
-			return
-		}
-	}
-	err := json.NewDecoder(r.Body).Decode(&input)
-	if err != nil {
-		msg := "Error: Failed to Decode JSON"
-		http.Error(w, msg, http.StatusInternalServerError)
-		log.Println(err)
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
 		return
 	}
 	fmt.Printf("%+v", input)
 
-	err = permission.AssignUserModuleGroupPermission(input.UserID, input.ModuleGroupID, input.PermissionLevel)
+	err := permission.AssignUserModuleGroupPermission(input.UserID, input.ModuleGroupID, input.PermissionLevel)
 	if err != nil {
 		msg := "Error: Failed to Assign User ModuleGroup Permission"
 		http.Error(w, msg, http.StatusInternalServerError)
