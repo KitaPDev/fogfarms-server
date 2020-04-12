@@ -19,14 +19,14 @@ func PopulateDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	moduleGroup := models.ModuleGroup{}
+	var moduleGroupID int
 
-	success := jsonhandler.DecodeJsonFromBody(w, r, &moduleGroup)
+	success := jsonhandler.DecodeJsonFromBody(w, r, &moduleGroupID)
 	if !success {
 		return
 	}
 
-	sensorData, err := sensordata.GetLatestSensorData(moduleGroup.ModuleGroupID)
+	sensorData, err := sensordata.GetLatestSensorData(moduleGroupID)
 	if err != nil {
 		msg := "Error: Failed to Get Latest Sensor Data"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -34,7 +34,7 @@ func PopulateDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	devices, err := device.GetModuleGroupDevices(moduleGroup.ModuleGroupID)
+	devices, err := device.GetModuleGroupDevices(moduleGroupID)
 	if err != nil {
 		msg := "Error: Failed to Get ModuleGroup Devices"
 		http.Error(w, msg, http.StatusInternalServerError)

@@ -44,17 +44,23 @@ CREATE TABLE Nutrient (
 
 -- PHUpUnit
 CREATE TABLE PHUpUnit (
-    PHUpUnitID SERIAL NOT NULL PRIMARY KEY
+    PHUpUnitID SERIAL NOT NULL PRIMARY KEY,
+    ModuleID INT NOT NULL,
+    PRIMARY KEY (PHUpUnitID),
+    FOREIGN KEY (ModuleID) REFERENCES Module
 );
 
 CREATE TABLE PHDownUnit (
-    PHDownUnitID SERIAL NOT NULL PRIMARY KEY
+    PHDownUnitID SERIAL NOT NULL PRIMARY KEY,
+    ModuleID INT NOT NULL,
+    PRIMARY KEY (PHDownUnitID),
+    FOREIGN KEY (ModuleID) REFERENCES Module
 );
 
 -- ModuleGroup
 CREATE TABLE ModuleGroup (
     ModuleGroupID SERIAL NOT NULL,
-    ModuleGroupLabel VARCHAR(64) UNIQUE NOT NULL,
+    ModuleGroupLabel VARCHAR(256) UNIQUE NOT NULL,
     PlantID INT NOT NULL,
     LocationID INT NOT NULL,
     Param_TDS FLOAT NOT NULL,
@@ -73,10 +79,10 @@ CREATE TABLE ModuleGroup (
 CREATE TABLE Module (
     ModuleID SERIAL NOT NULL,
     ModuleGroupID INT NOT NULL DEFAULT 0,
-    ModuleLabel VARCHAR(64) UNIQUE NOT NULL,
+    ModuleLabel VARCHAR(256) UNIQUE NOT NULL,
     Token VARCHAR(256) UNIQUE NOT NULL,
     PRIMARY KEY (ModuleID),
-    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID),
+    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );
 
 -- SensorData
@@ -120,14 +126,29 @@ CREATE TABLE GrowUnit (
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );
 
+CREATE TABLE DeviceType (
+  DeviceTypeID SERIAL NOT NULL,
+  DeviceType VARCHAR(256) NOT NULL,
+  PRIMARY KEY (DeviceTypeID),
+  UNIQUE (DeviceType)
+);
+
 -- Device
 CREATE TABLE Device (
     DeviceID SERIAL NOT NULL,
+    DeviceTypeID INT NOT NULL,
     IsOn BOOLEAN NOT NULL DEFAULT FALSE,
-    ModuleID INT NOT NULL,
-    Label VARCHAR(256) UNIQUE NOT NULL,
+    GrowUnitID INT,
+    NutrientUnitID INT,
+    PHDownUnitID INT,
+    PHUpUnitID INT,
     PRIMARY KEY (DeviceID),
-    FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID)
+    FOREIGN KEY (DeviceTypeID) REFERENCES DeviceType (DeviceTypeID),
+    FOREIGN KEY (GrowUnitID) REFERENCES GrowUnit (GrowUnitID),
+    FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID),
+    FOREIGN KEY (PHDownUnitID) REFERENCES PHDownUnit (PHDownUnitID),
+    FOREIGN KEY (PHUpUnitID) REFERENCES PHUpUnit (PHUpUnitID),
+    UNIQUE (DeviceTypeID, GrowUnitID, NutrientUnitID, PHDownUnitID, PHUpUnitID)
 );
 
 -- SensorData_ModuleGroup
