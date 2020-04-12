@@ -60,7 +60,7 @@ CREATE TABLE PHDownUnit (
 -- ModuleGroup
 CREATE TABLE ModuleGroup (
     ModuleGroupID SERIAL NOT NULL,
-    ModuleGroupLabel VARCHAR(64) UNIQUE NOT NULL,
+    ModuleGroupLabel VARCHAR(256) UNIQUE NOT NULL,
     PlantID INT NOT NULL,
     LocationID INT NOT NULL,
     Param_TDS FLOAT NOT NULL,
@@ -79,7 +79,7 @@ CREATE TABLE ModuleGroup (
 CREATE TABLE Module (
     ModuleID SERIAL NOT NULL,
     ModuleGroupID INT NOT NULL DEFAULT 0,
-    ModuleLabel VARCHAR(64) UNIQUE NOT NULL,
+    ModuleLabel VARCHAR(256) UNIQUE NOT NULL,
     Token VARCHAR(256) UNIQUE NOT NULL,
     PRIMARY KEY (ModuleID),
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
