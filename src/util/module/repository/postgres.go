@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/KitaPDev/fogfarms-server/models/outputs"
 	"log"
 
 	"github.com/KitaPDev/fogfarms-server/models"
@@ -35,7 +36,7 @@ func GetModulesByModuleGroupIDs(moduleGroupIDs []int) ([]models.Module, error) {
 	return modules, nil
 }
 
-func GetModulesByModuleGroupIDsForModuleManagement(moduleGroupIDs []int) ([]models.ModuleOutput, error) {
+func GetModulesByModuleGroupIDsForModuleManagement(moduleGroupIDs []int) ([]outputs.ModuleOutput, error) {
 	db := database.GetDB()
 
 	sqlStatement :=
@@ -48,9 +49,9 @@ func GetModulesByModuleGroupIDsForModuleManagement(moduleGroupIDs []int) ([]mode
 	}
 	defer rows.Close()
 
-	var modules []models.ModuleOutput
+	var modules []outputs.ModuleOutput
 	for rows.Next() {
-		module := models.ModuleOutput{}
+		module := outputs.ModuleOutput{}
 		log.Println(module)
 		err := rows.Scan(&module.ModuleID, &module.ModuleGroupID, &module.ModuleLabel, &module.ModuleGroupLabel)
 		if err != nil {

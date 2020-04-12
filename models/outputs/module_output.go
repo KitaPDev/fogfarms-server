@@ -1,4 +1,4 @@
-package models
+package outputs
 
 type ModuleOutput struct {
 	ModuleID         int    `json:"module_id"`
