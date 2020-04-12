@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
@@ -31,7 +32,26 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var jsonData []byte
+	type ModuleGroupData struct {
+		ModuleGroupID  int       `json:"module_group_id"`
+		PlantID        int       `json:"plant_id"`
+		LocationID     int       `json:"location_id"`
+		TDS            float32   `json:"tds"`
+		PH             float32   `json:"ph"`
+		Humidity       float32   `json:"humidity"`
+		OnAuto         bool      `json:"on_auto"`
+		LightsOffHour  float32   `json:"lights_off_hour"`
+		LightsOnHour   float32   `json:"lights_on_hour"`
+		TimerLastReset time.Time `json:"timer_last_reset"`
+		Permission     int
+		Modules        []int
+	}
+	var moduleGroupMap = make(map[string]*ModuleGroupData)
+	moduleGroupMap[""] = &ModuleGroupData{
+		Modules: []int{},
+	}
 
+	var moduleGroupIDs []int
 	if u.IsAdministrator {
 		moduleGroups, err := modulegroup.GetAllModuleGroups()
 		if err != nil {
@@ -41,38 +61,23 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var moduleGroupIDs []int
 		for _, mg := range moduleGroups {
 			moduleGroupIDs = append(moduleGroupIDs, mg.ModuleGroupID)
+			moduleGroupMap[mg.ModuleGroupLabel] = &ModuleGroupData{
+				ModuleGroupID:  mg.ModuleGroupID,
+				PlantID:        mg.PlantID,
+				LocationID:     mg.LocationID,
+				TDS:            mg.TDS,
+				PH:             mg.PH,
+				Humidity:       mg.Humidity,
+				OnAuto:         mg.OnAuto,
+				LightsOffHour:  mg.LightsOffHour,
+				LightsOnHour:   mg.LightsOnHour,
+				TimerLastReset: mg.TimerLastReset,
+				Permission:     4,
+				Modules:        []int{},
+			}
 		}
-
-		modules, err := module.GetModulesByModuleGroupIDs(moduleGroupIDs)
-		if err != nil {
-			msg := "Error: Failed to Get Modules By ModuleGroupIDs"
-			http.Error(w, msg, http.StatusInternalServerError)
-			return
-		}
-
-		mapModuleGroupModules, unassignedModules := mapModulesToModuleGroup(moduleGroups, modules)
-
-		type Data struct {
-			MapModuleGroupModules map[models.ModuleGroup][]models.Module
-			UnassignedModules     []models.Module `json:"unassigned_modules"`
-		}
-
-		data := Data{
-			MapModuleGroupModules: mapModuleGroupModules,
-			UnassignedModules:     unassignedModules,
-		}
-
-		jsonData, err = json.Marshal(data)
-		if err != nil {
-			msg := "Error: Failed to marshal JSON"
-			http.Error(w, msg, http.StatusInternalServerError)
-			log.Println(err)
-			return
-		}
-
 	} else {
 		mapModuleGroupPermissions, err := permission.GetAssignedModuleGroups(u)
 		if err != nil {
@@ -81,44 +86,46 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			return
 		}
-
-		var moduleGroups []models.ModuleGroup
-		var moduleGroupIDs []int
+		log.Println(mapModuleGroupPermissions)
 		for mg := range mapModuleGroupPermissions {
-			moduleGroups = append(moduleGroups, mg)
+
+			moduleGroupMap[mg.ModuleGroupLabel] = &ModuleGroupData{
+				ModuleGroupID:  mg.ModuleGroupID,
+				PlantID:        mg.PlantID,
+				LocationID:     mg.LocationID,
+				TDS:            mg.TDS,
+				PH:             mg.PH,
+				Humidity:       mg.Humidity,
+				OnAuto:         mg.OnAuto,
+				LightsOffHour:  mg.LightsOffHour,
+				LightsOnHour:   mg.LightsOnHour,
+				TimerLastReset: mg.TimerLastReset,
+				Permission:     mapModuleGroupPermissions[mg],
+				Modules:        []int{},
+			}
 			moduleGroupIDs = append(moduleGroupIDs, mg.ModuleGroupID)
 		}
 
-		modules, err := module.GetModulesByModuleGroupIDs(moduleGroupIDs)
-		if err != nil {
-			msg := "Error: Failed to Get Modules By ModuleGroupIDs"
-			http.Error(w, msg, http.StatusInternalServerError)
-			return
-		}
-
-		mapModuleGroupModules, unassignedModules := mapModulesToModuleGroup(moduleGroups, modules)
-
-		type Data struct {
-			MapModuleGroupModules    map[models.ModuleGroup][]models.Module
-			MapModuleGroupPermission map[models.ModuleGroup]int
-			UnassignedModules        []models.Module `json:"unassigned_modules"`
-		}
-
-		data := Data{
-			MapModuleGroupModules:    mapModuleGroupModules,
-			MapModuleGroupPermission: mapModuleGroupPermissions,
-			UnassignedModules:        unassignedModules,
-		}
-
-		jsonData, err = json.Marshal(data)
-		if err != nil {
-			msg := "Error: Failed to marshal JSON"
-			http.Error(w, msg, http.StatusInternalServerError)
-			log.Println(err)
-			return
-		}
 	}
 
+	modules, err := module.GetModulesByModuleGroupIDsForModuleManagement(moduleGroupIDs)
+	if err != nil {
+		msg := "Error: Failed to Get Modules By ModuleGroupIDs"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
+	for _, m := range modules {
+		log.Println(m.ModuleLabel)
+		moduleGroupMap[m.ModuleGroupLabel].Modules = append(moduleGroupMap[m.ModuleGroupLabel].Modules, m.ModuleID)
+	}
+	jsonData, err = json.Marshal(moduleGroupMap)
+	if err != nil {
+		msg := "Error: Failed to marshal JSON"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)

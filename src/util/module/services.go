@@ -8,3 +8,7 @@ import (
 func GetModulesByModuleGroupIDs(moduleGroupIDs []int) ([]models.Module, error) {
 	return repository.GetModulesByModuleGroupIDs(moduleGroupIDs)
 }
+
+func GetModulesByModuleGroupIDsForModuleManagement(moduleGroupIDs []int) ([]models.ModuleOutput, error) {
+	return repository.GetModulesByModuleGroupIDsForModuleManagement(moduleGroupIDs)
+}
