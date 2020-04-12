@@ -78,26 +78,31 @@ func GetUsersByID(userIDs []int) ([]models.User, error) {
 }
 
 func GetUserByUsernameFromCookie(r *http.Request) (*models.User, error) {
-	// username := "ddfsdd6"
 	var jwtKey = "s"
 	var secureCookie = securecookie.New([]byte(jwtKey), nil)
+
 	type Claims struct {
 		Username string `json:"username"`
 		jwt.StandardClaims
 	}
+
 	cookie, err := r.Cookie("jwtToken")
+
 	var tokenString string
 	err = secureCookie.Decode("jwtToken", cookie.Value, &tokenString)
-	claims := &Claims{}
 
+	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims,
 		func(token *jwt.Token) (interface{}, error) {
 			return []byte(jwtKey), nil
 		})
-	log.Println(err)
-	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 0*time.Second && token.Valid {
+	if err != nil {
+		return nil, err
+	}
 
+	if time.Unix(claims.ExpiresAt, 0).Sub(time.Now()) > 0*time.Second && token.Valid {
 		return GetUserByUsername(claims.Username)
+
 	} else {
 		return GetUserByUsername(claims.Username)
 	}
