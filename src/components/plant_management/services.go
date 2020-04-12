@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/KitaPDev/fogfarms-server/src/components/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
-	"github.com/KitaPDev/fogfarms-server/src/util/auth/jwt"
 
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/util/plant"

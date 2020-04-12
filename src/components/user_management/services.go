@@ -8,7 +8,7 @@ import (
 
 	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 
-	"github.com/KitaPDev/fogfarms-server/src/util/auth/jwt"
+	"github.com/KitaPDev/fogfarms-server/src/components/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/util/permission"
 	"github.com/KitaPDev/fogfarms-server/src/util/user"
 )

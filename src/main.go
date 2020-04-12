@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/KitaPDev/fogfarms-server/src/components/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/components/modulegroup_management"
 	"github.com/KitaPDev/fogfarms-server/src/components/plant_management"
 	"github.com/KitaPDev/fogfarms-server/src/components/user_management"
-	"github.com/KitaPDev/fogfarms-server/src/util/auth/jwt"
 	"github.com/gorilla/mux"
 	"github.com/labstack/gommon/log"
 	"net/http"
