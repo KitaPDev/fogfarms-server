@@ -25,7 +25,7 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 
 	u, err := user.GetUserByUsernameFromCookie(r)
 	if err != nil {
-		msg := "Error: Failed to Get User By UserID From Request"
+		msg := "Error: Failed to Get User By UserID From Cookie"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Println(err)
 		return
@@ -78,6 +78,7 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 				Modules:        []int{},
 			}
 		}
+
 	} else {
 		mapModuleGroupPermissions, err := permission.GetAssignedModuleGroups(u)
 		if err != nil {
