@@ -12,7 +12,7 @@ import (
 func GetAllModuleGroups() ([]models.ModuleGroup, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT * FROM ModuleGroup;")
+	rows, err := db.Query("SELECT ModuleGroupID,modulegrouplabel,plantID,param_TDs,param_PH,param_Humidity,lightsonHour,lightsoffHour FROM ModuleGroup;")
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func GetAllModuleGroups() ([]models.ModuleGroup, error) {
 func GetModuleGroupByID(moduleGroupID int) (*models.ModuleGroup, error) {
 	db := database.GetDB()
 
-	sqlStatement := `SELECT * FROM ModuleGroup WHERE ModuleGroupID = $1;`
+	sqlStatement := `SELECT ModuleGroupID,modulegrouplabel,plantID,param_TDs,param_PH,param_Humidity,lightsonHour,lightsoffHour FROM ModuleGroup WHERE ModuleGroupID = $1;`
 
 	rows, err := db.Query(sqlStatement, moduleGroupID)
 	if err != nil {
@@ -78,7 +78,7 @@ func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 	var moduleGroups []models.ModuleGroup
 	var err error
 
-	sqlStatement := `SELECT * FROM ModuleGroup WHERE ModuleGroupID = ANY($1);`
+	sqlStatement := `SELECT ModuleGroupID,modulegrouplabel,plantID,param_TDs,param_PH,param_Humidity,lightsonHour,lightsoffHour FROM ModuleGroup WHERE ModuleGroupID = ANY($1);`
 
 	db := database.GetDB()
 
@@ -123,8 +123,8 @@ func CreateModuleGroup(label string, plantID int, locationID int, humidity float
 		return err
 	}
 	sqlStatement := `INSERT INTO ModuleGroup (ModuleGroupLabel, PlantID, LocationID, onAuto,
-                         Param_TDS, Param_Ph, Param_Humidity, LightsOnHour, LightsOffHour)
-                         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`
+                         Param_TDS, Param_Ph, Param_Humidity, LightsOnHour, LightsOffHour,timerlastreset )
+                         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, Now())`
 	_, err = db.Query(sqlStatement, label, plantID, locationID, onAuto, p.TDS, p.PH, humidity, lightsOn, lightsOff)
 	if err != nil {
 		return err
