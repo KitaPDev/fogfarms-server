@@ -11,7 +11,6 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 	"github.com/KitaPDev/fogfarms-server/src/util/module"
 	"github.com/KitaPDev/fogfarms-server/src/util/modulegroup"
-	"github.com/KitaPDev/fogfarms-server/src/util/modulegroup/repository"
 	"github.com/KitaPDev/fogfarms-server/src/util/permission"
 	"github.com/KitaPDev/fogfarms-server/src/util/user"
 )
@@ -140,15 +139,16 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type Input struct {
-		PlantID          int     `json:"plant_id"`
-		LocationID       int     `json:"location_id"`
-		TDS              float32 `json:"tds"`
-		PH               float32 `json:"ph"`
-		Humidity         float32 `json:"humidity"`
-		OnAuto           bool    `json:"on_auto"`
-		ModuleGroupLabel string  `json:"module_group_label"`
-		LightsOffHour    float32 `json:"lights_off_hour"`
-		LightsOnHour     float32 `json:"lights_on_hour"`
+		PlantID          int       `json:"plant_id"`
+		LocationID       int       `json:"location_id"`
+		TDS              float32   `json:"tds"`
+		PH               float32   `json:"ph"`
+		Humidity         float32   `json:"humidity"`
+		OnAuto           bool      `json:"on_auto"`
+		ModuleGroupLabel string    `json:"module_group_label"`
+		LightsOffHour    float32   `json:"lights_off_hour"`
+		LightsOnHour     float32   `json:"lights_on_hour"`
+		TimerLastReset   time.Time `json:"timer_last_reset"`
 	}
 
 	input := Input{}
@@ -157,8 +157,8 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := repository.CreateModuleGroup(input.ModuleGroupLabel, input.PlantID, input.LocationID,
-		input.Humidity, input.LightsOnHour, input.LightsOffHour, input.OnAuto)
+	err := modulegroup.CreateModuleGroup(input.ModuleGroupLabel, input.PlantID, input.LocationID,
+		input.Humidity, input.LightsOnHour, input.LightsOffHour, input.OnAuto, input.TimerLastReset)
 	if err != nil {
 		msg := "Error: Failed to Create Module Group"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -188,7 +188,7 @@ func AssignModuleToModuleGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := repository.AssignModulesToModuleGroup(input.ModuleGroupID, input.ModuleIDs)
+	err := modulegroup.AssignModulesToModuleGroup(input.ModuleGroupID, input.ModuleIDs)
 	if err != nil {
 		msg := "Error: Failed to Assign Modules To ModuleGroup"
 		http.Error(w, msg, http.StatusInternalServerError)

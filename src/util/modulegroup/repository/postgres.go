@@ -2,6 +2,7 @@ package repository
 
 import (
 	"log"
+	"time"
 
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
@@ -12,7 +13,11 @@ import (
 func GetAllModuleGroups() ([]models.ModuleGroup, error) {
 	db := database.GetDB()
 
-	rows, err := db.Query("SELECT ModuleGroupID,modulegrouplabel,plantID,param_TDs,param_PH,param_Humidity,lightsonHour,lightsoffHour FROM ModuleGroup;")
+	sqlStatement :=
+		`SELECT ModuleGroupID, ModuleGroupLabel, PlantID, Param_TDs, Param_PH, 
+		Param_Humidity, LightsOnHour, LightsOffHour, TimerLastReset FROM ModuleGroup;`
+
+	rows, err := db.Query(sqlStatement)
 	if err != nil {
 		return nil, err
 	}
@@ -31,6 +36,7 @@ func GetAllModuleGroups() ([]models.ModuleGroup, error) {
 			&moduleGroup.Humidity,
 			&moduleGroup.LightsOnHour,
 			&moduleGroup.LightsOffHour,
+			&moduleGroup.TimerLastReset,
 		)
 		if err != nil {
 			return nil, err
@@ -45,7 +51,10 @@ func GetAllModuleGroups() ([]models.ModuleGroup, error) {
 func GetModuleGroupByID(moduleGroupID int) (*models.ModuleGroup, error) {
 	db := database.GetDB()
 
-	sqlStatement := `SELECT ModuleGroupID,modulegrouplabel,plantID,param_TDs,param_PH,param_Humidity,lightsonHour,lightsoffHour FROM ModuleGroup WHERE ModuleGroupID = $1;`
+	sqlStatement :=
+		`SELECT ModuleGroupID, ModuleGroupLabel, PlantID, Param_TDs, Param_PH, 
+		Param_Humidity, LightsOnHour, LightsOffHour, TimerLastReset
+		FROM ModuleGroup WHERE ModuleGroupID = $1;`
 
 	rows, err := db.Query(sqlStatement, moduleGroupID)
 	if err != nil {
@@ -65,6 +74,7 @@ func GetModuleGroupByID(moduleGroupID int) (*models.ModuleGroup, error) {
 			&moduleGroup.Humidity,
 			&moduleGroup.LightsOnHour,
 			&moduleGroup.LightsOffHour,
+			&moduleGroup.TimerLastReset,
 		)
 		if err != nil {
 			return nil, err
@@ -78,7 +88,10 @@ func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 	var moduleGroups []models.ModuleGroup
 	var err error
 
-	sqlStatement := `SELECT ModuleGroupID,modulegrouplabel,plantID,param_TDs,param_PH,param_Humidity,lightsonHour,lightsoffHour FROM ModuleGroup WHERE ModuleGroupID = ANY($1);`
+	sqlStatement :=
+		`SELECT ModuleGroupID, ModuleGroupLabel, PlantID, Param_TDs, Param_PH, 
+		Param_Humidity, LightsOnHour, LightsOffHour, TimerLastReset
+		FROM ModuleGroup WHERE ModuleGroupID = ANY($1);`
 
 	db := database.GetDB()
 
@@ -101,6 +114,7 @@ func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 			&moduleGroup.OnAuto,
 			&moduleGroup.LightsOnHour,
 			&moduleGroup.LightsOffHour,
+			&moduleGroup.TimerLastReset,
 		)
 		if err != nil {
 			return nil, err
@@ -115,16 +129,17 @@ func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 }
 
 func CreateModuleGroup(label string, plantID int, locationID int, humidity float32, lightsOn float32,
-	lightsOff float32, onAuto bool) error {
+	lightsOff float32, onAuto bool, timerLastReset time.Time) error {
 	db := database.GetDB()
 
 	p, err := plant.GetPlantByID(plantID)
 	if err != nil {
 		return err
 	}
-	sqlStatement := `INSERT INTO ModuleGroup (ModuleGroupLabel, PlantID, LocationID, onAuto,
-                         Param_TDS, Param_Ph, Param_Humidity, LightsOnHour, LightsOffHour,timerlastreset )
-                         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, Now())`
+	sqlStatement :=
+		`INSERT INTO ModuleGroup (ModuleGroupLabel, PlantID, LocationID, onAuto,
+		 Param_TDS, Param_Ph, Param_Humidity, LightsOnHour, LightsOffHour, TimerLastReset)
+		 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, Now())`
 	_, err = db.Query(sqlStatement, label, plantID, locationID, onAuto, p.TDS, p.PH, humidity, lightsOn, lightsOff)
 	if err != nil {
 		return err
@@ -149,10 +164,11 @@ func SetEnvironmentParameters(moduleGroupID int, humidity float32, ph float32, t
 	lightsOnHour float32, lightsOffHour float32) error {
 	db := database.GetDB()
 
-	sqlStatement := `UPDATE ModuleGroup	
-						SET Param_Humidity = $1, Param_PH = $2, Param_TDS = $3, LightsOnHour = $4, 
-						    LightsOffHour = $5
-						WHERE ModuleGroupID = $6`
+	sqlStatement :=
+		`UPDATE ModuleGroup	
+			SET Param_Humidity = $1, Param_PH = $2, Param_TDS = $3, LightsOnHour = $4, 
+				LightsOffHour = $5
+			WHERE ModuleGroupID = $6`
 	_, err := db.Query(sqlStatement, humidity, ph, tds, lightsOffHour, lightsOnHour, moduleGroupID)
 	if err != nil {
 		return err

@@ -3,6 +3,7 @@ package modulegroup
 import (
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/util/modulegroup/repository"
+	"time"
 )
 
 func GetAllModuleGroups() ([]models.ModuleGroup, error) {
@@ -13,6 +14,17 @@ func GetAllModuleGroups() ([]models.ModuleGroup, error) {
 func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 	moduleGroups, err := repository.GetModuleGroupsByIDs(moduleGroupIDs)
 	return moduleGroups, err
+}
+
+func CreateModuleGroup(label string, plantID int, locationID int, humidity float32, lightsOn float32,
+	lightsOff float32, onAuto bool, timerLastReset time.Time) error {
+
+	return repository.CreateModuleGroup(label, plantID, locationID, humidity, lightsOn, lightsOff,
+		onAuto, timerLastReset)
+}
+
+func AssignModulesToModuleGroup(moduleGroupID int, moduleIDs []int) error {
+	return repository.AssignModulesToModuleGroup(moduleGroupID, moduleIDs)
 }
 
 func ToggleAuto(moduleGroupID int) error {
