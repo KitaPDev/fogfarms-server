@@ -46,9 +46,6 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 		Modules        []int
 	}
 	var moduleGroupMap = make(map[string]*ModuleGroupData)
-	moduleGroupMap[""] = &ModuleGroupData{
-		Modules: []int{},
-	}
 
 	var moduleGroupIDs []int
 	if u.IsAdministrator {

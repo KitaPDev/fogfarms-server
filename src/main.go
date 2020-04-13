@@ -2,14 +2,16 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/KitaPDev/fogfarms-server/src/components/auth/jwt"
+	"github.com/KitaPDev/fogfarms-server/src/components/dashboard"
 	"github.com/KitaPDev/fogfarms-server/src/components/modulegroup_management"
 	"github.com/KitaPDev/fogfarms-server/src/components/plant_management"
 	"github.com/KitaPDev/fogfarms-server/src/components/user_management"
 	"github.com/gorilla/mux"
 	"github.com/labstack/gommon/log"
-	"net/http"
-	"os"
 )
 
 func main() {
@@ -33,6 +35,9 @@ func run() error {
 
 	plantManagementHandler := plant_management.MakeHTTPHandler()
 	router.PathPrefix("/plant_management").Handler(plantManagementHandler)
+
+	dashBoardHandler := dashboard.MakeHTTPHandler()
+	router.PathPrefix("/dashboard").Handler(dashBoardHandler)
 
 	return http.ListenAndServe(getPort(), router)
 }

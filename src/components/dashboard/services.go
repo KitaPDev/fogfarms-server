@@ -2,14 +2,15 @@ package dashboard
 
 import (
 	"encoding/json"
+	"log"
+	"net/http"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/components/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 	"github.com/KitaPDev/fogfarms-server/src/util/device"
 	"github.com/KitaPDev/fogfarms-server/src/util/modulegroup"
 	"github.com/KitaPDev/fogfarms-server/src/util/sensordata"
-	"log"
-	"net/http"
 )
 
 func PopulateDashboard(w http.ResponseWriter, r *http.Request) {
@@ -18,15 +19,17 @@ func PopulateDashboard(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
+	type Input struct {
+		ModuleGroupID int `json:"modulegroupid"`
+	}
+	var input Input
 
-	var moduleGroupID int
-
-	success := jsonhandler.DecodeJsonFromBody(w, r, &moduleGroupID)
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
 	if !success {
 		return
 	}
-
-	sensorData, err := sensordata.GetLatestSensorData(moduleGroupID)
+	log.Println("this is input: ", input)
+	sensorData, err := sensordata.GetLatestSensorData(input.ModuleGroupID)
 	if err != nil {
 		msg := "Error: Failed to Get Latest Sensor Data"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -34,7 +37,7 @@ func PopulateDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	devices, err := device.GetModuleGroupDevices(moduleGroupID)
+	devices, err := device.GetModuleGroupDevices(input.ModuleGroupID)
 	if err != nil {
 		msg := "Error: Failed to Get ModuleGroup Devices"
 		http.Error(w, msg, http.StatusInternalServerError)

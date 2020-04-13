@@ -1,14 +1,19 @@
 package repository
 
-import "github.com/KitaPDev/fogfarms-server/models"
-import "github.com/KitaPDev/fogfarms-server/src/database"
+import (
+	"log"
+
+	"github.com/KitaPDev/fogfarms-server/models"
+	"github.com/KitaPDev/fogfarms-server/src/database"
+)
 
 func GetModuleGroupDevices(moduleGroupID int) ([]models.Device, error) {
 	db := database.GetDB()
 
 	sqlStatement :=
-		`SELECT * FROM Device WHERE ModuleID 
-		IN (SELECT ModuleID FROM ModuleGroup WHERE ModuleGroupID = $1)`
+		`SELECT Distinct DeviceID,DeviceTypeID,IsOn,GrowUnitID,NutrientUnitID,PHDownUnitID,PHUpUnitID FROM Device 
+		WHERE Device.Growunitid IN (SELECT growunit.growunitid FROM growunit WHERE growunit.ModuleID IN (SELECT module.moduleid from module WHERE module.modulegroupid = $1))
+		OR Device.nutrientunitid IN (SELECT nutrientunit.nutrientunitid FROM nutrientunit WHERE nutrientunit.ModuleID IN (SELECT module.moduleid from module WHERE module.modulegroupid = $1))`
 
 	rows, err := db.Query(sqlStatement, moduleGroupID)
 	if err != nil {
@@ -20,11 +25,11 @@ func GetModuleGroupDevices(moduleGroupID int) ([]models.Device, error) {
 	for rows.Next() {
 		var d models.Device
 
-		err = rows.Scan(&d)
+		err = rows.Scan(&d.DeviceID, &d.DeviceTypeID, &d.IsOn, &d.GrowUnitID, &d.NutrientUnitID, &d.PHDownUnitID, &d.PHUpUnitID)
 		if err != nil {
 			return nil, err
 		}
-
+		log.Print("device is fine")
 		devices = append(devices, d)
 	}
 
