@@ -34,24 +34,25 @@ CREATE TABLE Users (
 
 -- Nutrient
 CREATE TABLE Nutrient (
-    NutrientID SERIAL NOT NULL PRIMARY KEY,
+    NutrientID SERIAL NOT NULL,
     Part INT NOT NULL,
     Nitrogen INT NOT NULL,
     Phosphorus INT NOT NULL,
     Potassium INT NOT NULL,
+    PRIMARY KEY (NutrientID),
     UNIQUE (Part, Nitrogen, Phosphorus, Potassium)
 );
 
 -- PHUpUnit
 CREATE TABLE PHUpUnit (
-    PHUpUnitID SERIAL NOT NULL PRIMARY KEY,
+    PHUpUnitID SERIAL NOT NULL,
     NutrientUnitID INT NOT NULL,
     PRIMARY KEY (PHUpUnitID),
     FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID)
 );
 
 CREATE TABLE PHDownUnit (
-    PHDownUnitID SERIAL NOT NULL PRIMARY KEY,
+    PHDownUnitID SERIAL NOT NULL,
     NutrientUnitID INT NOT NULL,
     PRIMARY KEY (PHDownUnitID),
     FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID)
