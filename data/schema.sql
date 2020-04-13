@@ -45,16 +45,16 @@ CREATE TABLE Nutrient (
 -- PHUpUnit
 CREATE TABLE PHUpUnit (
     PHUpUnitID SERIAL NOT NULL PRIMARY KEY,
-    ModuleID INT NOT NULL,
+    NutrientUnitID INT NOT NULL,
     PRIMARY KEY (PHUpUnitID),
-    FOREIGN KEY (ModuleID) REFERENCES Module
+    FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID)
 );
 
 CREATE TABLE PHDownUnit (
     PHDownUnitID SERIAL NOT NULL PRIMARY KEY,
-    ModuleID INT NOT NULL,
+    NutrientUnitID INT NOT NULL,
     PRIMARY KEY (PHDownUnitID),
-    FOREIGN KEY (ModuleID) REFERENCES Module
+    FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID)
 );
 
 -- ModuleGroup
@@ -103,14 +103,8 @@ CREATE TABLE SensorData (
 CREATE TABLE NutrientUnit (
     NutrientUnitID SERIAL NOT NULL,
     ModuleID INT NOT NULL,
-    ModuleGroupID INT NOT NULL,
-    PHUpUnitID INT NOT NULL,
-    PHDownUnitID INT NOT NULL,
     NutrientID INT NOT NULL,
     PRIMARY KEY (NutrientUnitID),
-    FOREIGN KEY (PHUpUnitID) REFERENCES PHUpUnit (PHUpUnitID),
-    FOREIGN KEY (PHDownUnitID) REFERENCES PHDownUnit (PHDownUnitID),
-    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID),
     FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID),
     FOREIGN KEY (NutrientID) REFERENCES Nutrient (NutrientID)
 );
@@ -119,11 +113,9 @@ CREATE TABLE NutrientUnit (
 CREATE TABLE GrowUnit (
     GrowUnitID SERIAL NOT NULL,
     ModuleID INT NOT NULL,
-    ModuleGroupID INT NOT NULL,
     Capacity INT,
     PRIMARY KEY (GrowUnitID),
-    FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID),
-    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
+    FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID)
 );
 
 CREATE TABLE DeviceType (
