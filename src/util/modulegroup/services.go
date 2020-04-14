@@ -1,9 +1,10 @@
 package modulegroup
 
 import (
+	"time"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/util/modulegroup/repository"
-	"time"
 )
 
 func GetAllModuleGroups() ([]models.ModuleGroup, error) {

@@ -1,11 +1,12 @@
 package jwt
 
 import (
-	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 	"log"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 
 	"github.com/KitaPDev/fogfarms-server/src/util/user"
 	"github.com/dgrijalva/jwt-go"
@@ -119,7 +120,7 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 	if !success {
 		return
 	}
-
+	log.Println(credentials, "  ... ", &credentials)
 	username := credentials.Username
 	password := credentials.Password
 
@@ -188,7 +189,7 @@ func GenerateToken(username string, w http.ResponseWriter) error {
 		Name:    "jwtToken",
 		Value:   encoded,
 		Expires: expirationTime,
-		Path: "/",
+		Path:    "/",
 	}
 	http.SetCookie(w, cookie)
 
@@ -199,7 +200,8 @@ func InvalidateToken(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
 		Name:    "jwtToken",
 		Value:   "",
-		Expires: time.Unix(0, 0),
+		Expires: time.Now(),
+		Path:    "/",
 	})
 }
 

@@ -130,7 +130,6 @@ func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 func CreateModuleGroup(label string, plantID int, locationID int, tds float64, ph float64,
 	humidity float64, lightsOn float64, lightsOff float64, onAuto bool,
 	timerLastReset time.Time) error {
-
 	db := database.GetDB()
 
 	sqlStatement :=
