@@ -43,21 +43,6 @@ CREATE TABLE Nutrient (
     UNIQUE (Part, Nitrogen, Phosphorus, Potassium)
 );
 
--- PHUpUnit
-CREATE TABLE PHUpUnit (
-    PHUpUnitID SERIAL NOT NULL,
-    NutrientUnitID INT NOT NULL,
-    PRIMARY KEY (PHUpUnitID),
-    FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID)
-);
-
-CREATE TABLE PHDownUnit (
-    PHDownUnitID SERIAL NOT NULL,
-    NutrientUnitID INT NOT NULL,
-    PRIMARY KEY (PHDownUnitID),
-    FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID)
-);
-
 -- ModuleGroup
 CREATE TABLE ModuleGroup (
     ModuleGroupID SERIAL NOT NULL,
@@ -85,6 +70,30 @@ CREATE TABLE Module (
     PRIMARY KEY (ModuleID),
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
 );
+-- NutrientUnit
+CREATE TABLE NutrientUnit (
+    NutrientUnitID SERIAL NOT NULL,
+    ModuleID INT NOT NULL,
+    NutrientID INT NOT NULL,
+    PRIMARY KEY (NutrientUnitID),
+    FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID),
+    FOREIGN KEY (NutrientID) REFERENCES Nutrient (NutrientID)
+);
+
+-- PHUpUnit
+CREATE TABLE PHUpUnit (
+    PHUpUnitID SERIAL NOT NULL,
+    NutrientUnitID INT NOT NULL,
+    PRIMARY KEY (PHUpUnitID),
+    FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID)
+);
+
+CREATE TABLE PHDownUnit (
+    PHDownUnitID SERIAL NOT NULL,
+    NutrientUnitID INT NOT NULL,
+    PRIMARY KEY (PHDownUnitID),
+    FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID)
+);
 
 -- SensorData
 CREATE TABLE SensorData (
@@ -98,16 +107,6 @@ CREATE TABLE SensorData (
     ArrGrowUnitTemperature FLOAT ARRAY NOT NULL,
     PRIMARY KEY (Timestamp, ModuleID),
     FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID)
-);
-
--- NutrientUnit
-CREATE TABLE NutrientUnit (
-    NutrientUnitID SERIAL NOT NULL,
-    ModuleID INT NOT NULL,
-    NutrientID INT NOT NULL,
-    PRIMARY KEY (NutrientUnitID),
-    FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID),
-    FOREIGN KEY (NutrientID) REFERENCES Nutrient (NutrientID)
 );
 
 -- GrowUnit
@@ -164,4 +163,3 @@ CREATE TABLE Permission (
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID),
     UNIQUE (UserID, ModuleGroupID)
 );
-

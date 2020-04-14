@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"github.com/KitaPDev/fogfarms-server/models/outputs"
 	"log"
+
+	"github.com/KitaPDev/fogfarms-server/models/outputs"
 
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
@@ -13,7 +14,7 @@ func GetModulesByModuleGroupIDs(moduleGroupIDs []int) ([]models.Module, error) {
 	db := database.GetDB()
 
 	sqlStatement :=
-		`SELECT moduleID, moduleGroupID, modulelabel FROM Module WHERE ModuleGroupID = ANY($1) ;`
+		`SELECT moduleid, moduleGroupID, modulelabel FROM Module WHERE ModuleGroupID = ANY($1) ;`
 	log.Println(sqlStatement)
 	log.Println(moduleGroupIDs)
 	rows, err := db.Query(sqlStatement, pq.Array(moduleGroupIDs))

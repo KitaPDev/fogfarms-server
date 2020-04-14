@@ -1,14 +1,15 @@
 package dashboard
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func MakeHTTPHandler() http.Handler {
 	router := mux.NewRouter()
 	router.HandleFunc("/dashboard", populateDashboard).
-		Methods("GET").
+		Methods("POST").
 		Schemes("http")
 	router.HandleFunc("/dashboard/toggle_device", toggleDevice).
 		Methods("POST").
