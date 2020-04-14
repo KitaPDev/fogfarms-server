@@ -68,8 +68,8 @@ func GetAllPlants() ([]models.Plant, error) {
 	return plants, nil
 }
 
-func NewPlant(name string, tds float32, ph float32, lux float32, lightsOnHour float32,
-	lightsOffHour float32) error {
+func NewPlant(name string, tds float64, ph float64, lux float64, lightsOnHour float64,
+	lightsOffHour float64) error {
 	db := database.GetDB()
 
 	sqlStatement := `INSERT INTO Plant (Name, TDS, PH, Lux, LightsOnHour, LightsOffHour)
