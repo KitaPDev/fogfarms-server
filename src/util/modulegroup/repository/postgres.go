@@ -6,7 +6,6 @@ import (
 
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
-	"github.com/KitaPDev/fogfarms-server/src/util/plant"
 	"github.com/lib/pq"
 )
 
@@ -128,19 +127,17 @@ func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 	return moduleGroups, err
 }
 
-func CreateModuleGroup(label string, plantID int, locationID int, humidity float64, lightsOn float64,
-	lightsOff float64, onAuto bool, timerLastReset time.Time) error {
+func CreateModuleGroup(label string, plantID int, locationID int, tds float64, ph float64,
+	humidity float64, lightsOn float64, lightsOff float64, onAuto bool,
+	timerLastReset time.Time) error {
 	db := database.GetDB()
 
-	p, err := plant.GetPlantByID(plantID)
-	if err != nil {
-		return err
-	}
 	sqlStatement :=
 		`INSERT INTO ModuleGroup (ModuleGroupLabel, PlantID, LocationID, onAuto,
 		 Param_TDS, Param_Ph, Param_Humidity, LightsOnHour, LightsOffHour, TimerLastReset)
 		 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, Now())`
-	_, err = db.Query(sqlStatement, label, plantID, locationID, onAuto, p.TDS, p.PH, humidity, lightsOn, lightsOff)
+	_, err := db.Query(sqlStatement, label, plantID, locationID, onAuto, tds, ph, humidity,
+		lightsOn, lightsOff, timerLastReset)
 	if err != nil {
 		return err
 	}

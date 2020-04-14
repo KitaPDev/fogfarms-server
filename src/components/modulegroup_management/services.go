@@ -138,7 +138,9 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 	type Input struct {
 		PlantID          int       `json:"plant_id"`
 		LocationID       int       `json:"location_id"`
-		Humidity         float64   `json:"humidity"`
+		TDS              float64   `json:"param_tds"`
+		PH               float64   `json:"param_ph"`
+		Humidity         float64   `json:"param_humidity"`
 		OnAuto           bool      `json:"on_auto"`
 		ModuleGroupLabel string    `json:"module_group_label"`
 		LightsOffHour    float64   `json:"lights_off_hour"`
@@ -153,7 +155,8 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err := modulegroup.CreateModuleGroup(input.ModuleGroupLabel, input.PlantID, input.LocationID,
-		input.Humidity, input.LightsOnHour, input.LightsOffHour, input.OnAuto, input.TimerLastReset)
+		input.TDS, input.PH, input.Humidity, input.LightsOnHour, input.LightsOffHour,
+		input.OnAuto, input.TimerLastReset)
 	if err != nil {
 		msg := "Error: Failed to Create Module Group"
 		http.Error(w, msg, http.StatusInternalServerError)
