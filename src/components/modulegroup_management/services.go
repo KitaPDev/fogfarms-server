@@ -35,12 +35,12 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 		ModuleGroupID  int       `json:"module_group_id"`
 		PlantID        int       `json:"plant_id"`
 		LocationID     int       `json:"location_id"`
-		TDS            float32   `json:"tds"`
-		PH             float32   `json:"ph"`
-		Humidity       float32   `json:"humidity"`
+		TDS            float64   `json:"tds"`
+		PH             float64   `json:"ph"`
+		Humidity       float64   `json:"humidity"`
 		OnAuto         bool      `json:"on_auto"`
-		LightsOffHour  float32   `json:"lights_off_hour"`
-		LightsOnHour   float32   `json:"lights_on_hour"`
+		LightsOffHour  float64   `json:"lights_off_hour"`
+		LightsOnHour   float64   `json:"lights_on_hour"`
 		TimerLastReset time.Time `json:"timer_last_reset"`
 		Permission     int
 		Modules        []int
@@ -138,13 +138,13 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 	type Input struct {
 		PlantID          int       `json:"plant_id"`
 		LocationID       int       `json:"location_id"`
-		TDS              float32   `json:"tds"`
-		PH               float32   `json:"ph"`
-		Humidity         float32   `json:"humidity"`
+		TDS              float64   `json:"param_tds"`
+		PH               float64   `json:"param_ph"`
+		Humidity         float64   `json:"param_humidity"`
 		OnAuto           bool      `json:"on_auto"`
 		ModuleGroupLabel string    `json:"module_group_label"`
-		LightsOffHour    float32   `json:"lights_off_hour"`
-		LightsOnHour     float32   `json:"lights_on_hour"`
+		LightsOffHour    float64   `json:"lights_off_hour"`
+		LightsOnHour     float64   `json:"lights_on_hour"`
 		TimerLastReset   time.Time `json:"timer_last_reset"`
 	}
 

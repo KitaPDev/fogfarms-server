@@ -128,8 +128,8 @@ func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 	return moduleGroups, err
 }
 
-func CreateModuleGroup(label string, plantID int, locationID int, humidity float32, lightsOn float32,
-	lightsOff float32, onAuto bool, timerLastReset time.Time) error {
+func CreateModuleGroup(label string, plantID int, locationID int, humidity float64, lightsOn float64,
+	lightsOff float64, onAuto bool, timerLastReset time.Time) error {
 	db := database.GetDB()
 
 	p, err := plant.GetPlantByID(plantID)
