@@ -155,7 +155,8 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err := modulegroup.CreateModuleGroup(input.ModuleGroupLabel, input.PlantID, input.LocationID,
-		input.Humidity, input.LightsOnHour, input.LightsOffHour, input.OnAuto, input.TimerLastReset)
+		input.TDS, input.PH, input.Humidity, input.LightsOnHour, input.LightsOffHour,
+		input.OnAuto, input.TimerLastReset)
 	if err != nil {
 		msg := "Error: Failed to Create Module Group"
 		http.Error(w, msg, http.StatusInternalServerError)
