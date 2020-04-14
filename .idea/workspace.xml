@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d770124b-efb5-4882-b4d8-54ca8965e534" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/models/devicetype.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/outputs/device_output.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/device.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/device.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/module_output.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/outputs/module_output.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/util/module/repository/postgres.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/module/repository/postgres.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/util/module/services.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/module/services.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/data/schema.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +69,7 @@
         <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
         <item name="public: schema" type="983ebcf7:PgImplModel$Schema" />
         <item name="tables" type="d4e8921:DatabaseStructure$FamilyGroup" />
-        <item name="device: table" type="69fad909:PgImplModel$LocalTable" />
+        <item name="growunit: table" type="69fad909:PgImplModel$LocalTable" />
       </path>
       <path>
         <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
@@ -84,7 +79,7 @@
         <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
         <item name="public: schema" type="983ebcf7:PgImplModel$Schema" />
         <item name="tables" type="d4e8921:DatabaseStructure$FamilyGroup" />
-        <item name="devicetype: table" type="69fad909:PgImplModel$LocalTable" />
+        <item name="nutrientunit: table" type="69fad909:PgImplModel$LocalTable" />
       </path>
       <path>
         <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
@@ -94,7 +89,7 @@
         <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
         <item name="public: schema" type="983ebcf7:PgImplModel$Schema" />
         <item name="tables" type="d4e8921:DatabaseStructure$FamilyGroup" />
-        <item name="modulegroup: table" type="69fad909:PgImplModel$LocalTable" />
+        <item name="phdownunit: table" type="69fad909:PgImplModel$LocalTable" />
       </path>
       <path>
         <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
@@ -191,7 +186,7 @@
               <path>
                 <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
                 <item name="fogfarms-postgres@localhost: root" type="7427dc5b:ServiceModel$ServiceGroupNode" />
-                <item name="com.intellij.database.console.session.MessageBusSession@43d35583" type="9fbbdea:ServiceModel$ServiceNode" />
+                <item name="com.intellij.database.console.session.MessageBusSession@4cf906a0" type="9fbbdea:ServiceModel$ServiceNode" />
               </path>
             </expand>
             <select />
@@ -269,49 +264,49 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="477" y="337" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1440.900@0.0.1440.900" timestamp="1584257126896" />
-    <state width="706" height="580" key="GridCell.Tab.0.bottom" timestamp="1586627766451">
+    <state width="706" height="580" key="GridCell.Tab.0.bottom" timestamp="1586799148350">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
     <state width="1398" height="223" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1586405736830" />
     <state width="1398" height="223" key="GridCell.Tab.0.bottom/0.23.1440.877@0.23.1440.877" timestamp="1586405826729" />
     <state width="1398" height="303" key="GridCell.Tab.0.bottom/1440.-1020.1080.1920/0.0.1440.900@0.0.1440.900" timestamp="1585235444547" />
-    <state width="706" height="580" key="GridCell.Tab.0.bottom/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586627766451" />
+    <state width="706" height="580" key="GridCell.Tab.0.bottom/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586799148350" />
     <state width="706" height="580" key="GridCell.Tab.0.bottom/1440.-1020.1080.1920/0.23.1440.812@1440.-1020.1080.1920" timestamp="1586422367763" />
     <state width="1038" height="400" key="GridCell.Tab.0.bottom/1440.-1020.1080.1920/0.23.1440.814@1440.-1020.1080.1920" timestamp="1586418441115" />
     <state width="1038" height="710" key="GridCell.Tab.0.bottom/1440.-1020.1080.1920/0.23.1440.877@1440.-1020.1080.1920" timestamp="1586331429159" />
     <state width="1398" height="303" key="GridCell.Tab.0.bottom/1440.-997.1080.1897/0.0.1440.900@0.0.1440.900" timestamp="1585239286492" />
     <state width="1038" height="400" key="GridCell.Tab.0.bottom/1440.-997.1080.1897/0.23.1440.812@1440.-997.1080.1897" timestamp="1586458802850" />
-    <state width="706" height="580" key="GridCell.Tab.0.center" timestamp="1586627766450">
+    <state width="706" height="580" key="GridCell.Tab.0.center" timestamp="1586799148348">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
     <state width="1398" height="223" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1586405736829" />
     <state width="1398" height="223" key="GridCell.Tab.0.center/0.23.1440.877@0.23.1440.877" timestamp="1586405826725" />
     <state width="1398" height="303" key="GridCell.Tab.0.center/1440.-1020.1080.1920/0.0.1440.900@0.0.1440.900" timestamp="1585235444545" />
-    <state width="706" height="580" key="GridCell.Tab.0.center/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586627766450" />
+    <state width="706" height="580" key="GridCell.Tab.0.center/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586799148348" />
     <state width="706" height="580" key="GridCell.Tab.0.center/1440.-1020.1080.1920/0.23.1440.812@1440.-1020.1080.1920" timestamp="1586422367757" />
     <state width="1038" height="400" key="GridCell.Tab.0.center/1440.-1020.1080.1920/0.23.1440.814@1440.-1020.1080.1920" timestamp="1586418441112" />
     <state width="1038" height="710" key="GridCell.Tab.0.center/1440.-1020.1080.1920/0.23.1440.877@1440.-1020.1080.1920" timestamp="1586331429157" />
     <state width="1398" height="303" key="GridCell.Tab.0.center/1440.-997.1080.1897/0.0.1440.900@0.0.1440.900" timestamp="1585239286490" />
     <state width="1038" height="400" key="GridCell.Tab.0.center/1440.-997.1080.1897/0.23.1440.812@1440.-997.1080.1897" timestamp="1586458802848" />
-    <state width="706" height="580" key="GridCell.Tab.0.left" timestamp="1586627766449">
+    <state width="706" height="580" key="GridCell.Tab.0.left" timestamp="1586799148347">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
     <state width="1398" height="223" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1586405736829" />
     <state width="1398" height="223" key="GridCell.Tab.0.left/0.23.1440.877@0.23.1440.877" timestamp="1586405826717" />
     <state width="1398" height="303" key="GridCell.Tab.0.left/1440.-1020.1080.1920/0.0.1440.900@0.0.1440.900" timestamp="1585235444544" />
-    <state width="706" height="580" key="GridCell.Tab.0.left/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586627766449" />
+    <state width="706" height="580" key="GridCell.Tab.0.left/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586799148347" />
     <state width="706" height="580" key="GridCell.Tab.0.left/1440.-1020.1080.1920/0.23.1440.812@1440.-1020.1080.1920" timestamp="1586422367754" />
     <state width="1038" height="400" key="GridCell.Tab.0.left/1440.-1020.1080.1920/0.23.1440.814@1440.-1020.1080.1920" timestamp="1586418441111" />
     <state width="1038" height="710" key="GridCell.Tab.0.left/1440.-1020.1080.1920/0.23.1440.877@1440.-1020.1080.1920" timestamp="1586331429156" />
     <state width="1398" height="303" key="GridCell.Tab.0.left/1440.-997.1080.1897/0.0.1440.900@0.0.1440.900" timestamp="1585239286489" />
     <state width="1038" height="400" key="GridCell.Tab.0.left/1440.-997.1080.1897/0.23.1440.812@1440.-997.1080.1897" timestamp="1586458802826" />
-    <state width="706" height="580" key="GridCell.Tab.0.right" timestamp="1586627766451">
+    <state width="706" height="580" key="GridCell.Tab.0.right" timestamp="1586799148348">
       <screen x="1440" y="-1020" width="1080" height="1920" />
     </state>
     <state width="1398" height="223" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1586405736830" />
     <state width="1398" height="223" key="GridCell.Tab.0.right/0.23.1440.877@0.23.1440.877" timestamp="1586405826728" />
     <state width="1398" height="303" key="GridCell.Tab.0.right/1440.-1020.1080.1920/0.0.1440.900@0.0.1440.900" timestamp="1585235444546" />
-    <state width="706" height="580" key="GridCell.Tab.0.right/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586627766451" />
+    <state width="706" height="580" key="GridCell.Tab.0.right/1440.-1020.1080.1920/0.0.1440.900@1440.-1020.1080.1920" timestamp="1586799148348" />
     <state width="706" height="580" key="GridCell.Tab.0.right/1440.-1020.1080.1920/0.23.1440.812@1440.-1020.1080.1920" timestamp="1586422367758" />
     <state width="1038" height="400" key="GridCell.Tab.0.right/1440.-1020.1080.1920/0.23.1440.814@1440.-1020.1080.1920" timestamp="1586418441114" />
     <state width="1038" height="710" key="GridCell.Tab.0.right/1440.-1020.1080.1920/0.23.1440.877@1440.-1020.1080.1920" timestamp="1586331429158" />

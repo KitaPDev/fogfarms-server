@@ -1,6 +1,6 @@
 package models
 
 type PHUpUnit struct {
-	PHUpUnitID int `json:"ph_up_unit_id"`
-	NutrientID int `json:"nutrient_id"`
+	PHUpUnitID     int `json:"ph_up_unit_id"`
+	NutrientUnitID int `json:"nutrient_unit_id"`
 }
