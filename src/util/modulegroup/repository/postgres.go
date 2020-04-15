@@ -155,8 +155,8 @@ func ToggleAuto(moduleGroupID int) error {
 	return nil
 }
 
-func SetEnvironmentParameters(moduleGroupID int, humidity float32, ph float32, tds float32,
-	lightsOnHour float32, lightsOffHour float32) error {
+func SetEnvironmentParameters(moduleGroupID int, humidity float64, ph float64, tds float64,
+	lightsOnHour float64, lightsOffHour float64) error {
 	db := database.GetDB()
 
 	sqlStatement :=

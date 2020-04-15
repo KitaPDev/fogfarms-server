@@ -74,15 +74,17 @@ func ToggleDevice(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
+	type Input struct {
+		DeviceID int `json:"device_id"`
+	}
+	var input Input
 
-	var deviceID int
-
-	success := jsonhandler.DecodeJsonFromBody(w, r, &deviceID)
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
 	if !success {
 		return
 	}
 
-	err := device.ToggleDevice(deviceID)
+	err := device.ToggleDevice(input.DeviceID)
 	if err != nil {
 		msg := "Error: Failed to Toggle Device"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -101,14 +103,17 @@ func ToggleAuto(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var moduleGroupID int
+	type Input struct {
+		ModuleGroupID int `json:"module_group_id"`
+	}
+	var input Input
 
-	success := jsonhandler.DecodeJsonFromBody(w, r, &moduleGroupID)
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
 	if !success {
 		return
 	}
 
-	err := modulegroup.ToggleAuto(moduleGroupID)
+	err := modulegroup.ToggleAuto(input.ModuleGroupID)
 	if err != nil {
 		msg := "Error: Failed to Toggle Auto"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -162,15 +167,17 @@ func ResetTimer(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
+	type Input struct {
+		ModuleGroupID int `json:"module_group_id"`
+	}
+	var input Input
 
-	var moduleGroupID int
-
-	success := jsonhandler.DecodeJsonFromBody(w, r, &moduleGroupID)
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
 	if !success {
 		return
 	}
 
-	err := modulegroup.ResetTimer(moduleGroupID)
+	err := modulegroup.ResetTimer(input.ModuleGroupID)
 	if err != nil {
 		msg := "Error: Failed to Reset Timer"
 		http.Error(w, msg, http.StatusInternalServerError)
