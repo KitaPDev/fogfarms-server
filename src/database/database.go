@@ -16,12 +16,20 @@ var db *sql.DB
 // 	DbPass = "fogfarms"
 // 	DbName = "fogfarms-01"
 // )
+// const (
+// 	DbHost = "localhost"
+// 	DbPort = 5432
+// 	DbUser = "postgres"
+// 	DbPass = "postgres"
+// 	DbName = "fogfarms-01"
+// )
+
 const (
-	DbHost = "localhost"
+	DbHost = "ec2-52-87-58-157.compute-1.amazonaws.com"
 	DbPort = 5432
-	DbUser = "postgres"
-	DbPass = "postgres"
-	DbName = "fogfarms-01"
+	DbUser = "ayvwvvempommus"
+	DbPass = "6c88e08a05ae03e4b4a9c04de87e0933cce953a41d344d062390747b01cf673e"
+	DbName = "dguhoh9d1tktp"
 )
 
 func GetDB() *sql.DB {
