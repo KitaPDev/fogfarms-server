@@ -1,10 +1,11 @@
 package repository
 
 import (
+	"log"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/lib/pq"
-	"log"
 )
 
 func GetAllModuleGroups() ([]models.ModuleGroup, error) {
@@ -126,7 +127,7 @@ func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 }
 
 func CreateModuleGroup(label string, plantID int, locationID int, tds float64, ph float64,
-	humidity float64, lightsOn float64, lightsOff float64, onAuto bool ) error {
+	humidity float64, lightsOn float64, lightsOff float64, onAuto bool) error {
 	db := database.GetDB()
 
 	sqlStatement :=
@@ -176,7 +177,7 @@ func AssignModulesToModuleGroup(moduleGroupID int, moduleIDs []int) error {
 
 	sqlStatement := `UPDATE Module SET ModuleGroupID = $1 WHERE ModuleID = ANY($2)`
 
-	_, err := db.Query(sqlStatement, moduleGroupID, moduleIDs)
+	_, err := db.Query(sqlStatement, moduleGroupID, pq.Array(moduleIDs))
 
 	return err
 }
