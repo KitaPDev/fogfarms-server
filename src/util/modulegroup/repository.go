@@ -8,12 +8,12 @@ type Repository interface {
 	GetAllModuleGroups() ([]models.ModuleGroup, error)
 	GetModuleGroupByID(moduleGroupID int) (*models.ModuleGroup, error)
 	GetModuleGroupsByID(moduleGroupIDs []int) error
-	CreateModuleGroup(label string, plantID int, locationID int, humidity float32, lightsOn float32,
-		lightsOff float32, onAuto bool) error
-	NewModuleGroup(moduleGroupLabel string, plantID int, lightsOn float32, lightsOff float32) error
+	CreateModuleGroup(label string, plantID int, locationID int, humidity float64, lightsOn float64,
+		lightsOff float64, onAuto bool) error
+	NewModuleGroup(moduleGroupLabel string, plantID int, lightsOn float64, lightsOff float64) error
 	ToggleAuto(moduleGroupID int) error
-	SetEnvironmentParameters(moduleGroupID int, humidity float32, ph float32, tds float32,
-		lightsOn float32, lightsOff float32) error
+	SetEnvironmentParameters(moduleGroupID int, humidity float64, ph float64, tds float64,
+		lightsOn float64, lightsOff float64) error
 	AssignModulesToModuleGroup(moduleGroupID int, moduleIDs []int) error
 	ResetTimer(moduleGroupID int) error
 }

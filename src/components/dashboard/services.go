@@ -134,11 +134,11 @@ func SetEnvironmentParameters(w http.ResponseWriter, r *http.Request) {
 
 	type Input struct {
 		ModuleGroupID int     `json:"module_group_id"`
-		TDS           float32 `json:"tds"`
-		PH            float32 `json:"ph"`
-		Humidity      float32 `json:"humidity"`
-		LightsOnHour  float32 `json:"lights_on_hour"`
-		LightsOffHour float32 `json:"lights_off_hour"`
+		TDS           float64 `json:"tds"`
+		PH            float64 `json:"ph"`
+		Humidity      float64 `json:"humidity"`
+		LightsOnHour  float64 `json:"lights_on_hour"`
+		LightsOffHour float64 `json:"lights_off_hour"`
 	}
 
 	input := Input{}
