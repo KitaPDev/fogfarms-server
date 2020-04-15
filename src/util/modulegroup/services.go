@@ -1,8 +1,6 @@
 package modulegroup
 
 import (
-	"time"
-
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/util/modulegroup/repository"
 )
@@ -18,11 +16,10 @@ func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 }
 
 func CreateModuleGroup(label string, plantID int, locationID int, tds float64, ph float64,
-	humidity float64, lightsOn float64,	lightsOff float64, onAuto bool,
-	timerLastReset time.Time) error {
+	humidity float64, lightsOn float64,	lightsOff float64, onAuto bool) error {
 
 	return repository.CreateModuleGroup(label, plantID, locationID, tds, ph, humidity,
-		lightsOn, lightsOff, onAuto, timerLastReset)
+		lightsOn, lightsOff, onAuto)
 }
 
 func AssignModulesToModuleGroup(moduleGroupID int, moduleIDs []int) error {

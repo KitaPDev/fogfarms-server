@@ -145,7 +145,6 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 		ModuleGroupLabel string    `json:"module_group_label"`
 		LightsOffHour    float64   `json:"lights_off_hour"`
 		LightsOnHour     float64   `json:"lights_on_hour"`
-		TimerLastReset   time.Time `json:"timer_last_reset"`
 	}
 
 	input := Input{}
@@ -155,8 +154,7 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err := modulegroup.CreateModuleGroup(input.ModuleGroupLabel, input.PlantID, input.LocationID,
-		input.TDS, input.PH, input.Humidity, input.LightsOnHour, input.LightsOffHour,
-		input.OnAuto, input.TimerLastReset)
+		input.TDS, input.PH, input.Humidity, input.LightsOnHour, input.LightsOffHour, input.OnAuto)
 	if err != nil {
 		msg := "Error: Failed to Create Module Group"
 		http.Error(w, msg, http.StatusInternalServerError)

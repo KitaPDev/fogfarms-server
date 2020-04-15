@@ -1,12 +1,10 @@
 package repository
 
 import (
-	"log"
-	"time"
-
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/lib/pq"
+	"log"
 )
 
 func GetAllModuleGroups() ([]models.ModuleGroup, error) {
@@ -128,8 +126,7 @@ func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
 }
 
 func CreateModuleGroup(label string, plantID int, locationID int, tds float64, ph float64,
-	humidity float64, lightsOn float64, lightsOff float64, onAuto bool,
-	timerLastReset time.Time) error {
+	humidity float64, lightsOn float64, lightsOff float64, onAuto bool ) error {
 	db := database.GetDB()
 
 	sqlStatement :=
@@ -137,7 +134,7 @@ func CreateModuleGroup(label string, plantID int, locationID int, tds float64, p
 		 Param_TDS, Param_Ph, Param_Humidity, LightsOnHour, LightsOffHour, TimerLastReset)
 		 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, Now())`
 	_, err := db.Query(sqlStatement, label, plantID, locationID, onAuto, tds, ph, humidity,
-		lightsOn, lightsOff, timerLastReset)
+		lightsOn, lightsOff)
 	if err != nil {
 		return err
 	}
