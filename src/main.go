@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/KitaPDev/fogfarms-server/src/test"
 	"net/http"
 	"os"
 
@@ -38,6 +39,10 @@ func run() error {
 
 	dashBoardHandler := dashboard.MakeHTTPHandler()
 	router.PathPrefix("/dashboard").Handler(dashBoardHandler)
+
+
+	testHandler := test.MakeHTTPHandler()
+	router.PathPrefix("/test").Handler(testHandler)
 
 	return http.ListenAndServe(getPort(), router)
 }
