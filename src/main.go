@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gorilla/mux"
-
-	"github.com/KitaPDev/fogfarms-server/src/auth/jwt"
-	"github.com/KitaPDev/fogfarms-server/src/modulegroup_management"
-	"github.com/KitaPDev/fogfarms-server/src/plant_management"
+	"github.com/KitaPDev/fogfarms-server/src/components/auth/jwt"
+	"github.com/KitaPDev/fogfarms-server/src/components/dashboard"
+	"github.com/KitaPDev/fogfarms-server/src/components/modulegroup_management"
+	"github.com/KitaPDev/fogfarms-server/src/components/plant_management"
+	"github.com/KitaPDev/fogfarms-server/src/components/user_management"
 	"github.com/KitaPDev/fogfarms-server/src/test"
-	"github.com/KitaPDev/fogfarms-server/src/user_management"
+	"github.com/gorilla/mux"
 	"github.com/labstack/gommon/log"
 )
 
@@ -21,14 +21,7 @@ func main() {
 		os.Exit(1)
 	}
 }
-func getPort() string {
-	var port = os.Getenv("PORT")
-	if port == "" {
-		port = "9090"
-		fmt.Println("No Port In Heroku" + port)
-	}
-	return ":" + port
-}
+
 func run() error {
 	router := mux.NewRouter()
 
@@ -44,8 +37,21 @@ func run() error {
 	plantManagementHandler := plant_management.MakeHTTPHandler()
 	router.PathPrefix("/plant_management").Handler(plantManagementHandler)
 
-	testHandler := test.MakeHTTPHandler()
-	router.PathPrefix("/test").Handler(testHandler)
+	dashBoardHandler := dashboard.MakeHTTPHandler()
+	router.PathPrefix("/dashboard").Handler(dashBoardHandler)
+
+	testHanlder := test.MakeHTTPHandler()
+	router.PathPrefix("/test").Handler(testHanlder)
 
 	return http.ListenAndServe(getPort(), router)
+}
+
+func getPort() string {
+	var port = os.Getenv("PORT")
+	if port == "" {
+		port = "9090"
+	}
+
+	fmt.Println("Server is running on port: " + port)
+	return ":" + port
 }
