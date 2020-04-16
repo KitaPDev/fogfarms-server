@@ -23,17 +23,14 @@ func MakeHTTPHandler() http.Handler {
 	return router
 }
 
-//  ok
 func register(w http.ResponseWriter, r *http.Request) {
 	CreateUser(w, r)
 }
 
-// todo ddfsd - test
 func populateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 	PopulateUserManagementPage(w, r)
 }
 
-// ok
 func assignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 	AssignUserModuleGroupPermission(w, r)
 }
