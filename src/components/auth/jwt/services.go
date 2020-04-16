@@ -157,7 +157,7 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Operation: Authenticate Sign In; Successful"))
+	w.Write([]byte("Successful"))
 }
 
 func GenerateToken(username string, w http.ResponseWriter) error {

@@ -22,8 +22,16 @@ func CreateModuleGroup(label string, plantID int, locationID int, tds float64, p
 		lightsOn, lightsOff, onAuto)
 }
 
-func AssignModulesToModuleGroup(moduleGroupID int, moduleIDs []int) error {
-	return repository.AssignModulesToModuleGroup(moduleGroupID, moduleIDs)
+func DeleteModuleGroup(moduleGroupID int) error {
+	return repository.DeleteModuleGroup(moduleGroupID)
+}
+
+func EditModuleGroupLabel(moduleGroupID int, moduleGroupLabel string) error {
+	return repository.EditModuleGroupLabel(moduleGroupID, moduleGroupLabel)
+}
+
+func ChangePlant(moduleGroupID int, plantID int) error {
+	return repository.ChangePlant(moduleGroupID, plantID)
 }
 
 func ToggleAuto(moduleGroupID int) error {

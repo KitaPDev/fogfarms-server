@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/components/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 	"github.com/KitaPDev/fogfarms-server/src/util/module"
@@ -17,8 +16,6 @@ import (
 
 func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-		msg := "Unauthorized"
-		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
@@ -130,21 +127,19 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 
 func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-		msg := "Unauthorized"
-		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
 	type Input struct {
-		PlantID          int       `json:"plant_id"`
-		LocationID       int       `json:"location_id"`
-		TDS              float64   `json:"param_tds"`
-		PH               float64   `json:"param_ph"`
-		Humidity         float64   `json:"param_humidity"`
-		OnAuto           bool      `json:"on_auto"`
-		ModuleGroupLabel string    `json:"module_group_label"`
-		LightsOffHour    float64   `json:"lights_off_hour"`
-		LightsOnHour     float64   `json:"lights_on_hour"`
+		PlantID          int     `json:"plant_id"`
+		LocationID       int     `json:"location_id"`
+		TDS              float64 `json:"param_tds"`
+		PH               float64 `json:"param_ph"`
+		Humidity         float64 `json:"param_humidity"`
+		OnAuto           bool    `json:"on_auto"`
+		ModuleGroupLabel string  `json:"module_group_label"`
+		LightsOffHour    float64 `json:"lights_off_hour"`
+		LightsOnHour     float64 `json:"lights_on_hour"`
 	}
 
 	input := Input{}
@@ -163,18 +158,16 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Operation: Create ModuleGroup; Successful"))
+	w.Write([]byte("Successful"))
 }
 
 func AssignModuleToModuleGroup(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-		msg := "Unauthorized"
-		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
 	type Input struct {
-		ModuleGroupID int   `json:"module_group_ids"`
+		ModuleGroupID int   `json:"module_group_id"`
 		ModuleIDs     []int `json:"module_ids"`
 	}
 
@@ -184,7 +177,7 @@ func AssignModuleToModuleGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := modulegroup.AssignModulesToModuleGroup(input.ModuleGroupID, input.ModuleIDs)
+	err := module.AssignModulesToModuleGroup(input.ModuleGroupID, input.ModuleIDs)
 	if err != nil {
 		msg := "Error: Failed to Assign Modules To ModuleGroup"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -192,41 +185,86 @@ func AssignModuleToModuleGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Operation: Assign Module To ModuleGroup; Successful"))
+	w.Write([]byte("Successful"))
 }
 
-func mapModulesToModuleGroup(moduleGroups []models.ModuleGroup,
-	modules []models.Module) (map[models.ModuleGroup][]models.Module, []models.Module) {
-
-	mapModuleGroupModules := make(map[models.ModuleGroup][]models.Module)
-	var assignedModules []models.Module
-	var unassignedModules []models.Module
-
-	for _, mg := range moduleGroups {
-		mapModuleGroupModules[mg] = make([]models.Module, 0)
-
-		for _, m := range modules {
-			if m.ModuleGroupID == mg.ModuleGroupID {
-				mapModuleGroupModules[mg] = append(mapModuleGroupModules[mg], m)
-				assignedModules = append(assignedModules, m)
-			}
-		}
+func EditModuleGroupLabel(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		return
 	}
 
-	for _, m1 := range modules {
-		found := false
-
-		for _, m2 := range assignedModules {
-			if m2 == m1 {
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			unassignedModules = append(unassignedModules, m1)
-		}
+	type Input struct {
+		ModuleGroupID    int    `json:"module_group_id"`
+		ModuleGroupLabel string `json:"module_group_label"`
 	}
 
-	return mapModuleGroupModules, unassignedModules
+	input := Input{}
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
+		return
+	}
+
+	err := modulegroup.EditModuleGroupLabel(input.ModuleGroupID, input.ModuleGroupLabel)
+	if err != nil {
+		msg := "Error: Failed to Edit ModuleGroup Label"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Successful"))
+}
+
+func ChangePlant(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		return
+	}
+
+	type Input struct {
+		ModuleGroupID int `json:"module_group_id"`
+		PlantID       int `json:"plant_id"`
+	}
+
+	input := Input{}
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
+		return
+	}
+
+	err := modulegroup.ChangePlant(input.ModuleGroupID, input.PlantID)
+	if err != nil {
+		msg := "Error: Failed to Change Plant"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Successful"))
+}
+
+
+func DeleteModuleGroup(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		return
+	}
+
+	type Input struct {
+		ModuleGroupID int `json:"module_group_id"`
+	}
+
+	input := Input{}
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
+		return
+	}
+
+	err := modulegroup.DeleteModuleGroup(input.ModuleGroupID)
+	if err != nil {
+		msg := "Error: Failed to Delete ModuleGroup"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Successful"))
 }

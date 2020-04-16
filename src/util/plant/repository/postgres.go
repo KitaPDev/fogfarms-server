@@ -91,3 +91,18 @@ func DeletePlant(plantID int) error {
 	}
 	return err
 }
+
+func EditPlant(p *models.Plant) error {
+	db := database.GetDB()
+
+	sqlStatement :=
+		`UPDATE PLANT
+		SET Name = $1, TDS = $2, PH = $3, Lux = $4, LightsOnHour = $5, LightsOffHour = $6
+		WHERE PlantID = $7`
+	_, err := db.Query(sqlStatement, p.Name, p.TDS, p.PH, p.Lux, p.LightsOnHour,p.LightsOffHour,
+		p.PlantID)
+	if err != nil {
+		return err
+	}
+	return err
+}

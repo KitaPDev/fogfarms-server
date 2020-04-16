@@ -15,8 +15,6 @@ import (
 
 func PopulateDashboard(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-		msg := "Unauthorized"
-		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 	type Input struct {
@@ -70,8 +68,6 @@ func PopulateDashboard(w http.ResponseWriter, r *http.Request) {
 
 func ToggleDevice(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-		msg := "Unauthorized"
-		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 	type Input struct {
@@ -93,13 +89,11 @@ func ToggleDevice(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Operation: Toggle Device; Successful"))
+	w.Write([]byte("Successful"))
 }
 
 func ToggleAuto(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-		msg := "Unauthorized"
-		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
@@ -122,13 +116,11 @@ func ToggleAuto(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Operation: Toggle Auto; Successful"))
+	w.Write([]byte("Successful"))
 }
 
 func SetEnvironmentParameters(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-		msg := "Unauthorized"
-		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
@@ -158,13 +150,11 @@ func SetEnvironmentParameters(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Operation: Set Environment Parameters; Successful"))
+	w.Write([]byte("Successful"))
 }
 
 func ResetTimer(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-		msg := "Unauthorized"
-		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 	type Input struct {
@@ -185,5 +175,5 @@ func ResetTimer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Operation: Reset Timer; Successful"))
+	w.Write([]byte("Successful"))
 }

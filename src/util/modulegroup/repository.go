@@ -10,10 +10,11 @@ type Repository interface {
 	GetModuleGroupsByID(moduleGroupIDs []int) error
 	CreateModuleGroup(label string, plantID int, locationID int, humidity float64, lightsOn float64,
 		lightsOff float64, onAuto bool) error
-	NewModuleGroup(moduleGroupLabel string, plantID int, lightsOn float64, lightsOff float64) error
+	DeleteModuleGroup(moduleGroupID int) error
 	ToggleAuto(moduleGroupID int) error
 	SetEnvironmentParameters(moduleGroupID int, humidity float64, ph float64, tds float64,
 		lightsOn float64, lightsOff float64) error
-	AssignModulesToModuleGroup(moduleGroupID int, moduleIDs []int) error
+	EditModuleGroupLabel(moduleGroupID int, moduleGroupLabel string) error
+	ChangePlant(moduleGroupID int, PlantID int) error
 	ResetTimer(moduleGroupID int) error
 }

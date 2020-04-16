@@ -19,6 +19,10 @@ func DeletePlant(plantID int) error {
 	return repository.DeletePlant(plantID)
 }
 
+func EditPlant(p *models.Plant) error {
+	return repository.EditPlant(p)
+}
+
 func GetPlantByID(plantID int) (*models.Plant, error) {
 	plant, err := repository.GetPlantByID(plantID)
 	return plant, err

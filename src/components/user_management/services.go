@@ -28,13 +28,11 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Operation: Create User; Successful"))
+	w.Write([]byte("Successful"))
 }
 
 func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-		msg := "Unauthorized"
-		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
@@ -67,8 +65,6 @@ func PopulateUserManagementPage(w http.ResponseWriter, r *http.Request) {
 
 func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-		msg := "Unauthorized"
-		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
@@ -95,5 +91,5 @@ func AssignUserModuleGroupPermission(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Operation: Assign User Module Group Permission; Successful"))
+	w.Write([]byte("Successful"))
 }

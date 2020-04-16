@@ -15,8 +15,6 @@ import (
 
 func GetAllPlants(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-		msg := "Unauthorized"
-		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
@@ -48,8 +46,6 @@ func GetAllPlants(w http.ResponseWriter, r *http.Request) {
 
 func CreatePlant(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-		msg := "Unauthorized"
-		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
@@ -69,13 +65,11 @@ func CreatePlant(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Operation: New Plant; Successful"))
+	w.Write([]byte("Successful"))
 }
 
 func DeletePlant(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
-		msg := "Unauthorized"
-		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
@@ -95,5 +89,30 @@ func DeletePlant(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Operation: Delete Plant; Successful"))
+	w.Write([]byte("Successful"))
+}
+
+
+func EditPlant(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		return
+	}
+
+	input := models.Plant{}
+
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
+		return
+	}
+
+	err := plant.EditPlant(&input.PlantID)
+	if err != nil {
+		msg := "Error: Failed to Delete Plant"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Successful"))
 }

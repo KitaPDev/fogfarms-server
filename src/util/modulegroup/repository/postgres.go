@@ -172,14 +172,43 @@ func SetEnvironmentParameters(moduleGroupID int, humidity float64, ph float64, t
 	return nil
 }
 
-func AssignModulesToModuleGroup(moduleGroupID int, moduleIDs []int) error {
+func EditModuleGroupLabel(moduleGroupID int, moduleGroupLabel string) error {
 	db := database.GetDB()
 
-	sqlStatement := `UPDATE Module SET ModuleGroupID = $1 WHERE ModuleID = ANY($2)`
+	sqlStatement := `UPDATE ModuleGroup SET ModuleGroupLabel = $1 WHERE ModuleGroupID = $2`
 
-	_, err := db.Query(sqlStatement, moduleGroupID, pq.Array(moduleIDs))
+	_, err := db.Query(sqlStatement, moduleGroupLabel, moduleGroupID)
+	if err != nil {
+		return err
+	}
 
-	return err
+	return nil
+}
+
+func DeleteModuleGroup(moduleGroupID int) error {
+	db := database.GetDB()
+
+	sqlStatement := `DELETE FROM ModuleGroup WHERE ModuleGroupID = $1`
+
+	_, err := db.Query(sqlStatement, moduleGroupID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func ChangePlant(moduleGroupID int, plantID int) error {
+	db := database.GetDB()
+
+	sqlStatement := `UPDATE ModuleGroup SET PlantID = $1 WHERE ModuleGroupID = $2`
+
+	_, err := db.Query(sqlStatement, plantID, moduleGroupID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func ResetTimer(moduleGroupID int) error {

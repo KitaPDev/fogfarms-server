@@ -63,3 +63,13 @@ func GetModulesByModuleGroupIDsForModuleManagement(moduleGroupIDs []int) ([]outp
 	}
 	return modules, nil
 }
+
+func AssignModulesToModuleGroup(moduleGroupID int, moduleIDs []int) error {
+	db := database.GetDB()
+
+	sqlStatement := `UPDATE Module SET ModuleGroupID = $1 WHERE ModuleID = ANY($2)`
+
+	_, err := db.Query(sqlStatement, moduleGroupID, pq.Array(moduleIDs))
+
+	return err
+}
