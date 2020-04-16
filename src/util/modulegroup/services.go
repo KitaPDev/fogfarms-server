@@ -40,3 +40,7 @@ func SetEnvironmentParameters(moduleGroupID int, humidity float64, ph float64, t
 func ResetTimer(moduleGroupID int) error {
 	return repository.ResetTimer(moduleGroupID)
 }
+
+func GetModuleGroupsByLabelMatch(moduleGroupLabel string)([]models.ModuleGroup,error){
+	return repository.GetModuleGroupsByLabelMatch(moduleGroupLabel)
+}

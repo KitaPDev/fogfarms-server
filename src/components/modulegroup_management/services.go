@@ -136,15 +136,15 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type Input struct {
-		PlantID          int       `json:"plant_id"`
-		LocationID       int       `json:"location_id"`
-		TDS              float64   `json:"param_tds"`
-		PH               float64   `json:"param_ph"`
-		Humidity         float64   `json:"param_humidity"`
-		OnAuto           bool      `json:"on_auto"`
-		ModuleGroupLabel string    `json:"module_group_label"`
-		LightsOffHour    float64   `json:"lights_off_hour"`
-		LightsOnHour     float64   `json:"lights_on_hour"`
+		PlantID          int     `json:"plant_id"`
+		LocationID       int     `json:"location_id"`
+		TDS              float64 `json:"param_tds"`
+		PH               float64 `json:"param_ph"`
+		Humidity         float64 `json:"param_humidity"`
+		OnAuto           bool    `json:"on_auto"`
+		ModuleGroupLabel string  `json:"module_group_label"`
+		LightsOffHour    float64 `json:"lights_off_hour"`
+		LightsOnHour     float64 `json:"lights_on_hour"`
 	}
 
 	input := Input{}
@@ -229,4 +229,42 @@ func mapModulesToModuleGroup(moduleGroups []models.ModuleGroup,
 	}
 
 	return mapModuleGroupModules, unassignedModules
+}
+
+func getModuleGroupByMatchedLabel(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		msg := "Unauthorized"
+		http.Error(w, msg, http.StatusUnauthorized)
+		return
+	}
+
+	type Input struct {
+		ModuleGroupLabel string `json:"module_group_label"`
+	}
+	var input Input
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
+		return
+	}
+
+	modulegroup, err := modulegroup.GetModuleGroupsByLabelMatch(input.ModuleGroupLabel)
+	if err != nil {
+		msg := "Error: Failed to Search For ModuleGroup"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+	type Output struct {
+		Data []models.ModuleGroup
+	}
+	out := Output{modulegroup}
+	jsonData, err := json.Marshal(out)
+	if err != nil {
+		msg := "Error: Failed to marshal JSON"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
 }
