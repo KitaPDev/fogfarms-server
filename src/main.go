@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/KitaPDev/fogfarms-server/src/test"
 	"net/http"
 	"os"
+
+	"github.com/KitaPDev/fogfarms-server/src/test"
+	"github.com/rs/cors"
 
 	"github.com/KitaPDev/fogfarms-server/src/components/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/components/dashboard"
@@ -40,11 +42,11 @@ func run() error {
 	dashBoardHandler := dashboard.MakeHTTPHandler()
 	router.PathPrefix("/dashboard").Handler(dashBoardHandler)
 
-
 	testHandler := test.MakeHTTPHandler()
 	router.PathPrefix("/test").Handler(testHandler)
-
-	return http.ListenAndServe(getPort(), router)
+	router.Use(mux.CORSMethodMiddleware(router))
+	handler := cors.Default().Handler(router)
+	return http.ListenAndServe(getPort(), handler)
 }
 
 func getPort() string {

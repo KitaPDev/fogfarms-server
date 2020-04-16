@@ -16,13 +16,21 @@ var db *sql.DB
 // 	DbPass = "fogfarms"
 // 	DbName = "fogfarms-01"
 // )
+// const (
+// 	DbHost  = "ec2-54-157-78-113.compute-1.amazonaws.com"
+// 	DbPort  = 5432
+// 	DbUser  = "aevojjwxgydmym"
+// 	DbPass  = "f3940dee95e22cb02e4dea372a8252fa356265e2b3fde6875307ed563e88f639"
+// 	DbName  = "dbfi6i4j26c9jj"
+// 	SSLMODE = "require"
+// )
 const (
-	DbHost = "ec2-54-157-78-113.compute-1.amazonaws.com"
-	DbPort = 5432
-	DbUser = "aevojjwxgydmym"
-	DbPass = "f3940dee95e22cb02e4dea372a8252fa356265e2b3fde6875307ed563e88f639"
-	DbName = "dbfi6i4j26c9jj"
-	SSLMODE = "require"
+	DbHost  = "localhost"
+	DbPort  = 5432
+	DbUser  = "postgres"
+	DbPass  = "postgres"
+	DbName  = "fogfarms-01"
+	SSLMODE = "disable"
 )
 
 func GetDB() *sql.DB {

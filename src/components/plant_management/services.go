@@ -92,7 +92,6 @@ func DeletePlant(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Successful"))
 }
 
-
 func EditPlant(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
 		return
@@ -105,7 +104,7 @@ func EditPlant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := plant.EditPlant(&input.PlantID)
+	err := plant.EditPlant(&input)
 	if err != nil {
 		msg := "Error: Failed to Delete Plant"
 		http.Error(w, msg, http.StatusInternalServerError)

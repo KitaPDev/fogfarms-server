@@ -20,7 +20,7 @@ func MakeHTTPHandler() http.Handler {
 		Methods("POST").
 		Schemes("http")
 
-	router.HandleFunc("/plant_management/edit_plant", deletePlant).
+	router.HandleFunc("/plant_management/edit_plant", editPlant).
 		Methods("POST").
 		Schemes("http")
 
@@ -39,7 +39,7 @@ func deletePlant(w http.ResponseWriter, r *http.Request) {
 	DeletePlant(w, r)
 }
 
-
+//ok
 func editPlant(w http.ResponseWriter, r *http.Request) {
 	EditPlant(w, r)
 }

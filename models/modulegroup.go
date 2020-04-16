@@ -12,6 +12,6 @@ type ModuleGroup struct {
 	Humidity         float64   `json:"humidity"`
 	OnAuto           bool      `json:"on_auto"`
 	LightsOffHour    float64   `json:"lights_off_hour"`
-	LightsOnHour     float64x   `json:"lights_on_hour"`
+	LightsOnHour     float64   `json:"lights_on_hour"`
 	TimerLastReset   time.Time `json:"timer_last_reset"`
 }
