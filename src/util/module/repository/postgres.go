@@ -14,9 +14,8 @@ func GetModulesByModuleGroupIDs(moduleGroupIDs []int) ([]models.Module, error) {
 	db := database.GetDB()
 
 	sqlStatement :=
-		`SELECT moduleid, moduleGroupID, modulelabel FROM Module WHERE ModuleGroupID = ANY($1) ;`
-	log.Println(sqlStatement)
-	log.Println(moduleGroupIDs)
+		`SELECT ModuleID, ModuleGroupID, ModuleLabel FROM Module WHERE ModuleGroupID = ANY($1)`
+
 	rows, err := db.Query(sqlStatement, pq.Array(moduleGroupIDs))
 	if err != nil {
 		return nil, err
@@ -26,12 +25,12 @@ func GetModulesByModuleGroupIDs(moduleGroupIDs []int) ([]models.Module, error) {
 	var modules []models.Module
 	for rows.Next() {
 		module := models.Module{}
-		log.Println(module)
+
 		err := rows.Scan(&module.ModuleID, &module.ModuleGroupID, &module.ModuleLabel)
 		if err != nil {
 			return nil, err
 		}
-		log.Println(module)
+
 		modules = append(modules, module)
 	}
 	return modules, nil
@@ -42,8 +41,7 @@ func GetModulesByModuleGroupIDsForModuleManagement(moduleGroupIDs []int) ([]outp
 
 	sqlStatement :=
 		`SELECT module.moduleID, module.moduleGroupID, modulelabel,modulegrouplabel FROM Module,Modulegroup WHERE module.ModuleGroupID = ANY($1) AND module.modulegroupID=modulegroup.modulegroupID ;`
-	log.Println(sqlStatement)
-	log.Println(moduleGroupIDs)
+
 	rows, err := db.Query(sqlStatement, pq.Array(moduleGroupIDs))
 	if err != nil {
 		return nil, err

@@ -2,6 +2,7 @@ package dashboard
 
 import (
 	"encoding/json"
+	"github.com/KitaPDev/fogfarms-server/src/util/sensordata_modulegroup"
 	"log"
 	"net/http"
 
@@ -18,7 +19,7 @@ func PopulateDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	type Input struct {
-		ModuleGroupID int `json:"modulegroupid"`
+		ModuleGroupID int `json:"module_group_id"`
 	}
 	var input Input
 
@@ -26,10 +27,18 @@ func PopulateDashboard(w http.ResponseWriter, r *http.Request) {
 	if !success {
 		return
 	}
-	log.Println("this is input: ", input)
+
 	sensorData, err := sensordata.GetLatestSensorData(input.ModuleGroupID)
 	if err != nil {
 		msg := "Error: Failed to Get Latest Sensor Data"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	sensorDataModuleGroup, err := sensordata_modulegroup.GetLatestSensorDataModuleGroup(input.ModuleGroupID)
+	if err != nil {
+		msg := "Error: Failed to Get Latest Sensor Data ModuleGroup"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Println(err)
 		return
@@ -44,13 +53,15 @@ func PopulateDashboard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type Data struct {
-		SensorData []models.SensorData
-		Devices    []models.Device
+		SensorData            []models.SensorData
+		SensorDataModuleGroup models.SensorDataModuleGroup
+		Devices               []models.Device
 	}
 
 	data := Data{
-		SensorData: sensorData,
-		Devices:    devices,
+		SensorData:            sensorData,
+		SensorDataModuleGroup: *sensorDataModuleGroup,
+		Devices:               devices,
 	}
 
 	jsonData, err := json.Marshal(data)

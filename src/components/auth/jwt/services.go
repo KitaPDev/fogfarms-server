@@ -126,7 +126,7 @@ func AuthenticateSignIn(w http.ResponseWriter, r *http.Request) {
 
 	exists, _, err := user.ExistsByUsername(username)
 	if err != nil {
-		msg := "Error: Failed to Exists By UserID"
+		msg := "Error: Failed to Exists By Username"
 		http.Error(w, msg, http.StatusUnauthorized)
 		log.Println(err)
 		return

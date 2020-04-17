@@ -12,9 +12,11 @@ func MakeHTTPHandler() http.Handler {
 	router.HandleFunc("/auth/test", AuthenticateTest).
 		Methods("POST").
 		Schemes("http")
+
 	router.HandleFunc("/auth/sign_in", SignIn).
 		Methods("POST").
 		Schemes("http")
+
 	router.HandleFunc("/auth/sign_out", SignOut).
 		Methods("GET").
 		Schemes("http")
@@ -22,7 +24,7 @@ func MakeHTTPHandler() http.Handler {
 }
 
 func AuthenticateTest(w http.ResponseWriter, r *http.Request) {
-	v:= AuthenticateUserToken(w,r)
+	v := AuthenticateUserToken(w,r)
 	log.Println(v)
 }
 

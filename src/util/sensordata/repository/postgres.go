@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"log"
-
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/KitaPDev/fogfarms-server/src/util/module"
@@ -12,7 +10,7 @@ import (
 func GetLatestSensorData(moduleGroupID int) ([]models.SensorData, error) {
 	var moduleGroupIDs []int
 	moduleGroupIDs = append(moduleGroupIDs, moduleGroupID)
-	log.Println("Modulegroupids in getlatest sensor", moduleGroupIDs)
+
 	modules, err := module.GetModulesByModuleGroupIDs(moduleGroupIDs)
 	if err != nil {
 		return nil, err
@@ -22,15 +20,55 @@ func GetLatestSensorData(moduleGroupID int) ([]models.SensorData, error) {
 		moduleIDs = append(moduleIDs, m.ModuleID)
 	}
 
-	log.Println("Moduleids in getlatest sensor", moduleIDs)
-
-	sqlStatement := `SELECT * FROM SensorData WHERE ModuleID = ANY($1)`
-
 	db := database.GetDB()
+
+	sqlDropTempTable := `DROP TABLE IF EXISTS temp_SensorData`
+	_, err = db.Exec(sqlDropTempTable)
+	if err != nil {
+		return nil, err
+	}
+
+	sqlCreateFunction :=
+		`CREATE OR REPLACE FUNCTION fn_getLatestSensorData(moduleIDs INTEGER ARRAY)
+			RETURNS SETOF SensorData AS
+		$func$
+			DECLARE
+				i INT;
+		
+			BEGIN
+				CREATE TEMPORARY TABLE temp_SensorData (
+				   ModuleID INT,
+				   Timestamp TIMESTAMP,
+				   TDS FLOAT,
+				   PH FLOAT,
+				   SolutionTemperature FLOAT,
+				   ArrGrowUnitLux FLOAT ARRAY,
+				   ArrGrowUnitHumidity FLOAT ARRAY,
+				   ArrGrowUnitTemperature FLOAT ARRAY
+				);
+		
+				FOREACH i IN ARRAY moduleIDs
+					LOOP
+						INSERT INTO temp_SensorData (ModuleID, Timestamp, TDS, PH, SolutionTemperature, ArrGrowUnitLux, ArrGrowUnitHumidity, ArrGrowUnitTemperature)
+						SELECT * FROM SensorData WHERE ModuleID = i ORDER BY Timestamp DESC LIMIT 1;
+					END LOOP;
+		
+				RETURN QUERY SELECT * FROM temp_SensorData;
+			END
+		$func$ LANGUAGE plpgsql;`
+
+	_, err = db.Exec(sqlCreateFunction)
+	if err != nil {
+		return nil, err
+	}
+
+	sqlStatement := `SELECT * FROM fn_getLatestSensorData($1);`
+
 	rows, err := db.Query(sqlStatement, pq.Array(moduleIDs))
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var sensorData []models.SensorData
 	for rows.Next() {
@@ -49,10 +87,10 @@ func GetLatestSensorData(moduleGroupID int) ([]models.SensorData, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		sensorData = append(sensorData, sd)
 
 	}
-	log.Println("sensordata in getlatest sensor", sensorData)
 
 	return sensorData, nil
 }

@@ -98,14 +98,14 @@ func EditPlant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	input := models.Plant{}
+	input := &models.Plant{}
 
 	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
 	if !success {
 		return
 	}
 
-	err := plant.EditPlant(&input.PlantID)
+	err := plant.EditPlant(input)
 	if err != nil {
 		msg := "Error: Failed to Delete Plant"
 		http.Error(w, msg, http.StatusInternalServerError)

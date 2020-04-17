@@ -11,15 +11,19 @@ func MakeHTTPHandler() http.Handler {
 	router.HandleFunc("/dashboard", populateDashboard).
 		Methods("POST").
 		Schemes("http")
+
 	router.HandleFunc("/dashboard/toggle_device", toggleDevice).
 		Methods("POST").
 		Schemes("http")
+
 	router.HandleFunc("/dashboard/toggle_auto", toggleAuto).
 		Methods("POST").
 		Schemes("http")
+
 	router.HandleFunc("/dashboard/set_env_param", setEnvironmentParameters).
 		Methods("POST").
 		Schemes("http")
+
 	router.HandleFunc("/dashboard/reset_timer", resetTimer).
 		Methods("POST").
 		Schemes("http")
