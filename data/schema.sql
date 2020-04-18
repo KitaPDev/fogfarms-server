@@ -99,9 +99,9 @@ CREATE TABLE PHDownUnit (
 CREATE TABLE SensorData (
     ModuleID INT NOT NULL,
     Timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
-    TDS FLOAT NOT NULL,
-    PH FLOAT NOT NULL,
-    SolutionTemperature FLOAT NOT NULL,
+    ArrNutrientUnitTDS FLOAT ARRAY NOT NULL,
+    ArrNutrientUnitPH FLOAT ARRAY NOT NULL,
+    ArrNutrientUnitSolutionTemperature FLOAT ARRAY NOT NULL,
     ArrGrowUnitLux FLOAT ARRAY NOT NULL,
     ArrGrowUnitHumidity FLOAT ARRAY NOT NULL,
     ArrGrowUnitTemperature FLOAT ARRAY NOT NULL,

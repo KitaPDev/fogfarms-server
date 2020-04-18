@@ -39,9 +39,9 @@ func GetLatestSensorData(moduleGroupID int) ([]models.SensorData, error) {
 				CREATE TEMPORARY TABLE temp_SensorData (
 				   ModuleID INT,
 				   Timestamp TIMESTAMP,
-				   TDS FLOAT,
-				   PH FLOAT,
-				   SolutionTemperature FLOAT,
+				   ArrNutrientUnitTDS FLOAT ARRAY,
+				   ArrNutrientUnitPH FLOAT ARRAY,
+				   ArrNutrientUnitSolutionTemperature FLOAT ARRAY,
 				   ArrGrowUnitLux FLOAT ARRAY,
 				   ArrGrowUnitHumidity FLOAT ARRAY,
 				   ArrGrowUnitTemperature FLOAT ARRAY
@@ -49,7 +49,7 @@ func GetLatestSensorData(moduleGroupID int) ([]models.SensorData, error) {
 		
 				FOREACH i IN ARRAY moduleIDs
 					LOOP
-						INSERT INTO temp_SensorData (ModuleID, Timestamp, TDS, PH, SolutionTemperature, ArrGrowUnitLux, ArrGrowUnitHumidity, ArrGrowUnitTemperature)
+						INSERT INTO temp_SensorData (ModuleID, Timestamp, ArrNutrientUnitTDS, ArrNutrientUnitPH, ArrNutrientUnitSolutionTemperature, ArrGrowUnitLux, ArrGrowUnitHumidity, ArrGrowUnitTemperature)
 						SELECT * FROM SensorData WHERE ModuleID = i ORDER BY Timestamp DESC LIMIT 1;
 					END LOOP;
 		
@@ -77,9 +77,9 @@ func GetLatestSensorData(moduleGroupID int) ([]models.SensorData, error) {
 		err = rows.Scan(
 			&sd.ModuleID,
 			&sd.TimeStamp,
-			&sd.TDS,
-			&sd.PH,
-			&sd.SolutionTemperature,
+			pq.Array(&sd.TDS),
+			pq.Array(&sd.PH),
+			pq.Array(&sd.SolutionTemperature),
 			pq.Array(&sd.GrowUnitLux),
 			pq.Array(&sd.GrowUnitHumidity),
 			pq.Array(&sd.GrowUnitTemperature),
