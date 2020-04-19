@@ -2,11 +2,9 @@ package dashboard
 
 import (
 	"encoding/json"
-	"github.com/KitaPDev/fogfarms-server/src/util/sensordata_modulegroup"
 	"log"
 	"net/http"
 
-	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/components/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
 	"github.com/KitaPDev/fogfarms-server/src/util/device"
@@ -36,35 +34,7 @@ func PopulateDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sensorDataModuleGroup, err := sensordata_modulegroup.GetLatestSensorDataModuleGroup(input.ModuleGroupID)
-	if err != nil {
-		msg := "Error: Failed to Get Latest Sensor Data ModuleGroup"
-		http.Error(w, msg, http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-
-	devices, err := device.GetModuleGroupDevices(input.ModuleGroupID)
-	if err != nil {
-		msg := "Error: Failed to Get ModuleGroup Devices"
-		http.Error(w, msg, http.StatusInternalServerError)
-		log.Println(err)
-		return
-	}
-
-	type Data struct {
-		SensorData            []models.SensorData
-		SensorDataModuleGroup models.SensorDataModuleGroup
-		Devices               []models.Device
-	}
-
-	data := Data{
-		SensorData:            sensorData,
-		SensorDataModuleGroup: *sensorDataModuleGroup,
-		Devices:               devices,
-	}
-
-	jsonData, err := json.Marshal(data)
+	jsonData, err := json.Marshal(sensorData)
 	if err != nil {
 		msg := "Error: Failed to marshal JSON"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -82,7 +52,9 @@ func ToggleDevice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	type Input struct {
-		DeviceID int `json:"device_id"`
+		ModuleID    int    `json:"module_id"`
+		DeviceArray []bool `json:"bool"`
+		Type        string `json:"type"`
 	}
 	var input Input
 
@@ -91,7 +63,7 @@ func ToggleDevice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := device.ToggleDevice(input.DeviceID)
+	err := device.ToggleDevice(input.ModuleID, input.DeviceArray, input.Type)
 	if err != nil {
 		msg := "Error: Failed to Toggle Device"
 		http.Error(w, msg, http.StatusInternalServerError)
