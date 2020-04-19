@@ -7,7 +7,7 @@ import (
 type Role string
 
 type User struct {
-	UserID          int    `json:"user_id"`
+	UserID          int       `json:"user_id"`
 	Username        string    `json:"username"`
 	IsAdministrator bool      `json:"is_administrator"`
 	Hash            string    `json:"-"`
