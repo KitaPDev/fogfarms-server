@@ -9,22 +9,23 @@ import (
 
 var db *sql.DB
 
-// const (
-// 	DbHost = "localhost"
-// 	DbPort = 5432
-// 	DbUser = "fogfarms"
-// 	DbPass = "fogfarms"
-// 	DbName = "fogfarms-01"
-// 	SSLMODE = "disable"
-// )
 const (
-	DbHost  = "localhost"
-	DbPort  = 5432
-	DbUser  = "postgres"
-	DbPass  = "postgres"
-	DbName  = "fogfarms-01"
+	DbHost = "localhost"
+	DbPort = 5432
+	DbUser = "fogfarms"
+	DbPass = "fogfarms"
+	DbName = "fogfarms-01"
 	SSLMODE = "disable"
 )
+
+//const (
+//	DbHost  = "localhost"
+//	DbPort  = 5432
+//	DbUser  = "postgres"
+//	DbPass  = "postgres"
+//	DbName  = "fogfarms-01"
+//	SSLMODE = "disable"
+//)
 
 //const (
 //	DbHost = "ec2-54-157-78-113.compute-1.amazonaws.com"

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/KitaPDev/fogfarms-server/src/components/module_management"
 	"github.com/KitaPDev/fogfarms-server/src/test"
 	"net/http"
 	"os"
@@ -31,6 +32,9 @@ func run() error {
 	moduleGroupManagementHandler := modulegroup_management.MakeHTTPHandler()
 	router.PathPrefix("/modulegroup_management").Handler(moduleGroupManagementHandler)
 
+	moduleManagementHandler := module_management.MakeHTTPHandler()
+	router.PathPrefix("/module_management").Handler(moduleManagementHandler)
+
 	userManagementHandler := user_management.MakeHTTPHandler()
 	router.PathPrefix("/user_management").Handler(userManagementHandler)
 
@@ -40,6 +44,8 @@ func run() error {
 	dashBoardHandler := dashboard.MakeHTTPHandler()
 	router.PathPrefix("/dashboard").Handler(dashBoardHandler)
 
+	iotHandler := dashboard.MakeHTTPHandler()
+	router.PathPrefix("/iot").Handler(iotHandler)
 
 	testHandler := test.MakeHTTPHandler()
 	router.PathPrefix("/test").Handler(testHandler)

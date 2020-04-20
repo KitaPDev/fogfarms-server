@@ -2,6 +2,8 @@ package repository
 
 import (
 	"log"
+	"math/rand"
+	"time"
 
 	"github.com/KitaPDev/fogfarms-server/models/outputs"
 
@@ -9,6 +11,22 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/lib/pq"
 )
+
+func CreateModule(moduleLabel string) error {
+	db := database.GetDB()
+
+	sqlStatement :=
+		`INSERT INTO Module (ModuleLabel, Token, ArrFogger, ArrLED, ArrMixer, ArrSolenoidValve)
+		VALUES ($1, $2, $3, $4, $5, $6)`
+
+	_, err := db.Query(sqlStatement, moduleLabel, GenerateToken(), pq.BoolArray{}, pq.BoolArray{},
+				pq.BoolArray{}, pq.BoolArray{})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 
 func GetModulesByModuleGroupIDs(moduleGroupIDs []int) ([]models.Module, error) {
 	db := database.GetDB()
@@ -70,4 +88,16 @@ func AssignModulesToModuleGroup(moduleGroupID int, moduleIDs []int) error {
 	_, err := db.Query(sqlStatement, moduleGroupID, pq.Array(moduleIDs))
 
 	return err
+}
+
+var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+func GenerateToken() string {
+	rand.Seed(time.Now().UnixNano())
+
+	b := make([]rune, 8)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+	}
+	return string(b)
 }

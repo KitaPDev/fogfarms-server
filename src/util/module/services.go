@@ -6,6 +6,10 @@ import (
 	"github.com/KitaPDev/fogfarms-server/src/util/module/repository"
 )
 
+func CreateModule(moduleLabel string) error {
+	return repository.CreateModule(moduleLabel)
+}
+
 func GetModulesByModuleGroupIDs(moduleGroupIDs []int) ([]models.Module, error) {
 	return repository.GetModulesByModuleGroupIDs(moduleGroupIDs)
 }
