@@ -2,8 +2,10 @@ package repository
 
 import (
 	"database/sql"
+
 	"github.com/KitaPDev/fogfarms-server/models"
 	"github.com/KitaPDev/fogfarms-server/src/database"
+	"github.com/lib/pq"
 )
 
 func GetModuleGroupDevices(moduleGroupID int) ([]models.Device, error) {
@@ -83,11 +85,25 @@ func GetModuleGroupDevices(moduleGroupID int) ([]models.Device, error) {
 	return devices, nil
 }
 
-func ToggleDevice(deviceID int) error {
+func ToggleDevice(moduleID int, devicearray []bool, devicetype string) error {
 	db := database.GetDB()
+	var arr string = ``
 
-	sqlStatement := `UPDATE Device SET IsOn = NOT IsOn WHERE DeviceID = $1`
+	switch dtypes := devicetype; dtypes {
+	case "solenoid_valve":
+		arr = `arrsolenoidvalve`
+	case "mixer":
+		arr = `arrmixer`
+	case "led":
+		arr = `arrled`
+	case "fogger":
+		arr = `arrfogger`
+	default:
+		return sql.ErrNoRows
+	}
 
-	_, err := db.Query(sqlStatement, deviceID)
+	sqlStatement := `UPDATE Module SET ` + arr + `= $1 WHERE moduleID = $2`
+
+	_, err := db.Query(sqlStatement, pq.Array(devicearray), moduleID)
 	return err
 }

@@ -2,7 +2,7 @@
 
 -- Plant
 CREATE TABLE Plant (
-    PlantID SERIAL NOT NULL,
+    PlantID SERIAL NOT NULL ,
     Name VARCHAR(256) UNIQUE NOT NULL,
     TDS FLOAT NOT NULL,
     PH FLOAT NOT NULL,
@@ -44,11 +44,13 @@ CREATE TABLE Nutrient (
 );
 
 -- ModuleGroup
+--get plantid for default parameters
+--get locationid for information
 CREATE TABLE ModuleGroup (
     ModuleGroupID SERIAL NOT NULL,
     ModuleGroupLabel VARCHAR(256) UNIQUE NOT NULL,
-    PlantID INT NOT NULL,
-    LocationID INT NOT NULL,
+    PlantID INT NOT NULL DEFAULT 0,
+    LocationID INT NOT NULL DEFAULT 0,
     Param_TDS FLOAT NOT NULL,
     Param_PH FLOAT NOT NULL,
     Param_Humidity FLOAT NOT NULL,
@@ -57,8 +59,8 @@ CREATE TABLE ModuleGroup (
     LightsOffHour FLOAT NOT NULL,
     TimerLastReset TIMESTAMP NOT NULL DEFAULT NOW(),
     PRIMARY KEY (ModuleGroupID),
-    FOREIGN KEY (PlantID) REFERENCES Plant (PlantID),
-    FOREIGN KEY (LocationID) REFERENCES Location (LocationID)
+    FOREIGN KEY (PlantID) REFERENCES Plant (PlantID) ON DELETE SET DEFAULT ON UPDATE CASCADE,
+    FOREIGN KEY (LocationID) REFERENCES Location (LocationID) ON DELETE SET DEFAULT ON UPDATE CASCADE
 );
 
 -- Module
@@ -72,44 +74,38 @@ CREATE TABLE Module (
     ArrMixer BOOLEAN ARRAY NOT NULL,
     ArrSolenoidValve BOOLEAN ARRAY NOT NULL,
     PRIMARY KEY (ModuleID),
-    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
+    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID) ON DELETE SET DEFAULT ON UPDATE CASCADE
 );
-
 -- NutrientUnit
+--get module id for the module it belongs to
+--get nutrient id for nutrient composition
 CREATE TABLE NutrientUnit (
     NutrientUnitID SERIAL NOT NULL,
-    ModuleID INT NOT NULL,
-    NutrientID INT NOT NULL,
+    ModuleID INT NOT NULL DEFAULT 0,
+    NutrientID INT NOT NULL DEFAULT 0,
     PRIMARY KEY (NutrientUnitID),
-    FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID),
-    FOREIGN KEY (NutrientID) REFERENCES Nutrient (NutrientID)
+    FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID) ON DELETE SET DEFAULT ON UPDATE CASCADE,
+    FOREIGN KEY (NutrientID) REFERENCES Nutrient (NutrientID) ON DELETE SET DEFAULT ON UPDATE CASCADE
 );
 
--- -- PHUpUnit
+-- PHUpUnit
+--get nutrientunitid it belongs to
 -- CREATE TABLE PHUpUnit (
 --     PHUpUnitID SERIAL NOT NULL,
---     NutrientUnitID INT NOT NULL,
+--     NutrientUnitID INT NOT NULL DEFAULT 0,
 --     PRIMARY KEY (PHUpUnitID),
---     FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID)
--- );
---
--- CREATE TABLE PHDownUnit (
---     PHDownUnitID SERIAL NOT NULL,
---     NutrientUnitID INT NOT NULL,
---     PRIMARY KEY (PHDownUnitID),
---     FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID)
+--     FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID) ON DELETE SET DEFAULT ON UPDATE CASCADE
 -- );
 
--- -- GrowUnit
--- CREATE TABLE GrowUnit (
---     GrowUnitID SERIAL NOT NULL,
---     ModuleID INT NOT NULL,
---     Capacity INT,
---     PRIMARY KEY (GrowUnitID),
---     FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID)
+-- CREATE TABLE PHDownUnit (
+--     PHDownUnitID SERIAL NOT NULL,
+--     NutrientUnitID INT NOT NULL DEFAULT 0,
+--     PRIMARY KEY (PHDownUnitID),
+--     FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID) ON DELETE SET DEFAULT ON UPDATE CASCADE
 -- );
 
 -- SensorData
+-- logs data from sensors for each module
 CREATE TABLE SensorData (
     ModuleID INT NOT NULL,
     Timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -120,9 +116,17 @@ CREATE TABLE SensorData (
     ArrGrowUnitHumidity FLOAT ARRAY NOT NULL,
     ArrGrowUnitTemperature FLOAT ARRAY NOT NULL,
     PRIMARY KEY (Timestamp, ModuleID),
-    FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID)
+    FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- GrowUnit
+-- CREATE TABLE GrowUnit (
+--     GrowUnitID SERIAL NOT NULL,
+--     ModuleID INT NOT NULL Default 0,
+--     Capacity INT,
+--     PRIMARY KEY (GrowUnitID),
+--     FOREIGN KEY (ModuleID) REFERENCES Module (ModuleID) ON DELETE SET DEFAULT ON UPDATE CASCADE
+-- );
 
 -- CREATE TABLE DeviceType (
 --   DeviceTypeID SERIAL NOT NULL,
@@ -130,42 +134,46 @@ CREATE TABLE SensorData (
 --   PRIMARY KEY (DeviceTypeID),
 --   UNIQUE (DeviceType)
 -- );
---
+
 -- -- Device
+-- -- should delete device if it no longer exists
 -- CREATE TABLE Device (
 --     DeviceID SERIAL NOT NULL,
---     DeviceTypeID INT NOT NULL,
+--     DeviceTypeID INT NOT NULL DEFAULT 0,
 --     IsOn BOOLEAN NOT NULL DEFAULT FALSE,
---     GrowUnitID INT,
---     NutrientUnitID INT,
---     PHDownUnitID INT,
---     PHUpUnitID INT,
+--     GrowUnitID INT DEFAULT 0,
+--     NutrientUnitID INT DEFAULT 0,
+--     PHDownUnitID INT DEFAULT 0,
+--     PHUpUnitID INT DEFAULT 0,
 --     PRIMARY KEY (DeviceID),
---     FOREIGN KEY (DeviceTypeID) REFERENCES DeviceType (DeviceTypeID),
---     FOREIGN KEY (GrowUnitID) REFERENCES GrowUnit (GrowUnitID),
---     FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID),
---     FOREIGN KEY (PHDownUnitID) REFERENCES PHDownUnit (PHDownUnitID),
---     FOREIGN KEY (PHUpUnitID) REFERENCES PHUpUnit (PHUpUnitID),
+--     FOREIGN KEY (DeviceTypeID) REFERENCES DeviceType (DeviceTypeID) ON DELETE CASCADE ON UPDATE CASCADE,
+--     FOREIGN KEY (GrowUnitID) REFERENCES GrowUnit (GrowUnitID) ON DELETE CASCADE ON UPDATE CASCADE,
+--     FOREIGN KEY (NutrientUnitID) REFERENCES NutrientUnit (NutrientUnitID) ON DELETE CASCADE ON UPDATE CASCADE,
+--     FOREIGN KEY (PHDownUnitID) REFERENCES PHDownUnit (PHDownUnitID) ON DELETE CASCADE ON UPDATE CASCADE,
+--     FOREIGN KEY (PHUpUnitID) REFERENCES PHUpUnit (PHUpUnitID) ON DELETE CASCADE ON UPDATE CASCADE,
 --     UNIQUE (DeviceTypeID, GrowUnitID, NutrientUnitID, PHDownUnitID, PHUpUnitID)
 -- );
 
 -- SensorData_ModuleGroup
+--logs sensor data of module group
 CREATE TABLE SensorData_ModuleGroup (
     ModuleGroupID INT NOT NULL,
     Timestamp timestamp NOT NULL DEFAULT NOW(),
     Humidity FLOAT NOT NULL,
     Temperature FLOAT NOT NULL,
     PRIMARY KEY (ModuleGroupID, Timestamp),
-    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID)
+    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- Permission
+-- if user does not exist, permission does not need to be recorded
+-- if module group id does not exist, permission can still be stored
 CREATE TABLE Permission (
     UserID INT NOT NULL,
     ModuleGroupID INT NOT NULL,
     PermissionLevel INT NOT NULL DEFAULT 0,
     PRIMARY KEY (UserID, ModuleGroupID),
-    FOREIGN KEY (UserID) REFERENCES Users (UserID),
-    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID),
+    FOREIGN KEY (UserID) REFERENCES Users (UserID) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID) ON DELETE CASCADE ON UPDATE CASCADE,
     UNIQUE (UserID, ModuleGroupID)
 );

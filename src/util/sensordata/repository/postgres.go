@@ -1,14 +1,19 @@
 package repository
 
 import (
+	"log"
+
 	"github.com/KitaPDev/fogfarms-server/models"
+	"github.com/KitaPDev/fogfarms-server/models/outputs"
 	"github.com/KitaPDev/fogfarms-server/src/database"
 	"github.com/KitaPDev/fogfarms-server/src/util/module"
 	"github.com/lib/pq"
 )
 
-func GetLatestSensorData(moduleGroupID int) ([]models.SensorData, error) {
+func GetLatestSensorData(moduleGroupID int) (map[string]*outputs.Dashboardoutput, error) {
 	var moduleGroupIDs []int
+
+	var dashboard = make(map[string]*outputs.Dashboardoutput)
 	moduleGroupIDs = append(moduleGroupIDs, moduleGroupID)
 
 	modules, err := module.GetModulesByModuleGroupIDs(moduleGroupIDs)
@@ -19,62 +24,21 @@ func GetLatestSensorData(moduleGroupID int) ([]models.SensorData, error) {
 	for _, m := range modules {
 		moduleIDs = append(moduleIDs, m.ModuleID)
 	}
-
+	log.Println(moduleIDs)
 	db := database.GetDB()
 
-	sqlDropTempTable := `DROP TABLE IF EXISTS temp_SensorData`
-	_, err = db.Exec(sqlDropTempTable)
-	if err != nil {
-		return nil, err
-	}
-
-	sqlCreateFunction :=
-		`CREATE OR REPLACE FUNCTION fn_getLatestSensorData(moduleIDs INTEGER ARRAY)
-			RETURNS SETOF SensorData AS
-		$func$
-			DECLARE
-				i INT;
-		
-			BEGIN
-				CREATE TEMPORARY TABLE temp_SensorData (
-				   ModuleID INT,
-				   Timestamp TIMESTAMP,
-				   ArrNutrientUnitTDS FLOAT ARRAY,
-				   ArrNutrientUnitPH FLOAT ARRAY,
-				   ArrNutrientUnitSolutionTemperature FLOAT ARRAY,
-				   ArrGrowUnitLux FLOAT ARRAY,
-				   ArrGrowUnitHumidity FLOAT ARRAY,
-				   ArrGrowUnitTemperature FLOAT ARRAY
-				);
-		
-				FOREACH i IN ARRAY moduleIDs
-					LOOP
-						INSERT INTO temp_SensorData (ModuleID, Timestamp, ArrNutrientUnitTDS, ArrNutrientUnitPH, ArrNutrientUnitSolutionTemperature, ArrGrowUnitLux, ArrGrowUnitHumidity, ArrGrowUnitTemperature)
-						SELECT * FROM SensorData WHERE ModuleID = i ORDER BY Timestamp DESC LIMIT 1;
-					END LOOP;
-		
-				RETURN QUERY SELECT * FROM temp_SensorData;
-			END
-		$func$ LANGUAGE plpgsql;`
-
-	_, err = db.Exec(sqlCreateFunction)
-	if err != nil {
-		return nil, err
-	}
-
-	sqlStatement := `SELECT * FROM fn_getLatestSensorData($1);`
-
+	sqlStatement := `select modulelabel,sensordata.moduleid,sensordata.timestamp,arrnutrientunittds,arrnutrientunitph,arrnutrientunitsolutiontemperature,arrgrowunitlux,arrgrowunithumidity,arrgrowunittemperature,nutrientamount from sensordata inner join (SELECT moduleid, max(timestamp) AS maxtime FROM sensordata GROUP BY moduleid) as maxTable on maxTable.moduleid=sensordata.moduleid AND sensordata.timestamp=maxTable.maxtime inner join (select moduleid, count(*) as nutrientamount from nutrientunit group by moduleid) AS nutrient on nutrient.moduleid = sensordata.moduleid AND nutrient.moduleid=maxTable.moduleid inner join module on module.moduleid=sensordata.moduleid where sensordata.moduleid = ANY($1);`
 	rows, err := db.Query(sqlStatement, pq.Array(moduleIDs))
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-
-	var sensorData []models.SensorData
 	for rows.Next() {
 		var sd models.SensorData
-
+		var modulelabel string
+		var nutrientAmount int
 		err = rows.Scan(
+			&modulelabel,
 			&sd.ModuleID,
 			&sd.TimeStamp,
 			pq.Array(&sd.TDS),
@@ -83,14 +47,45 @@ func GetLatestSensorData(moduleGroupID int) ([]models.SensorData, error) {
 			pq.Array(&sd.GrowUnitLux),
 			pq.Array(&sd.GrowUnitHumidity),
 			pq.Array(&sd.GrowUnitTemperature),
+			&nutrientAmount,
 		)
 		if err != nil {
 			return nil, err
 		}
+		log.Println(dashboard)
+		log.Println(modulelabel)
 
-		sensorData = append(sensorData, sd)
+		dashboard[modulelabel] = &outputs.Dashboardoutput{
+			NutrientAmount: nutrientAmount,
+			Sensordata:     sd,
+		}
 
 	}
 
-	return sensorData, nil
+	sqlStatement = `select moduleid,modulelabel,arrfogger,arrled,arrmixer,arrsolenoidvalve from module where moduleid=ANY($1);`
+	rows, err = db.Query(sqlStatement, pq.Array(moduleIDs))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var sd outputs.DashBoardModule
+		var modulelabel string
+		var moduleid int
+
+		err = rows.Scan(
+			&moduleid,
+			&modulelabel,
+			pq.Array(&sd.Fogger),
+			pq.Array(&sd.LED),
+			pq.Array(&sd.Mixer),
+			pq.Array(&sd.SolenoidValve),
+		)
+		if err != nil {
+			return nil, err
+		}
+		dashboard[modulelabel].Device = sd
+
+	}
+	return dashboard, nil
 }
