@@ -63,8 +63,25 @@ func Update(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		type Output struct {
+			OnAuto bool `json:"on_auto"`
+		}
+
+		output := Output{
+			OnAuto: onAuto,
+		}
+
+		jsonData, err := json.Marshal(output)
+		if err != nil {
+			msg := "Error: Failed to marshal JSON"
+			http.Error(w, msg, http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("Successful"))
+		w.Write(jsonData)
 
 	} else {
 		fogger, led, mixer, solenoidValve, err := module.GetDeviceStatus(moduleID)
@@ -74,21 +91,23 @@ func Update(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		type DeviceStatus struct {
+		type Output struct {
+			OnAuto         bool   `json:"on_auto"`
 			Foggers        []bool `json:"foggers"`
 			LEDs           []bool `json:"leds"`
 			Mixers         []bool `json:"mixers"`
 			SolenoidValves []bool `json:"solenoid_valves"`
 		}
 
-		deviceStatus := DeviceStatus{
+		output := Output{
+			OnAuto:         onAuto,
 			Foggers:        fogger,
 			LEDs:           led,
 			Mixers:         mixer,
 			SolenoidValves: solenoidValve,
 		}
 
-		jsonData, err := json.Marshal(deviceStatus)
+		jsonData, err := json.Marshal(output)
 		if err != nil {
 			msg := "Error: Failed to marshal JSON"
 			http.Error(w, msg, http.StatusInternalServerError)
