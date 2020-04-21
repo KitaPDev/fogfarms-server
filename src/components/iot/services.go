@@ -75,17 +75,17 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		}
 
 		type DeviceStatus struct {
-			Fogger        []bool `json:"fogger"`
-			LED           []bool `json:"led"`
-			Mixer         []bool `json:"mixer"`
-			SolenoidValve []bool `json:"solenoid_valve"`
+			Foggers        []bool `json:"foggers"`
+			LEDs           []bool `json:"leds"`
+			Mixers         []bool `json:"mixers"`
+			SolenoidValves []bool `json:"solenoid_valves"`
 		}
 
 		deviceStatus := DeviceStatus{
-			Fogger:        fogger,
-			LED:           led,
-			Mixer:         mixer,
-			SolenoidValve: solenoidValve,
+			Foggers:        fogger,
+			LEDs:           led,
+			Mixers:         mixer,
+			SolenoidValves: solenoidValve,
 		}
 
 		jsonData, err := json.Marshal(deviceStatus)
