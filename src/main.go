@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/KitaPDev/fogfarms-server/src/components/iot"
 	"github.com/KitaPDev/fogfarms-server/src/components/module_management"
 	"github.com/KitaPDev/fogfarms-server/src/test"
 	"net/http"
@@ -44,7 +45,7 @@ func run() error {
 	dashBoardHandler := dashboard.MakeHTTPHandler()
 	router.PathPrefix("/dashboard").Handler(dashBoardHandler)
 
-	iotHandler := dashboard.MakeHTTPHandler()
+	iotHandler := iot.MakeHTTPHandler()
 	router.PathPrefix("/iot").Handler(iotHandler)
 
 	testHandler := test.MakeHTTPHandler()

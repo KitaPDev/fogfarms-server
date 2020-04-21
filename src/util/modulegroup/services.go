@@ -48,3 +48,7 @@ func SetEnvironmentParameters(moduleGroupID int, humidity float64, ph float64, t
 func ResetTimer(moduleGroupID int) error {
 	return repository.ResetTimer(moduleGroupID)
 }
+
+func GetOnAutoByModuleID(moduleID int) (bool, error) {
+	return repository.GetOnAutoByModuleID(moduleID)
+}

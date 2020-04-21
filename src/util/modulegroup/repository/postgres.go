@@ -220,3 +220,27 @@ func ResetTimer(moduleGroupID int) error {
 
 	return err
 }
+
+func GetOnAutoByModuleID(moduleID int) (bool, error) {
+	db := database.GetDB()
+
+	sqlStatement :=
+		`SELECT onAuto FROM ModuleGroup
+		WHERE ModuleGroupID = (SELECT ModuleGroupID FROM Module WHERE ModuleID = $1)`
+
+	rows, err := db.Query(sqlStatement, moduleID)
+	if err != nil {
+		return false, err
+	}
+
+	var onAuto bool
+	for rows.Next() {
+		err = rows.Scan(&onAuto)
+
+		if err != nil {
+			return false, nil
+		}
+	}
+
+	return onAuto, nil
+}
