@@ -4,20 +4,18 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
-	"os"
-	"strconv"
 )
 
 var db *sql.DB
 
-//const (
-//	dbHost = "localhost"
-//	dbPort = 5432
-//	dbUser = "fogfarms"
-//	dbPass = "fogfarms"
-//	dbName = "fogfarms-01"
-//	sslMode = "disable"
-//)
+const (
+	dbHost = "localhost"
+	dbPort = 5432
+	dbUser = "fogfarms"
+	dbPass = "fogfarms"
+	dbName = "fogfarms-01"
+	sslMode = "disable"
+)
 
 //const (
 //	DbHost  = "localhost"
@@ -31,16 +29,16 @@ var db *sql.DB
 func GetDB() *sql.DB {
 	var err error
 
-	dbHost := os.Getenv("DATABASE_HOST")
-	dbPort, err := strconv.Atoi(os.Getenv("DATABASE_PORT"))
-	if err != nil {
-		return nil
-	}
-
-	dbUser := os.Getenv("DATABASE_USER")
-	dbPass := os.Getenv("DATABASE_PASSWORD")
-	dbName := os.Getenv("DATABASE_NAME")
-	sslMode := os.Getenv("DATABASE_SSLMODE")
+	//dbHost := os.Getenv("DATABASE_HOST")
+	//dbPort, err := strconv.Atoi(os.Getenv("DATABASE_PORT"))
+	//if err != nil {
+	//	return nil
+	//}
+	//
+	//dbUser := os.Getenv("DATABASE_USER")
+	//dbPass := os.Getenv("DATABASE_PASSWORD")
+	//dbName := os.Getenv("DATABASE_NAME")
+	//sslMode := os.Getenv("DATABASE_SSLMODE")
 
 	if db == nil {
 		connectionString := fmt.Sprintf("port=%d host=%s user=%s "+
