@@ -3,6 +3,7 @@ package jwt
 import (
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -24,8 +25,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-//var jwtKey := os.Getenv("SECRET_KEY_JWT")
-var jwtKey = "s"
+var jwtKey = os.Getenv("SECRET_KEY_JWT")
 
 var secureCookie = securecookie.New([]byte(jwtKey), nil)
 
