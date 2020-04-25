@@ -11,8 +11,8 @@ type ModuleOutput struct {
 	ModuleGroupLabel string `json:"module_group_label"`
 }
 
-type Dashboardoutput struct {
-	Sensordata     models.SensorData `json:"sensor_module"`
+type DashboardOutput struct {
+	SensorData     models.SensorData `json:"sensor_module"`
 	Device         DashBoardModule   `json:"controller"`
 	NutrientAmount int               `json:"nutrient_amount"`
 }
