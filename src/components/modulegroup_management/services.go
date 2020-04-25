@@ -243,7 +243,6 @@ func ChangePlant(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Successful"))
 }
 
-
 func DeleteModuleGroup(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
 		return
@@ -352,6 +351,33 @@ func DeleteModule(w http.ResponseWriter, r *http.Request) {
 	err := module.DeleteModule(input.ModuleLabel)
 	if err != nil {
 		msg := "Error: Failed to Create Module"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Successful"))
+}
+
+func EditModuleLabel(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		return
+	}
+
+	type Input struct {
+		ModuleID    int    `json:"module_id"`
+		ModuleLabel string `json:"module_label"`
+	}
+
+	input := Input{}
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
+		return
+	}
+
+	err := module.EditModuleLabel(input.ModuleID, input.ModuleLabel)
+	if err != nil {
+		msg := "Error: Failed to Edit Module Label"
 		http.Error(w, msg, http.StatusInternalServerError)
 		return
 	}

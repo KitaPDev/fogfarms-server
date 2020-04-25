@@ -41,6 +41,19 @@ func DeleteModule(moduleLabel string) error {
 	return nil
 }
 
+func EditModuleLabel(moduleID int, moduleLabel string) error {
+	db := database.GetDB()
+
+	sqlStatement := `UPDATE Module SET ModuleLabel = $1 WHERE ModuleID = $2`
+
+	_, err := db.Query(sqlStatement, moduleLabel, moduleID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func GetModulesByModuleGroupIDs(moduleGroupIDs []int) ([]models.Module, error) {
 	db := database.GetDB()
 
