@@ -2,10 +2,11 @@ package modulegroup_management
 
 import (
 	"encoding/json"
-	"github.com/KitaPDev/fogfarms-server/models"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/KitaPDev/fogfarms-server/models"
 
 	"github.com/KitaPDev/fogfarms-server/src/components/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
@@ -275,7 +276,13 @@ func getModuleGroupByMatchedLabel(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
-
+	u, err := user.GetUserByUsernameFromCookie(r)
+	if err != nil {
+		msg := "Error: Failed to Get User By UserID From Cookie"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
 	type Input struct {
 		ModuleGroupLabel string `json:"module_group_label"`
 	}
@@ -285,16 +292,26 @@ func getModuleGroupByMatchedLabel(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	modulegroup, err := modulegroup.GetModuleGroupsByLabelMatch(input.ModuleGroupLabel)
-	if err != nil {
-		msg := "Error: Failed to Search For ModuleGroup"
-		http.Error(w, msg, http.StatusInternalServerError)
-		return
+	var modulegroupQueried []models.ModuleGroup
+	if u.IsAdministrator {
+		modulegroupQueried, err = modulegroup.GetModuleGroupsByLabelMatch(input.ModuleGroupLabel)
+		if err != nil {
+			msg := "Error: Failed to Search For ModuleGroup"
+			http.Error(w, msg, http.StatusInternalServerError)
+			return
+		}
+	} else {
+		modulegroupQueried, err = modulegroup.GetModuleGroupsByLabelMatchForNormal(input.ModuleGroupLabel, u.UserID)
+		if err != nil {
+			msg := "Error: Failed to Search For ModuleGroup"
+			http.Error(w, msg, http.StatusInternalServerError)
+			return
+		}
 	}
 	type Output struct {
 		Data []models.ModuleGroup
 	}
-	out := Output{modulegroup}
+	out := Output{modulegroupQueried}
 	jsonData, err := json.Marshal(out)
 	if err != nil {
 		msg := "Error: Failed to marshal JSON"
