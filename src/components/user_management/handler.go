@@ -20,7 +20,7 @@ func MakeHTTPHandler() http.Handler {
 		Methods("POST").
 		Schemes("http")
 
-	router.HandleFunc("/user_management/delete", assignUserModuleGroupPermission).
+	router.HandleFunc("/user_management/delete", deleteUser).
 		Methods("POST").
 		Schemes("http")
 
