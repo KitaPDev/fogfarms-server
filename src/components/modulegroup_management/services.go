@@ -307,3 +307,55 @@ func getModuleGroupByMatchedLabel(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(jsonData)
 }
+
+func CreateModule(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		return
+	}
+
+	type Input struct {
+		ModuleLabel string `json:"module_label"`
+	}
+
+	input := Input{}
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
+		return
+	}
+
+	err := module.CreateModule(input.ModuleLabel)
+	if err != nil {
+		msg := "Error: Failed to Create Module"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Successful"))
+}
+
+func DeleteModule(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		return
+	}
+
+	type Input struct {
+		ModuleLabel string `json:"module_label"`
+	}
+
+	input := Input{}
+	success := jsonhandler.DecodeJsonFromBody(w, r, &input)
+	if !success {
+		return
+	}
+
+	err := module.DeleteModule(input.ModuleLabel)
+	if err != nil {
+		msg := "Error: Failed to Create Module"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Successful"))
+}

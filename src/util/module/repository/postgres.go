@@ -28,6 +28,19 @@ func CreateModule(moduleLabel string) error {
 	return nil
 }
 
+func DeleteModule(moduleLabel string) error {
+	db := database.GetDB()
+
+	sqlStatement := `DELETE FROM Module WHERE ModuleLabel = $1;`
+
+	_, err := db.Query(sqlStatement, moduleLabel)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func GetModulesByModuleGroupIDs(moduleGroupIDs []int) ([]models.Module, error) {
 	db := database.GetDB()
 
