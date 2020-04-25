@@ -28,12 +28,12 @@ func CreateModule(moduleLabel string) error {
 	return nil
 }
 
-func DeleteModule(moduleLabel string) error {
+func DeleteModule(moduleID int) error {
 	db := database.GetDB()
 
-	sqlStatement := `DELETE FROM Module WHERE ModuleLabel = $1;`
+	sqlStatement := `DELETE FROM Module WHERE ModuleID = $1;`
 
-	_, err := db.Query(sqlStatement, moduleLabel)
+	_, err := db.Query(sqlStatement, moduleID)
 	if err != nil {
 		return err
 	}

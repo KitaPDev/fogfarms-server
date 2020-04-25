@@ -10,8 +10,8 @@ func CreateModule(moduleLabel string) error {
 	return repository.CreateModule(moduleLabel)
 }
 
-func DeleteModule(moduleLabel string) error {
-	return repository.DeleteModule(moduleLabel)
+func DeleteModule(moduleID int) error {
+	return repository.DeleteModule(moduleID)
 }
 
 func EditModuleLabel(moduleID int, moduleLabel string) error {
