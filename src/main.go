@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"os"
+
 	"github.com/KitaPDev/fogfarms-server/src/components/iot"
 	"github.com/KitaPDev/fogfarms-server/src/components/module_management"
 	"github.com/KitaPDev/fogfarms-server/src/test"
-	"net/http"
-	"os"
+	"github.com/rs/cors"
 
 	"github.com/KitaPDev/fogfarms-server/src/components/auth/jwt"
 	"github.com/KitaPDev/fogfarms-server/src/components/dashboard"
@@ -51,7 +53,13 @@ func run() error {
 	testHandler := test.MakeHTTPHandler()
 	router.PathPrefix("/test").Handler(testHandler)
 
-	return http.ListenAndServe(getPort(), router)
+	handler := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000", "https://localhost:3000", "https://25.22.245.97:3000"},
+		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodDelete},
+		AllowCredentials: true,
+		AllowedHeaders:   []string{"*"},
+	}).Handler(router)
+	return http.ListenAndServe(getPort(), handler)
 }
 
 func getPort() string {
