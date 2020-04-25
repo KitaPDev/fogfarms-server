@@ -18,7 +18,7 @@ const (
 )
 
 //const (
-//	DbHost  = "localhost"
+//	DbHost  = "localhost"s
 //	DbPort  = 5432
 //	DbUser  = "postgres"
 //	DbPass  = "postgres"

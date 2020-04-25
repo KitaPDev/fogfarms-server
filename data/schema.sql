@@ -44,8 +44,6 @@ CREATE TABLE Nutrient (
 );
 
 -- ModuleGroup
---get plantid for default parameters
---get locationid for information
 CREATE TABLE ModuleGroup (
     ModuleGroupID SERIAL NOT NULL,
     ModuleGroupLabel VARCHAR(256) UNIQUE NOT NULL,
