@@ -53,8 +53,14 @@ CREATE TABLE ModuleGroup (
     PlantID INT NOT NULL DEFAULT 0,
     LocationID INT NOT NULL DEFAULT 0,
     Param_TDS FLOAT NOT NULL CHECK (Param_TDS >= 0),
-    Param_PH FLOAT NOT NULL CHECK (Param_PH >= 0 AND Param_PH <= 14),
-    Param_Humidity FLOAT NOT NULL CHECK (Param_Humidity >= 0 AND Param_Humidity <= 100),
+    Param_PH FLOAT NOT NULL CHECK (
+        Param_PH >= 0
+        AND Param_PH <= 14
+    ),
+    Param_Humidity FLOAT NOT NULL CHECK (
+        Param_Humidity >= 0
+        AND Param_Humidity <= 100
+    ),
     OnAuto BOOLEAN NOT NULL,
     LightsOnHour FLOAT NOT NULL,
     LightsOffHour FLOAT NOT NULL,
@@ -181,3 +187,12 @@ CREATE TABLE Permission (
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID) ON DELETE CASCADE ON UPDATE CASCADE,
     UNIQUE (UserID, ModuleGroupID)
 );
+
+INSERT INTO ModuleGroup (ModuleGroupID, ModuleGroupLabel, PlantID, LocationID, Param_TDS, Param_PH, Param_Humidity, OnAuto, LightsOnHour, LightsOffHour)
+VALUES (0, "", 0, 0, 0, 0, 0, FALSE, 0, 0);
+
+INSERT INTO Plant (PlantID, Name, TDS, PH, Lux, LightsOnHour, LightsOffHour)
+VALUES (0, "", 0, 0, 0, 0, 0);
+
+INSERT INTO Location (LocationID, City, Province)
+VALUES (0, "", "");
