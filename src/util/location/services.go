@@ -6,6 +6,5 @@ import (
 )
 
 func GetAllLocations() ([]models.Location, error) {
-	Locations, err := repository.GetAllLocations()
-	return Locations, err
+	return repository.GetAllLocations()
 }
