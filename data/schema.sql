@@ -191,6 +191,9 @@ CREATE TABLE Permission (
 INSERT INTO ModuleGroup (ModuleGroupID, ModuleGroupLabel, PlantID, LocationID, Param_TDS, Param_PH, Param_Humidity, OnAuto, LightsOnHour, LightsOffHour)
 VALUES (0, "", 0, 0, 0, 0, 0, FALSE, 0, 0);
 
+INSERT INTO Module (ModuleID, ModuleGroupID, ModuleLabel, Token, ArrFogger, ArrLED, ArrMixer, ArrSolenoidValve)
+VALUES (0, 0, "", "", {}, {}, {}, {})
+
 INSERT INTO Plant (PlantID, Name, TDS, PH, Lux, LightsOnHour, LightsOffHour)
 VALUES (0, "", 0, 0, 0, 0, 0);
 
