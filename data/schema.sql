@@ -5,7 +5,10 @@ CREATE TABLE Plant (
     PlantID SERIAL NOT NULL ,
     Name VARCHAR(256) UNIQUE NOT NULL,
     TDS FLOAT NOT NULL,
-    PH FLOAT NOT NULL,
+    PH FLOAT NOT NULL CHECK (
+        Param_PH >= 0 
+        AND Param_PH <= 14
+    ),
     Lux FLOAT NOT NULL,
     LightsOnHour FLOAT NOT NULL,
     LightsOffHour FLOAT NOT NULL,
@@ -169,7 +172,10 @@ CREATE TABLE SensorData_ModuleGroup (
 CREATE TABLE Permission (
     UserID INT NOT NULL,
     ModuleGroupID INT NOT NULL,
-    PermissionLevel INT NOT NULL DEFAULT 0,
+    PermissionLevel INT NOT NULL DEFAULT 0 CHECK (
+        PermissionLevel >= 0
+        AND PermissionLevel <= 3
+    ),
     PRIMARY KEY (UserID, ModuleGroupID),
     FOREIGN KEY (UserID) REFERENCES Users (UserID) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (ModuleGroupID) REFERENCES ModuleGroup (ModuleGroupID) ON DELETE CASCADE ON UPDATE CASCADE,
