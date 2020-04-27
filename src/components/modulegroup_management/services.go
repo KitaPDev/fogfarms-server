@@ -2,6 +2,7 @@ package modulegroup_management
 
 import (
 	"encoding/json"
+	"github.com/KitaPDev/fogfarms-server/src/util/location"
 	"log"
 	"net/http"
 	"time"
@@ -403,7 +404,6 @@ func EditModuleLabel(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Successful"))
 }
 
-
 func GetModuleLabel(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
 		return
@@ -430,7 +430,39 @@ func GetModuleLabel(w http.ResponseWriter, r *http.Request) {
 		ModuleLabel string `json:"module_label"`
 	}
 
-	output := Output{ModuleLabel:moduleLabel}
+	output := Output{ModuleLabel: moduleLabel}
+
+	jsonData, err := json.Marshal(output)
+	if err != nil {
+		msg := "Error: Failed to marshal JSON"
+		http.Error(w, msg, http.StatusInternalServerError)
+		log.Println(err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(jsonData)
+}
+
+
+func GetAllLocations(w http.ResponseWriter, r *http.Request) {
+	if !jwt.AuthenticateUserToken(w, r) {
+		return
+	}
+
+	locations, err := location.GetAllLocations()
+	if err != nil {
+		msg := "Error: Failed to Get All Locations"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
+	type Output struct {
+		Locations []models.Location `json:"locations"`
+	}
+
+	output := Output{Locations: locations}
 
 	jsonData, err := json.Marshal(output)
 	if err != nil {
