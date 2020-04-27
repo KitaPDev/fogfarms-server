@@ -23,7 +23,7 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 
 	u, err := user.GetUserByUsernameFromCookie(r)
 	if err != nil {
-		msg := "Error: Failed to Get User By Username From Cookie"
+		msg := "Error: Failed to Get User By UserID From Cookie"
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Println(err)
 		return
@@ -82,7 +82,6 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 			log.Println(err)
 			return
 		}
-		log.Println(mapModuleGroupPermissions)
 		for mg := range mapModuleGroupPermissions {
 
 			moduleGroupMap[mg.ModuleGroupLabel] = &ModuleGroupData{
@@ -104,6 +103,7 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	log.Println("hi", moduleGroupIDs)
 	modules, err := module.GetModulesByModuleGroupIDsForModuleManagement(moduleGroupIDs)
 	if err != nil {
 		msg := "Error: Failed to Get Modules By ModuleGroupIDs"
@@ -111,8 +111,10 @@ func PopulateModuleGroupManagementPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println("hi", modules)
 	for _, m := range modules {
 		log.Println(m.ModuleLabel)
+		log.Println(m.ModuleGroupLabel)
 		moduleGroupMap[m.ModuleGroupLabel].Modules = append(moduleGroupMap[m.ModuleGroupLabel].Modules, m.ModuleID)
 	}
 	jsonData, err = json.Marshal(moduleGroupMap)
@@ -135,9 +137,9 @@ func CreateModuleGroup(w http.ResponseWriter, r *http.Request) {
 	type Input struct {
 		PlantID          int     `json:"plant_id"`
 		LocationID       int     `json:"location_id"`
-		TDS              float64 `json:"param_tds"`
-		PH               float64 `json:"param_ph"`
-		Humidity         float64 `json:"param_humidity"`
+		TDS              float64 `json:"tds"`
+		PH               float64 `json:"ph"`
+		Humidity         float64 `json:"humidity"`
 		OnAuto           bool    `json:"on_auto"`
 		ModuleGroupLabel string  `json:"module_group_label"`
 		LightsOffHour    float64 `json:"lights_off_hour"`
@@ -283,6 +285,7 @@ func getModuleGroupByMatchedLabel(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
+
 	type Input struct {
 		ModuleGroupLabel string `json:"module_group_label"`
 	}
@@ -291,7 +294,6 @@ func getModuleGroupByMatchedLabel(w http.ResponseWriter, r *http.Request) {
 	if !success {
 		return
 	}
-
 	var modulegroupQueried []models.ModuleGroup
 	if u.IsAdministrator {
 		modulegroupQueried, err = modulegroup.GetModuleGroupsByLabelMatch(input.ModuleGroupLabel)
@@ -402,15 +404,13 @@ func EditModuleLabel(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Successful"))
 }
-
-
 func GetModuleLabel(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
 		return
 	}
 
 	type Input struct {
-		ModuleID    int    `json:"module_id"`
+		ModuleID int `json:"module_id"`
 	}
 
 	input := Input{}
@@ -430,7 +430,7 @@ func GetModuleLabel(w http.ResponseWriter, r *http.Request) {
 		ModuleLabel string `json:"module_label"`
 	}
 
-	output := Output{ModuleLabel:moduleLabel}
+	output := Output{ModuleLabel: moduleLabel}
 
 	jsonData, err := json.Marshal(output)
 	if err != nil {

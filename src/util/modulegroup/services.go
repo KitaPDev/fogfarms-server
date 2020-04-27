@@ -6,11 +6,13 @@ import (
 )
 
 func GetAllModuleGroups() ([]models.ModuleGroup, error) {
-	return repository.GetAllModuleGroups()
+	moduleGroups, err := repository.GetAllModuleGroups()
+	return moduleGroups, err
 }
 
 func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
-	return repository.GetModuleGroupsByIDs(moduleGroupIDs)
+	moduleGroups, err := repository.GetModuleGroupsByIDs(moduleGroupIDs)
+	return moduleGroups, err
 }
 
 func CreateModuleGroup(label string, plantID int, locationID int, tds float64, ph float64,
@@ -50,11 +52,9 @@ func ResetTimer(moduleGroupID int) error {
 func GetOnAutoByModuleID(moduleID int) (bool, error) {
 	return repository.GetOnAutoByModuleID(moduleID)
 }
-
-func GetModuleGroupsByLabelMatch(moduleGroupLabel string) ([]models.ModuleGroup,error){
+func GetModuleGroupsByLabelMatch(moduleGroupLabel string) ([]models.ModuleGroup, error) {
 	return repository.GetModuleGroupsByLabelMatch(moduleGroupLabel)
 }
-
-func GetModuleGroupsByLabelMatchForNormal(moduleGroupLabel string, userID int) ([]models.ModuleGroup,error){
+func GetModuleGroupsByLabelMatchForNormal(moduleGroupLabel string, userID int) ([]models.ModuleGroup, error) {
 	return repository.GetModuleGroupsByLabelMatchForNormal(moduleGroupLabel, userID)
 }

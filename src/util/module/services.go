@@ -10,18 +10,13 @@ func CreateModule(moduleLabel string) error {
 	return repository.CreateModule(moduleLabel)
 }
 
-func DeleteModule(moduleID int) error {
-	return repository.DeleteModule(moduleID)
+func DeleteModule(moduleId int) error {
+	return repository.DeleteModule(moduleId)
 }
 
 func EditModuleLabel(moduleID int, moduleLabel string) error {
 	return repository.EditModuleLabel(moduleID, moduleLabel)
 }
-
-func GetModuleLabel(moduleID int) (string, error) {
-	return repository.GetModuleLabel(moduleID)
-}
-
 func GetModulesByModuleGroupIDs(moduleGroupIDs []int) ([]models.Module, error) {
 	return repository.GetModulesByModuleGroupIDs(moduleGroupIDs)
 }
@@ -46,4 +41,7 @@ func UpdateDeviceStatus(moduleID int, mixer []bool, solenoidValves []bool, led [
 
 func GetDeviceStatus(moduleID int) ([]bool, []bool, []bool, []bool, error) {
 	return repository.GetDeviceStatus(moduleID)
+}
+func GetModuleLabel(moduleID int) (string, error) {
+	return repository.GetModuleLabel(moduleID)
 }

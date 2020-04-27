@@ -20,7 +20,7 @@ func MakeHTTPHandler() http.Handler {
 		Methods("POST").
 		Schemes("http")
 
-	router.HandleFunc("/plant_management/edit_plant", editPlant).
+	router.HandleFunc("/plant_management/edit_plant", EditPlant).
 		Methods("POST").
 		Schemes("http")
 

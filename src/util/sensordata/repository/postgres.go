@@ -11,10 +11,10 @@ import (
 	"github.com/lib/pq"
 )
 
-func GetLatestSensorData(moduleGroupID int) (map[string]*outputs.DashboardOutput, error) {
+func GetLatestSensorData(moduleGroupID int) (map[string]*outputs.Dashboardoutput, error) {
 	var moduleGroupIDs []int
 
-	var dashboard = make(map[string]*outputs.DashboardOutput)
+	var dashboard = make(map[string]*outputs.Dashboardoutput)
 	moduleGroupIDs = append(moduleGroupIDs, moduleGroupID)
 
 	modules, err := module.GetModulesByModuleGroupIDs(moduleGroupIDs)
@@ -28,7 +28,15 @@ func GetLatestSensorData(moduleGroupID int) (map[string]*outputs.DashboardOutput
 	log.Println(moduleIDs)
 	db := database.GetDB()
 
-	sqlStatement := `select modulelabel,sensordata.moduleid,sensordata.timestamp,arrnutrientunittds,arrnutrientunitph,arrnutrientunitsolutiontemperature,arrgrowunitlux,arrgrowunithumidity,arrgrowunittemperature,nutrientamount from sensordata inner join (SELECT moduleid, max(timestamp) AS maxtime FROM sensordata GROUP BY moduleid) as maxTable on maxTable.moduleid=sensordata.moduleid AND sensordata.timestamp=maxTable.maxtime inner join (select moduleid, count(*) as nutrientamount from nutrientunit group by moduleid) AS nutrient on nutrient.moduleid = sensordata.moduleid AND nutrient.moduleid=maxTable.moduleid inner join module on module.moduleid=sensordata.moduleid where sensordata.moduleid = ANY($1);`
+	sqlStatement := `select modulelabel,module.moduleid,coalesce(sensordata.timestamp,NOW()),coalesce(arrnutrientunittds,'{}'),coalesce(arrnutrientunitph,'{}'),
+	coalesce(arrnutrientunitsolutiontemperature,'{}'),coalesce(arrgrowunitlux,'{}'),coalesce(arrgrowunithumidity,'{}'),coalesce(arrgrowunittemperature,'{}'),coalesce(nutrientamount,0) 
+	from sensordata inner join (SELECT moduleid, max(timestamp) AS maxtime 
+		FROM sensordata GROUP BY moduleid) as maxTable 
+		on maxTable.moduleid=sensordata.moduleid 
+		AND sensordata.timestamp=maxTable.maxtime 
+		LEFT join (select moduleid, count(*) as nutrientamount from nutrientunit group by moduleid) 
+		AS nutrient on nutrient.moduleid = sensordata.moduleid AND nutrient.moduleid=maxTable.moduleid 
+		RIGHT join module on module.moduleid=sensordata.moduleid where module.moduleid = ANY($1);`
 	rows, err := db.Query(sqlStatement, pq.Array(moduleIDs))
 	if err != nil {
 		return nil, err
@@ -56,10 +64,11 @@ func GetLatestSensorData(moduleGroupID int) (map[string]*outputs.DashboardOutput
 		log.Println(dashboard)
 		log.Println(modulelabel)
 
-		dashboard[modulelabel] = &outputs.DashboardOutput{
+		dashboard[modulelabel] = &outputs.Dashboardoutput{
 			NutrientAmount: nutrientAmount,
-			SensorData:     sd,
+			Sensordata:     sd,
 		}
+
 	}
 
 	sqlStatement = `select moduleid,modulelabel,arrfogger,arrled,arrmixer,arrsolenoidvalve from module where moduleid=ANY($1);`
@@ -67,7 +76,6 @@ func GetLatestSensorData(moduleGroupID int) (map[string]*outputs.DashboardOutput
 	if err != nil {
 		return nil, err
 	}
-
 	defer rows.Close()
 	for rows.Next() {
 		var sd outputs.DashBoardModule
@@ -140,7 +148,6 @@ func GetSensorDataHistory(moduleGroupID int, timeBegin time.Time, timeEnd time.T
 
 	return mapModuleLabelSensorData, nil
 }
-
 func RecordSensorData(moduleID int, tds []float64, ph []float64, solutionTemperature []float64,
 	lux []float64, humidity []float64, temperature []float64) error {
 
@@ -150,7 +157,7 @@ func RecordSensorData(moduleID int, tds []float64, ph []float64, solutionTempera
 		`INSERT INTO SensorData (moduleid, arrnutrientunittds, arrnutrientunitph, arrnutrientunitsolutiontemperature, arrgrowunitlux, arrgrowunithumidity, arrgrowunittemperature)
 		VALUES ($1, $2, $3, $4, $5, $6, $7)`
 
-	_, err := db.Query(sqlStatement, moduleID, pq.Array(tds), pq.Array(ph), pq.Array(solutionTemperature),
+	_, err := db.Exec(sqlStatement, moduleID, pq.Array(tds), pq.Array(ph), pq.Array(solutionTemperature),
 		pq.Array(lux), pq.Array(humidity), pq.Array(temperature))
 
 	if err != nil {
