@@ -6,13 +6,11 @@ import (
 )
 
 func GetAllModuleGroups() ([]models.ModuleGroup, error) {
-	moduleGroups, err := repository.GetAllModuleGroups()
-	return moduleGroups, err
+	return repository.GetAllModuleGroups()
 }
 
 func GetModuleGroupsByIDs(moduleGroupIDs []int) ([]models.ModuleGroup, error) {
-	moduleGroups, err := repository.GetModuleGroupsByIDs(moduleGroupIDs)
-	return moduleGroups, err
+	return repository.GetModuleGroupsByIDs(moduleGroupIDs)
 }
 
 func CreateModuleGroup(label string, plantID int, locationID int, tds float64, ph float64,

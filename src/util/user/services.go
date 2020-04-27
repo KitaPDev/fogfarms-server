@@ -3,6 +3,7 @@ package user
 import (
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/KitaPDev/fogfarms-server/src/jsonhandler"
@@ -78,7 +79,7 @@ func GetUsersByID(userIDs []int) ([]models.User, error) {
 }
 
 func GetUserByUsernameFromCookie(r *http.Request) (*models.User, error) {
-	var jwtKey = "s"
+	var jwtKey = os.Getenv("SECRET_KEY_JWT")
 	var secureCookie = securecookie.New([]byte(jwtKey), nil)
 
 	type Claims struct {
@@ -87,15 +88,22 @@ func GetUserByUsernameFromCookie(r *http.Request) (*models.User, error) {
 	}
 
 	cookie, err := r.Cookie("jwtToken")
+	if err != nil {
+		return nil, err
+	}
 
 	var tokenString string
 	err = secureCookie.Decode("jwtToken", cookie.Value, &tokenString)
+	if err != nil {
+		return nil, err
+	}
 
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims,
 		func(token *jwt.Token) (interface{}, error) {
 			return []byte(jwtKey), nil
 		})
+
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +114,6 @@ func GetUserByUsernameFromCookie(r *http.Request) (*models.User, error) {
 	} else {
 		return GetUserByUsername(claims.Username)
 	}
-
 }
 
 func GetUserStringByUsernameFromCookie(w http.ResponseWriter, r *http.Request) (string, error) {

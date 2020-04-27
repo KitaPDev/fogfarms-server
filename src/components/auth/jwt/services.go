@@ -39,17 +39,16 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 			return false
 		}
 
-		msg := `Error: Failed to Retrieve Token from Cookie"`
+		msg := `Error: Failed to Retrieve Token from Cookie`
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Println(err)
 		return false
 	}
 
 	var tokenString string
-	//tokenString := cookie.Value
 	err = secureCookie.Decode("jwtToken", cookie.Value, &tokenString)
 	if err != nil {
-		msg := `Error: Failed to Decode Token Value"`
+		msg := `Error: Failed to Decode Token Value`
 		http.Error(w, msg, http.StatusInternalServerError)
 		log.Println(err)
 		return false
@@ -62,13 +61,13 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 		})
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
-			msg := "Error: Invalid Signature"
+			msg := `Error: Invalid Signature`
 			http.Error(w, msg, http.StatusUnauthorized)
 			log.Println(err)
 			return false
 		}
 
-		msg := "Error: Failed to Parse Token"
+		msg := `Error: Failed to Parse Token`
 		http.Error(w, msg, http.StatusUnauthorized)
 		http.Error(w, msg, http.StatusUnauthorized)
 		log.Println(err)
@@ -76,7 +75,7 @@ func AuthenticateUserToken(w http.ResponseWriter, r *http.Request) bool {
 	}
 
 	if !token.Valid {
-		msg := "Error: Invalid Token"
+		msg := `Error: Invalid Token`
 		http.Error(w, msg, http.StatusUnauthorized)
 		return false
 	}
@@ -177,6 +176,7 @@ func GenerateToken(username string, w http.ResponseWriter) error {
 		http.Error(w, msg, http.StatusUnauthorized)
 		return err
 	}
+
 	encoded, err := secureCookie.Encode("jwtToken", tokenString)
 	if err != nil {
 		msg := "Error: Failed to Encode Cookie"
@@ -192,7 +192,6 @@ func GenerateToken(username string, w http.ResponseWriter) error {
 		Path:    "/",
 	}
 	http.SetCookie(w, cookie)
-
 	return nil
 }
 

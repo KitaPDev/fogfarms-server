@@ -15,7 +15,7 @@ func GetAllModuleGroups() ([]models.ModuleGroup, error) {
 	sqlStatement :=
 		`SELECT ModuleGroupID, ModuleGroupLabel, PlantID, Param_TDs, Param_PH, 
 		Param_Humidity, LightsOnHour, LightsOffHour, TimerLastReset FROM ModuleGroup
-		WHERE ModuleGroupID IS NOT 0;`
+		WHERE ModuleGroupID != 0;`
 
 	rows, err := db.Query(sqlStatement)
 	if err != nil {
