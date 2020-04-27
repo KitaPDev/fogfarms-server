@@ -196,3 +196,9 @@ VALUES (0, "", 0, 0, 0, 0, 0);
 
 INSERT INTO Location (LocationID, City, Province)
 VALUES (0, "", "");
+
+INSERT INTO Nutrient (NutrientID, Part, Nitrogen, Phosphorus, Potassium)
+VALUES (0, 0, 0, 0, 0);
+
+INSERT INTO NutrientUnit (NutrientUnitID, ModuleID, NutrientID)
+VALUES (0, 0, 0);
