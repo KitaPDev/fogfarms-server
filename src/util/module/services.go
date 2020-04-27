@@ -18,6 +18,10 @@ func EditModuleLabel(moduleID int, moduleLabel string) error {
 	return repository.EditModuleLabel(moduleID, moduleLabel)
 }
 
+func GetModuleLabel(moduleID int) (string, error) {
+	return repository.GetModuleLabel(moduleID)
+}
+
 func GetModulesByModuleGroupIDs(moduleGroupIDs []int) ([]models.Module, error) {
 	return repository.GetModulesByModuleGroupIDs(moduleGroupIDs)
 }

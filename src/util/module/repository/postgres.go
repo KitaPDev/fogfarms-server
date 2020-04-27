@@ -54,6 +54,28 @@ func EditModuleLabel(moduleID int, moduleLabel string) error {
 	return nil
 }
 
+func GetModuleLabel(moduleID int) (string, error) {
+	db := database.GetDB()
+
+	sqlStatement := `SELECT ModuleLabel From Module WHERE ModuleID = $1`
+
+	rows, err := db.Query(sqlStatement, moduleID)
+	if err != nil {
+		return "", err
+	}
+	defer rows.Close()
+
+	var moduleLabel string
+	for rows.Next() {
+		err = rows.Scan(&moduleLabel)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	return moduleLabel, nil
+}
+
 func GetModulesByModuleGroupIDs(moduleGroupIDs []int) ([]models.Module, error) {
 	db := database.GetDB()
 
