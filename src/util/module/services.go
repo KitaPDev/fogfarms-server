@@ -34,6 +34,10 @@ func AssignModulesToModuleGroup(moduleGroupID int, moduleIDs []int) error {
 	return repository.AssignModulesToModuleGroup(moduleGroupID, moduleIDs)
 }
 
+func VerifyAssignModulesToModuleGroup(userID int, moduleGroupID int, moduleIDs []int) bool {
+	return repository.VerifyAssignModulesToModuleGroup(userID, moduleGroupID, moduleIDs)
+}
+
 func GetModuleIDByToken(token string) (int, error) {
 	return repository.GetModuleIDByToken(token)
 }

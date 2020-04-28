@@ -180,7 +180,14 @@ func AssignModuleToModuleGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := module.AssignModulesToModuleGroup(input.ModuleGroupID, input.ModuleIDs)
+	u, err := user.GetUserByUsernameFromCookie(r)
+
+	if !(u.IsAdministrator || verifyAssignModuleToModuleGroup(u.UserID, input.ModuleGroupID, input.ModuleIDs)) {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	err = module.AssignModulesToModuleGroup(input.ModuleGroupID, input.ModuleIDs)
 	if err != nil {
 		msg := "Error: Failed to Assign Modules To ModuleGroup"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -190,6 +197,11 @@ func AssignModuleToModuleGroup(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Successful"))
 }
+
+func verifyAssignModuleToModuleGroup(userID int, moduleGroupID int, moduleIDs []int) bool {
+	return module.VerifyAssignModulesToModuleGroup(userID, moduleGroupID, moduleIDs)
+}
+
 
 func EditModuleGroupLabel(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
@@ -271,7 +283,7 @@ func DeleteModuleGroup(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Successful"))
 }
 
-func getModuleGroupByMatchedLabel(w http.ResponseWriter, r *http.Request) {
+func GetModuleGroupByMatchedLabel(w http.ResponseWriter, r *http.Request) {
 	if !jwt.AuthenticateUserToken(w, r) {
 		msg := "Unauthorized"
 		http.Error(w, msg, http.StatusUnauthorized)

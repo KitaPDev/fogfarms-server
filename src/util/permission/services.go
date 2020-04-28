@@ -34,7 +34,7 @@ func GetUserModuleGroupPermissions(userIDs []int, moduleGroupIDs []int) (map[str
 	if err != nil {
 		return make(map[string]map[string]int), err
 	}
-	log.Println("Variable moduleGroups in GetuserModuleGroupPermissions", moduleGroups)
+	log.Println("Variable moduleGroups in GetUserModuleGroupPermissions", moduleGroups)
 
 	fmt.Println("permissions:\n", permissions)
 	fmt.Println("users:\n", users)

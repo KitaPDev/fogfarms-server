@@ -160,6 +160,42 @@ func GetModuleIDByToken(token string) (int, error) {
 	return moduleID, nil
 }
 
+func VerifyAssignModulesToModuleGroup(userID int, moduleGroupID int, moduleIDs []int) bool {
+	sqlStatement :=
+		`SELECT PermissionLevel FROM Permission
+		WHERE UserID = $1 AND ModuleGroupID = $2
+		UNION
+		SELECT PermissionLevel FROM Permission
+		WHERE UserID = $1 AND ModuleGroupID = 
+		(SELECT DISTINCT ModuleGroupID FROM Module
+		WHERE ModuleID = ANY($3))`
+	// Result from query after UNION will be returned before query before UNION
+
+	db := database.GetDB()
+	rows, err := db.Query(sqlStatement, userID, moduleGroupID, pq.Array(moduleIDs))
+	if err != nil {
+		return false
+	}
+
+	var p1, p2 int
+	for rows.Next() {
+		err = rows.Scan(
+			&p1,
+			&p2,
+		)
+
+		if err != nil {
+			return false
+		}
+	}
+
+	if p1 + p2 != 6 {
+		return false
+	}
+
+	return true
+}
+
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 func GenerateToken() string {

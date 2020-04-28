@@ -71,6 +71,10 @@ func assignModuleToModuleGroup(w http.ResponseWriter, r *http.Request) {
 	AssignModuleToModuleGroup(w, r)
 }
 
+func getModuleGroupByMatchedLabel(w http.ResponseWriter, r *http.Request) {
+	GetModuleGroupByMatchedLabel(w, r)
+}
+
 func editModuleGroupLabel(w http.ResponseWriter, r *http.Request) {
 	EditModuleGroupLabel(w, r)
 }
