@@ -182,7 +182,7 @@ func AssignModuleToModuleGroup(w http.ResponseWriter, r *http.Request) {
 
 	u, err := user.GetUserByUsernameFromCookie(r)
 
-	if !(u.IsAdministrator || verifyAssignModuleToModuleGroup(u.UserID, input.ModuleGroupID, input.ModuleIDs)) {
+	if !(u.IsAdministrator || module.VerifyAssignModulesToModuleGroup(u.UserID, input.ModuleGroupID, input.ModuleIDs)) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
@@ -196,10 +196,6 @@ func AssignModuleToModuleGroup(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Successful"))
-}
-
-func verifyAssignModuleToModuleGroup(userID int, moduleGroupID int, moduleIDs []int) bool {
-	return module.VerifyAssignModulesToModuleGroup(userID, moduleGroupID, moduleIDs)
 }
 
 
