@@ -14,13 +14,23 @@ import (
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	// if !jwt.AuthenticateUserToken(w, r) {
-	// 	msg := "Unauthorized"
-	// 	http.Error(w, msg, http.StatusUnauthorized)
-	// 	return
-	// }
+	if !jwt.AuthenticateUserToken(w, r) {
+		return
+	}
 
-	err := user.CreateUser(w, r)
+	u, err := user.GetUserByUsernameFromCookie(r)
+	if err != nil {
+		msg := "Error: Failed to Get User By Username From Cookie"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
+	if !u.IsAdministrator {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	err = user.CreateUser(w, r)
 	if err != nil {
 		msg := "Error: Failed to Create User"
 		http.Error(w, msg, http.StatusInternalServerError)
@@ -99,6 +109,18 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	u, err := user.GetUserByUsernameFromCookie(r)
+	if err != nil {
+		msg := "Error: Failed to Get User By Username From Cookie"
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
+	if !u.IsAdministrator {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	type Input struct {
 		Username string `json:"username"`
 	}
@@ -111,7 +133,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Printf("%+v", input)
 
-	err := user.DeleteUserByUsername(input.Username)
+	err = user.DeleteUserByUsername(input.Username)
 	if err != nil {
 		msg := "Error: Failed to Delete User By Username"
 		http.Error(w, msg, http.StatusInternalServerError)
